@@ -16,15 +16,20 @@
 package org.apache.geode.cache.lucene.internal.repository.serializer;
 
 import java.lang.reflect.Field;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.queryparser.flexible.standard.config.PointsConfig;
 
 import org.apache.geode.cache.lucene.LuceneIndex;
 import org.apache.geode.cache.lucene.LuceneSerializer;
@@ -37,6 +42,7 @@ import org.apache.geode.internal.logging.LogService;
 class ReflectionLuceneSerializer implements LuceneSerializer {
 
   private Field[] fields;
+  private ConcurrentMap<String, PointsConfig> pointsConfigMap = new ConcurrentHashMap();
 
   private static final Logger logger = LogService.getLogger();
 
@@ -54,6 +60,20 @@ class ReflectionLuceneSerializer implements LuceneSerializer {
         if (fieldSet.contains(field.getName()) && SerializerUtil.isSupported(type)) {
           field.setAccessible(true);
           foundFields.add(field);
+
+          if (Integer.class.equals(type) || Integer.TYPE.equals(type)) {
+            pointsConfigMap.put(field.getName(),
+                new PointsConfig(NumberFormat.getInstance(), Integer.class));
+          } else if (Long.class.equals(type) || Long.TYPE.equals(type)) {
+            pointsConfigMap.put(field.getName(),
+                new PointsConfig(NumberFormat.getInstance(), Long.class));
+          } else if (Float.class.equals(type) || Float.TYPE.equals(type)) {
+            pointsConfigMap.put(field.getName(),
+                new PointsConfig(NumberFormat.getInstance(), Float.class));
+          } else if (Double.class.equals(type) || Double.TYPE.equals(type)) {
+            pointsConfigMap.put(field.getName(),
+                new PointsConfig(NumberFormat.getInstance(), Double.class));
+          }
         }
       }
 
@@ -82,4 +102,9 @@ class ReflectionLuceneSerializer implements LuceneSerializer {
     }
     return Collections.singleton(doc);
   }
+
+  public Map<String, PointsConfig> getPointsConfigMap() {
+    return pointsConfigMap;
+  }
+
 }
