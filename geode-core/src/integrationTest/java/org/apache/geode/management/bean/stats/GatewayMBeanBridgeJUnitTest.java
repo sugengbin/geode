@@ -39,7 +39,7 @@ public class GatewayMBeanBridgeJUnitTest extends MBeanStatsTestCase {
   private AbstractGatewaySender sender;
 
   public void init() {
-    senderStats = new GatewaySenderStats(system, "test");
+    senderStats = new GatewaySenderStats(system.getStatisticsFactory(), "test");
 
     sender = Mockito.mock(AbstractGatewaySender.class);
     Mockito.when(sender.getStatistics()).thenReturn(senderStats);

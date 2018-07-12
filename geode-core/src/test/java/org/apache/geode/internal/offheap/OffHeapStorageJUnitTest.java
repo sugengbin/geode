@@ -26,7 +26,7 @@ import org.junit.Test;
 import org.junit.contrib.java.lang.system.RestoreSystemProperties;
 
 import org.apache.geode.OutOfOffHeapMemoryException;
-import org.apache.geode.StatisticsFactory;
+import org.apache.geode.statistics.StatisticsFactory;
 import org.apache.geode.distributed.DistributedSystem;
 import org.apache.geode.distributed.internal.DistributionConfig;
 import org.apache.geode.distributed.internal.DistributionStats;
