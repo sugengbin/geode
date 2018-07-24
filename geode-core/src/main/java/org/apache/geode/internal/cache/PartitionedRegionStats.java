@@ -44,382 +44,381 @@ import org.apache.geode.internal.statistics.StatisticsTypeFactoryImpl;
  */
 public class PartitionedRegionStats {
 
-  private static final StatisticsType type;
+  private StatisticsType type;
 
-  private static final int dataStoreEntryCountId;
-  private static final int dataStoreBytesInUseId;
-  private static final int bucketCountId;
+  private int dataStoreEntryCountId;
+  private int dataStoreBytesInUseId;
+  private int bucketCountId;
 
-  private static final int putsCompletedId;
-  private static final int putOpsRetriedId;
-  private static final int putRetriesId;
+  private int putsCompletedId;
+  private int putOpsRetriedId;
+  private int putRetriesId;
 
-  private static final int createsCompletedId;
-  private static final int createOpsRetriedId;
-  private static final int createRetriesId;
+  private int createsCompletedId;
+  private int createOpsRetriedId;
+  private int createRetriesId;
 
-  private static final int preferredReadLocalId;
-  private static final int preferredReadRemoteId;
+  private int preferredReadLocalId;
+  private int preferredReadRemoteId;
 
-  private static final int getsCompletedId;
-  private static final int getOpsRetriedId;
-  private static final int getRetriesId;
+  private int getsCompletedId;
+  private int getOpsRetriedId;
+  private int getRetriesId;
 
-  private static final int destroysCompletedId;
-  private static final int destroyOpsRetriedId;
-  private static final int destroyRetriesId;
+  private int destroysCompletedId;
+  private int destroyOpsRetriedId;
+  private int destroyRetriesId;
 
-  private static final int invalidatesCompletedId;
-  private static final int invalidateOpsRetriedId;
-  private static final int invalidateRetriesId;
+  private int invalidatesCompletedId;
+  private int invalidateOpsRetriedId;
+  private int invalidateRetriesId;
 
-  private static final int containsKeyCompletedId;
-  private static final int containsKeyOpsRetriedId;
-  private static final int containsKeyRetriesId;
+  private int containsKeyCompletedId;
+  private int containsKeyOpsRetriedId;
+  private int containsKeyRetriesId;
 
-  private static final int containsValueForKeyCompletedId;
+  private int containsValueForKeyCompletedId;
 
-  private static final int partitionMessagesSentId;
-  private static final int partitionMessagesReceivedId;
-  private static final int partitionMessagesProcessedId;
+  private int partitionMessagesSentId;
+  private int partitionMessagesReceivedId;
+  private int partitionMessagesProcessedId;
 
-  private static final int putTimeId;
-  private static final int createTimeId;
-  private static final int getTimeId;
-  private static final int destroyTimeId;
-  private static final int invalidateTimeId;
-  private static final int containsKeyTimeId;
-  private static final int containsValueForKeyTimeId;
-  private static final int partitionMessagesProcessingTimeId;
+  private int putTimeId;
+  private int createTimeId;
+  private int getTimeId;
+  private int destroyTimeId;
+  private int invalidateTimeId;
+  private int containsKeyTimeId;
+  private int containsValueForKeyTimeId;
+  private int partitionMessagesProcessingTimeId;
 
   private static final String PUTALLS_COMPLETED = "putAllsCompleted";
   private static final String PUTALL_MSGS_RETRIED = "putAllMsgsRetried";
   private static final String PUTALL_RETRIES = "putAllRetries";
   private static final String PUTALL_TIME = "putAllTime";
 
-  private static final int fieldId_PUTALLS_COMPLETED;
-  private static final int fieldId_PUTALL_MSGS_RETRIED;
-  private static final int fieldId_PUTALL_RETRIES;
-  private static final int fieldId_PUTALL_TIME;
+  private int fieldId_PUTALLS_COMPLETED;
+  private int fieldId_PUTALL_MSGS_RETRIED;
+  private int fieldId_PUTALL_RETRIES;
+  private int fieldId_PUTALL_TIME;
 
   private static final String REMOVE_ALLS_COMPLETED = "removeAllsCompleted";
   private static final String REMOVE_ALL_MSGS_RETRIED = "removeAllMsgsRetried";
   private static final String REMOVE_ALL_RETRIES = "removeAllRetries";
   private static final String REMOVE_ALL_TIME = "removeAllTime";
 
-  private static final int fieldId_REMOVE_ALLS_COMPLETED;
-  private static final int fieldId_REMOVE_ALL_MSGS_RETRIED;
-  private static final int fieldId_REMOVE_ALL_RETRIES;
-  private static final int fieldId_REMOVE_ALL_TIME;
+  private int fieldId_REMOVE_ALLS_COMPLETED;
+  private int fieldId_REMOVE_ALL_MSGS_RETRIED;
+  private int fieldId_REMOVE_ALL_RETRIES;
+  private int fieldId_REMOVE_ALL_TIME;
 
-  private static final int volunteeringInProgressId; // count of volunteering in progress
-  private static final int volunteeringBecamePrimaryId; // ended as primary
-  private static final int volunteeringBecamePrimaryTimeId; // time spent that ended as primary
-  private static final int volunteeringOtherPrimaryId; // ended as not primary
-  private static final int volunteeringOtherPrimaryTimeId; // time spent that ended as not primary
-  private static final int volunteeringClosedId; // ended as closed
-  private static final int volunteeringClosedTimeId; // time spent that ended as closed
+  private int volunteeringInProgressId; // count of volunteering in progress
+  private int volunteeringBecamePrimaryId; // ended as primary
+  private int volunteeringBecamePrimaryTimeId; // time spent that ended as primary
+  private int volunteeringOtherPrimaryId; // ended as not primary
+  private int volunteeringOtherPrimaryTimeId; // time spent that ended as not primary
+  private int volunteeringClosedId; // ended as closed
+  private int volunteeringClosedTimeId; // time spent that ended as closed
 
-  private static final int applyReplicationCompletedId;
-  private static final int applyReplicationInProgressId;
-  private static final int applyReplicationTimeId;
-  private static final int sendReplicationCompletedId;
-  private static final int sendReplicationInProgressId;
-  private static final int sendReplicationTimeId;
-  private static final int putRemoteCompletedId;
-  private static final int putRemoteInProgressId;
-  private static final int putRemoteTimeId;
-  private static final int putLocalCompletedId;
-  private static final int putLocalInProgressId;
-  private static final int putLocalTimeId;
+  private int applyReplicationCompletedId;
+  private int applyReplicationInProgressId;
+  private int applyReplicationTimeId;
+  private int sendReplicationCompletedId;
+  private int sendReplicationInProgressId;
+  private int sendReplicationTimeId;
+  private int putRemoteCompletedId;
+  private int putRemoteInProgressId;
+  private int putRemoteTimeId;
+  private int putLocalCompletedId;
+  private int putLocalInProgressId;
+  private int putLocalTimeId;
 
-  private static final int totalNumBucketsId; // total number of buckets
-  private static final int primaryBucketCountId; // number of hosted primary buckets
-  private static final int volunteeringThreadsId; // number of threads actively volunteering
-  private static final int lowRedundancyBucketCountId; // number of buckets currently without full
+  private int totalNumBucketsId; // total number of buckets
+  private int primaryBucketCountId; // number of hosted primary buckets
+  private int volunteeringThreadsId; // number of threads actively volunteering
+  private int lowRedundancyBucketCountId; // number of buckets currently without full
                                                        // redundancy
-  private static final int noCopiesBucketCountId; // number of buckets currently without any
+  private int noCopiesBucketCountId; // number of buckets currently without any
                                                   // redundancy
 
-  private static final int configuredRedundantCopiesId;
-  private static final int actualRedundantCopiesId;
+  private int configuredRedundantCopiesId;
+  private int actualRedundantCopiesId;
 
-  private static final int getEntriesCompletedId;
-  private static final int getEntryTimeId;
+  private int getEntriesCompletedId;
+  private int getEntryTimeId;
 
-  private static final int recoveriesInProgressId;
-  private static final int recoveriesCompletedId;
-  private static final int recoveriesTimeId;
-  private static final int bucketCreatesInProgressId;
-  private static final int bucketCreatesCompletedId;
-  private static final int bucketCreatesFailedId;
-  private static final int bucketCreateTimeId;
+  private int recoveriesInProgressId;
+  private int recoveriesCompletedId;
+  private int recoveriesTimeId;
+  private int bucketCreatesInProgressId;
+  private int bucketCreatesCompletedId;
+  private int bucketCreatesFailedId;
+  private int bucketCreateTimeId;
 
-  private static final int rebalanceBucketCreatesInProgressId;
-  private static final int rebalanceBucketCreatesCompletedId;
-  private static final int rebalanceBucketCreatesFailedId;
-  private static final int rebalanceBucketCreateTimeId;
+  private int rebalanceBucketCreatesInProgressId;
+  private int rebalanceBucketCreatesCompletedId;
+  private int rebalanceBucketCreatesFailedId;
+  private int rebalanceBucketCreateTimeId;
 
-  private static final int primaryTransfersInProgressId;
-  private static final int primaryTransfersCompletedId;
-  private static final int primaryTransfersFailedId;
-  private static final int primaryTransferTimeId;
+  private int primaryTransfersInProgressId;
+  private int primaryTransfersCompletedId;
+  private int primaryTransfersFailedId;
+  private int primaryTransferTimeId;
 
-  private static final int rebalancePrimaryTransfersInProgressId;
-  private static final int rebalancePrimaryTransfersCompletedId;
-  private static final int rebalancePrimaryTransfersFailedId;
-  private static final int rebalancePrimaryTransferTimeId;
+  private int rebalancePrimaryTransfersInProgressId;
+  private int rebalancePrimaryTransfersCompletedId;
+  private int rebalancePrimaryTransfersFailedId;
+  private int rebalancePrimaryTransferTimeId;
 
-  private static final int prMetaDataSentCountId;
+  private int prMetaDataSentCountId;
 
-  private static final int localMaxMemoryId;
+  private int localMaxMemoryId;
 
-  static {
+  private void initializeStats(StatisticsFactory factory) {
     final boolean largerIsBetter = true;
-    StatisticsTypeFactory f = StatisticsTypeFactoryImpl.singleton();
-    type = f.createType("PartitionedRegionStats",
+    type = factory.createType("PartitionedRegionStats",
         "Statistics for operations and connections in the Partitioned Region",
         new StatisticDescriptor[] {
 
-            f.createIntGauge("bucketCount", "Number of buckets in this node.", "buckets"),
-            f.createIntCounter("putsCompleted", "Number of puts completed.", "operations",
+            factory.createIntGauge("bucketCount", "Number of buckets in this node.", "buckets"),
+            factory.createIntCounter("putsCompleted", "Number of puts completed.", "operations",
                 largerIsBetter),
-            f.createIntCounter("putOpsRetried",
+            factory.createIntCounter("putOpsRetried",
                 "Number of put operations which had to be retried due to failures.", "operations",
                 false),
-            f.createIntCounter("putRetries",
+            factory.createIntCounter("putRetries",
                 "Total number of times put operations had to be retried.", "retry attempts", false),
-            f.createIntCounter("createsCompleted", "Number of creates completed.", "operations",
+            factory.createIntCounter("createsCompleted", "Number of creates completed.", "operations",
                 largerIsBetter),
-            f.createIntCounter("createOpsRetried",
+            factory.createIntCounter("createOpsRetried",
                 "Number of create operations which had to be retried due to failures.",
                 "operations", false),
-            f.createIntCounter("createRetries",
+            factory.createIntCounter("createRetries",
                 "Total number of times put operations had to be retried.", "retry attempts", false),
-            f.createIntCounter("preferredReadLocal", "Number of reads satisfied from local store",
+            factory.createIntCounter("preferredReadLocal", "Number of reads satisfied from local store",
                 "operations", largerIsBetter),
-            f.createIntCounter(PUTALLS_COMPLETED, "Number of putAlls completed.", "operations",
+            factory.createIntCounter(PUTALLS_COMPLETED, "Number of putAlls completed.", "operations",
                 largerIsBetter),
-            f.createIntCounter(PUTALL_MSGS_RETRIED,
+            factory.createIntCounter(PUTALL_MSGS_RETRIED,
                 "Number of putAll messages which had to be retried due to failures.", "operations",
                 false),
-            f.createIntCounter(PUTALL_RETRIES,
+            factory.createIntCounter(PUTALL_RETRIES,
                 "Total number of times putAll messages had to be retried.", "retry attempts",
                 false),
-            f.createLongCounter(PUTALL_TIME, "Total time spent doing putAlls.", "nanoseconds",
+            factory.createLongCounter(PUTALL_TIME, "Total time spent doing putAlls.", "nanoseconds",
                 !largerIsBetter),
-            f.createIntCounter(REMOVE_ALLS_COMPLETED, "Number of removeAlls completed.",
+            factory.createIntCounter(REMOVE_ALLS_COMPLETED, "Number of removeAlls completed.",
                 "operations", largerIsBetter),
-            f.createIntCounter(REMOVE_ALL_MSGS_RETRIED,
+            factory.createIntCounter(REMOVE_ALL_MSGS_RETRIED,
                 "Number of removeAll messages which had to be retried due to failures.",
                 "operations", false),
-            f.createIntCounter(REMOVE_ALL_RETRIES,
+            factory.createIntCounter(REMOVE_ALL_RETRIES,
                 "Total number of times removeAll messages had to be retried.", "retry attempts",
                 false),
-            f.createLongCounter(REMOVE_ALL_TIME, "Total time spent doing removeAlls.",
+            factory.createLongCounter(REMOVE_ALL_TIME, "Total time spent doing removeAlls.",
                 "nanoseconds", !largerIsBetter),
-            f.createIntCounter("preferredReadRemote", "Number of reads satisfied from remote store",
+            factory.createIntCounter("preferredReadRemote", "Number of reads satisfied from remote store",
                 "operations", false),
-            f.createIntCounter("getsCompleted", "Number of gets completed.", "operations",
+            factory.createIntCounter("getsCompleted", "Number of gets completed.", "operations",
                 largerIsBetter),
-            f.createIntCounter("getOpsRetried",
+            factory.createIntCounter("getOpsRetried",
                 "Number of get operations which had to be retried due to failures.", "operations",
                 false),
-            f.createIntCounter("getRetries",
+            factory.createIntCounter("getRetries",
                 "Total number of times get operations had to be retried.", "retry attempts", false),
-            f.createIntCounter("destroysCompleted", "Number of destroys completed.", "operations",
+            factory.createIntCounter("destroysCompleted", "Number of destroys completed.", "operations",
                 largerIsBetter),
-            f.createIntCounter("destroyOpsRetried",
+            factory.createIntCounter("destroyOpsRetried",
                 "Number of destroy operations which had to be retried due to failures.",
                 "operations", false),
-            f.createIntCounter("destroyRetries",
+            factory.createIntCounter("destroyRetries",
                 "Total number of times destroy operations had to be retried.", "retry attempts",
                 false),
-            f.createIntCounter("invalidatesCompleted", "Number of invalidates completed.",
+            factory.createIntCounter("invalidatesCompleted", "Number of invalidates completed.",
                 "operations", largerIsBetter),
 
-            f.createIntCounter("invalidateOpsRetried",
+            factory.createIntCounter("invalidateOpsRetried",
                 "Number of invalidate operations which had to be retried due to failures.",
                 "operations", false),
-            f.createIntCounter("invalidateRetries",
+            factory.createIntCounter("invalidateRetries",
                 "Total number of times invalidate operations had to be retried.", "retry attempts",
                 false),
-            f.createIntCounter("containsKeyCompleted", "Number of containsKeys completed.",
+            factory.createIntCounter("containsKeyCompleted", "Number of containsKeys completed.",
                 "operations", largerIsBetter),
 
-            f.createIntCounter("containsKeyOpsRetried",
+            factory.createIntCounter("containsKeyOpsRetried",
                 "Number of containsKey or containsValueForKey operations which had to be retried due to failures.",
                 "operations", false),
-            f.createIntCounter("containsKeyRetries",
+            factory.createIntCounter("containsKeyRetries",
                 "Total number of times containsKey or containsValueForKey operations had to be retried.",
                 "operations", false),
-            f.createIntCounter("containsValueForKeyCompleted",
+            factory.createIntCounter("containsValueForKeyCompleted",
                 "Number of containsValueForKeys completed.", "operations", largerIsBetter),
-            f.createIntCounter("PartitionMessagesSent", "Number of PartitionMessages Sent.",
+            factory.createIntCounter("PartitionMessagesSent", "Number of PartitionMessages Sent.",
                 "operations", largerIsBetter),
-            f.createIntCounter("PartitionMessagesReceived", "Number of PartitionMessages Received.",
+            factory.createIntCounter("PartitionMessagesReceived", "Number of PartitionMessages Received.",
                 "operations", largerIsBetter),
-            f.createIntCounter("PartitionMessagesProcessed",
+            factory.createIntCounter("PartitionMessagesProcessed",
                 "Number of PartitionMessages Processed.", "operations", largerIsBetter),
-            f.createLongCounter("putTime", "Total time spent doing puts.", "nanoseconds", false),
-            f.createLongCounter("createTime", "Total time spent doing create operations.",
+            factory.createLongCounter("putTime", "Total time spent doing puts.", "nanoseconds", false),
+            factory.createLongCounter("createTime", "Total time spent doing create operations.",
                 "nanoseconds", false),
-            f.createLongCounter("getTime", "Total time spent performing get operations.",
+            factory.createLongCounter("getTime", "Total time spent performing get operations.",
                 "nanoseconds", false),
-            f.createLongCounter("destroyTime", "Total time spent doing destroys.", "nanoseconds",
+            factory.createLongCounter("destroyTime", "Total time spent doing destroys.", "nanoseconds",
                 false),
-            f.createLongCounter("invalidateTime", "Total time spent doing invalidates.",
+            factory.createLongCounter("invalidateTime", "Total time spent doing invalidates.",
                 "nanoseconds", false),
-            f.createLongCounter("containsKeyTime",
+            factory.createLongCounter("containsKeyTime",
                 "Total time spent performing containsKey operations.", "nanoseconds", false),
-            f.createLongCounter("containsValueForKeyTime",
+            factory.createLongCounter("containsValueForKeyTime",
                 "Total time spent performing containsValueForKey operations.", "nanoseconds",
                 false),
-            f.createLongCounter("partitionMessagesProcessingTime",
+            factory.createLongCounter("partitionMessagesProcessingTime",
                 "Total time spent on PartitionMessages processing.", "nanoseconds", false),
-            f.createIntGauge("dataStoreEntryCount",
+            factory.createIntGauge("dataStoreEntryCount",
                 "The number of entries stored in this Cache for the named Partitioned Region. This does not include entries which are tombstones. See CachePerfStats.tombstoneCount.",
                 "entries"),
-            f.createLongGauge("dataStoreBytesInUse",
+            factory.createLongGauge("dataStoreBytesInUse",
                 "The current number of bytes stored in this Cache for the named Partitioned Region",
                 "bytes"),
-            f.createIntGauge("volunteeringInProgress",
+            factory.createIntGauge("volunteeringInProgress",
                 "Current number of attempts to volunteer for primary of a bucket.", "operations"),
-            f.createIntCounter("volunteeringBecamePrimary",
+            factory.createIntCounter("volunteeringBecamePrimary",
                 "Total number of attempts to volunteer that ended when this member became primary.",
                 "operations"),
-            f.createLongCounter("volunteeringBecamePrimaryTime",
+            factory.createLongCounter("volunteeringBecamePrimaryTime",
                 "Total time spent volunteering that ended when this member became primary.",
                 "nanoseconds", false),
-            f.createIntCounter("volunteeringOtherPrimary",
+            factory.createIntCounter("volunteeringOtherPrimary",
                 "Total number of attempts to volunteer that ended when this member discovered other primary.",
                 "operations"),
-            f.createLongCounter("volunteeringOtherPrimaryTime",
+            factory.createLongCounter("volunteeringOtherPrimaryTime",
                 "Total time spent volunteering that ended when this member discovered other primary.",
                 "nanoseconds", false),
-            f.createIntCounter("volunteeringClosed",
+            factory.createIntCounter("volunteeringClosed",
                 "Total number of attempts to volunteer that ended when this member's bucket closed.",
                 "operations"),
-            f.createLongCounter("volunteeringClosedTime",
+            factory.createLongCounter("volunteeringClosedTime",
                 "Total time spent volunteering that ended when this member's bucket closed.",
                 "nanoseconds", false),
-            f.createIntGauge("totalNumBuckets", "The total number of buckets.", "buckets"),
-            f.createIntGauge("primaryBucketCount",
+            factory.createIntGauge("totalNumBuckets", "The total number of buckets.", "buckets"),
+            factory.createIntGauge("primaryBucketCount",
                 "Current number of primary buckets hosted locally.", "buckets"),
-            f.createIntGauge("volunteeringThreads",
+            factory.createIntGauge("volunteeringThreads",
                 "Current number of threads volunteering for primary.", "threads"),
-            f.createIntGauge("lowRedundancyBucketCount",
+            factory.createIntGauge("lowRedundancyBucketCount",
                 "Current number of buckets without full redundancy.", "buckets"),
-            f.createIntGauge("noCopiesBucketCount",
+            factory.createIntGauge("noCopiesBucketCount",
                 "Current number of buckets without any copies remaining.", "buckets"),
-            f.createIntGauge("configuredRedundantCopies",
+            factory.createIntGauge("configuredRedundantCopies",
                 "Configured number of redundant copies for this partitioned region.", "copies"),
-            f.createIntGauge("actualRedundantCopies",
+            factory.createIntGauge("actualRedundantCopies",
                 "Actual number of redundant copies for this partitioned region.", "copies"),
-            f.createIntCounter("getEntryCompleted", "Number of getEntry operations completed.",
+            factory.createIntCounter("getEntryCompleted", "Number of getEntry operations completed.",
                 "operations", largerIsBetter),
-            f.createLongCounter("getEntryTime", "Total time spent performing getEntry operations.",
+            factory.createLongCounter("getEntryTime", "Total time spent performing getEntry operations.",
                 "nanoseconds", false),
 
-            f.createIntGauge("recoveriesInProgress",
+            factory.createIntGauge("recoveriesInProgress",
                 "Current number of redundancy recovery operations in progress for this region.",
                 "operations"),
-            f.createIntCounter("recoveriesCompleted",
+            factory.createIntCounter("recoveriesCompleted",
                 "Total number of redundancy recovery operations performed on this region.",
                 "operations"),
-            f.createLongCounter("recoveryTime", "Total number time spent recovering redundancy.",
+            factory.createLongCounter("recoveryTime", "Total number time spent recovering redundancy.",
                 "operations"),
-            f.createIntGauge("bucketCreatesInProgress",
+            factory.createIntGauge("bucketCreatesInProgress",
                 "Current number of bucket create operations being performed for rebalancing.",
                 "operations"),
-            f.createIntCounter("bucketCreatesCompleted",
+            factory.createIntCounter("bucketCreatesCompleted",
                 "Total number of bucket create operations performed for rebalancing.",
                 "operations"),
-            f.createIntCounter("bucketCreatesFailed",
+            factory.createIntCounter("bucketCreatesFailed",
                 "Total number of bucket create operations performed for rebalancing that failed.",
                 "operations"),
-            f.createLongCounter("bucketCreateTime",
+            factory.createLongCounter("bucketCreateTime",
                 "Total time spent performing bucket create operations for rebalancing.",
                 "nanoseconds", false),
-            f.createIntGauge("primaryTransfersInProgress",
+            factory.createIntGauge("primaryTransfersInProgress",
                 "Current number of primary transfer operations being performed for rebalancing.",
                 "operations"),
-            f.createIntCounter("primaryTransfersCompleted",
+            factory.createIntCounter("primaryTransfersCompleted",
                 "Total number of primary transfer operations performed for rebalancing.",
                 "operations"),
-            f.createIntCounter("primaryTransfersFailed",
+            factory.createIntCounter("primaryTransfersFailed",
                 "Total number of primary transfer operations performed for rebalancing that failed.",
                 "operations"),
-            f.createLongCounter("primaryTransferTime",
+            factory.createLongCounter("primaryTransferTime",
                 "Total time spent performing primary transfer operations for rebalancing.",
                 "nanoseconds", false),
 
-            f.createIntCounter("applyReplicationCompleted",
+            factory.createIntCounter("applyReplicationCompleted",
                 "Total number of replicated values sent from a primary to this redundant data store.",
                 "operations", largerIsBetter),
-            f.createIntGauge("applyReplicationInProgress",
+            factory.createIntGauge("applyReplicationInProgress",
                 "Current number of replication operations in progress on this redundant data store.",
                 "operations", !largerIsBetter),
-            f.createLongCounter("applyReplicationTime",
+            factory.createLongCounter("applyReplicationTime",
                 "Total time spent storing replicated values on this redundant data store.",
                 "nanoseconds", !largerIsBetter),
-            f.createIntCounter("sendReplicationCompleted",
+            factory.createIntCounter("sendReplicationCompleted",
                 "Total number of replicated values sent from this primary to a redundant data store.",
                 "operations", largerIsBetter),
-            f.createIntGauge("sendReplicationInProgress",
+            factory.createIntGauge("sendReplicationInProgress",
                 "Current number of replication operations in progress from this primary.",
                 "operations", !largerIsBetter),
-            f.createLongCounter("sendReplicationTime",
+            factory.createLongCounter("sendReplicationTime",
                 "Total time spent replicating values from this primary to a redundant data store.",
                 "nanoseconds", !largerIsBetter),
-            f.createIntCounter("putRemoteCompleted",
+            factory.createIntCounter("putRemoteCompleted",
                 "Total number of completed puts that did not originate in the primary. These puts require an extra network hop to the primary.",
                 "operations", largerIsBetter),
-            f.createIntGauge("putRemoteInProgress",
+            factory.createIntGauge("putRemoteInProgress",
                 "Current number of puts in progress that did not originate in the primary.",
                 "operations", !largerIsBetter),
-            f.createLongCounter("putRemoteTime",
+            factory.createLongCounter("putRemoteTime",
                 "Total time spent doing puts that did not originate in the primary.", "nanoseconds",
                 !largerIsBetter),
-            f.createIntCounter("putLocalCompleted",
+            factory.createIntCounter("putLocalCompleted",
                 "Total number of completed puts that did originate in the primary. These puts are optimal.",
                 "operations", largerIsBetter),
-            f.createIntGauge("putLocalInProgress",
+            factory.createIntGauge("putLocalInProgress",
                 "Current number of puts in progress that did originate in the primary.",
                 "operations", !largerIsBetter),
-            f.createLongCounter("putLocalTime",
+            factory.createLongCounter("putLocalTime",
                 "Total time spent doing puts that did originate in the primary.", "nanoseconds",
                 !largerIsBetter),
 
-            f.createIntGauge("rebalanceBucketCreatesInProgress",
+            factory.createIntGauge("rebalanceBucketCreatesInProgress",
                 "Current number of bucket create operations being performed for rebalancing.",
                 "operations"),
-            f.createIntCounter("rebalanceBucketCreatesCompleted",
+            factory.createIntCounter("rebalanceBucketCreatesCompleted",
                 "Total number of bucket create operations performed for rebalancing.",
                 "operations"),
-            f.createIntCounter("rebalanceBucketCreatesFailed",
+            factory.createIntCounter("rebalanceBucketCreatesFailed",
                 "Total number of bucket create operations performed for rebalancing that failed.",
                 "operations"),
-            f.createLongCounter("rebalanceBucketCreateTime",
+            factory.createLongCounter("rebalanceBucketCreateTime",
                 "Total time spent performing bucket create operations for rebalancing.",
                 "nanoseconds", false),
-            f.createIntGauge("rebalancePrimaryTransfersInProgress",
+            factory.createIntGauge("rebalancePrimaryTransfersInProgress",
                 "Current number of primary transfer operations being performed for rebalancing.",
                 "operations"),
-            f.createIntCounter("rebalancePrimaryTransfersCompleted",
+            factory.createIntCounter("rebalancePrimaryTransfersCompleted",
                 "Total number of primary transfer operations performed for rebalancing.",
                 "operations"),
-            f.createIntCounter("rebalancePrimaryTransfersFailed",
+            factory.createIntCounter("rebalancePrimaryTransfersFailed",
                 "Total number of primary transfer operations performed for rebalancing that failed.",
                 "operations"),
-            f.createLongCounter("rebalancePrimaryTransferTime",
+            factory.createLongCounter("rebalancePrimaryTransferTime",
                 "Total time spent performing primary transfer operations for rebalancing.",
                 "nanoseconds", false),
-            f.createLongCounter("prMetaDataSentCount",
+            factory.createLongCounter("prMetaDataSentCount",
                 "total number of times meta data refreshed sent on client's request.", "operation",
                 false),
 
-            f.createLongGauge("localMaxMemory",
+            factory.createLongGauge("localMaxMemory",
                 "local max memory in bytes for this region on this member", "bytes")
 
         });
@@ -550,6 +549,7 @@ public class PartitionedRegionStats {
   }
 
   public PartitionedRegionStats(StatisticsFactory factory, String name) {
+    initializeStats(factory);
     this.stats = factory.createAtomicStatistics(type, name /* fixes bug 42343 */);
 
     if (CachePerfStats.enableClockStats) {

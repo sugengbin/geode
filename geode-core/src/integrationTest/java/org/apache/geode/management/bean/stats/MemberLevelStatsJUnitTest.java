@@ -79,7 +79,7 @@ public class MemberLevelStatsJUnitTest extends MBeanStatsTestCase {
     bridge.addLockServiceStats(dlockStats);
 
 
-    VMStatsContract vmstats = system.getStatSampler().getVMStats();
+    VMStatsContract vmstats = system.getInternalDistributedSystemStats().getStatSampler().getVMStats();
     assertTrue(vmstats instanceof VMStats50);
 
     bridge.addSystemStats();

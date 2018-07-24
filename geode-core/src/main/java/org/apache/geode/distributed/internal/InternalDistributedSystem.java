@@ -20,7 +20,6 @@ import static org.apache.geode.distributed.ConfigurationProperties.MCAST_PORT;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.Reader;
 import java.lang.reflect.Array;
 import java.net.InetAddress;
 import java.util.ArrayList;
@@ -37,10 +36,8 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.StringTokenizer;
 import java.util.TreeSet;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.logging.log4j.Logger;
@@ -52,11 +49,8 @@ import org.apache.geode.GemFireConfigException;
 import org.apache.geode.GemFireIOException;
 import org.apache.geode.LogWriter;
 import org.apache.geode.internal.statistics.InternalDistributedSystemStats;
-import org.apache.geode.statistics.StatisticDescriptor;
 import org.apache.geode.statistics.Statistics;
 import org.apache.geode.statistics.StatisticsFactory;
-import org.apache.geode.statistics.StatisticsType;
-import org.apache.geode.statistics.StatisticsTypeFactory;
 import org.apache.geode.SystemConnectException;
 import org.apache.geode.SystemFailure;
 import org.apache.geode.admin.AlertLevel;
@@ -87,8 +81,6 @@ import org.apache.geode.internal.cache.CacheServerImpl;
 import org.apache.geode.internal.cache.EventID;
 import org.apache.geode.internal.cache.GemFireCacheImpl;
 import org.apache.geode.internal.cache.InternalCache;
-import org.apache.geode.internal.cache.execute.FunctionServiceStats;
-import org.apache.geode.internal.cache.execute.FunctionStats;
 import org.apache.geode.internal.cache.tier.sockets.EncryptorImpl;
 import org.apache.geode.internal.cache.xmlcache.CacheServerCreation;
 import org.apache.geode.internal.i18n.LocalizedStrings;
@@ -105,14 +97,9 @@ import org.apache.geode.internal.offheap.MemoryAllocator;
 import org.apache.geode.internal.offheap.OffHeapStorage;
 import org.apache.geode.internal.security.SecurityService;
 import org.apache.geode.internal.security.SecurityServiceFactory;
-import org.apache.geode.internal.statistics.DummyStatisticsImpl;
 import org.apache.geode.internal.statistics.GemFireStatSampler;
-import org.apache.geode.internal.statistics.LocalStatisticsImpl;
-import org.apache.geode.internal.statistics.StatisticsImpl;
-import org.apache.geode.internal.statistics.StatisticsManager;
 import org.apache.geode.internal.statistics.StatisticsTypeFactoryImpl;
 import org.apache.geode.internal.statistics.platform.LinuxProcFsStatistics;
-import org.apache.geode.internal.statistics.platform.OsStatisticsFactory;
 import org.apache.geode.internal.tcp.ConnectionTable;
 import org.apache.geode.management.ManagementException;
 import org.apache.geode.security.GemFireSecurityException;
@@ -230,11 +217,6 @@ public class InternalDistributedSystem extends DistributedSystem {
    * system.
    */
   private boolean isLoner = false;
-
-  /**
-   * The sampler for this DistributedSystem.
-   */
-  private GemFireStatSampler sampler = null;
 
   /**
    * A set of listeners that are invoked when this connection to the distributed system is
@@ -539,7 +521,8 @@ public class InternalDistributedSystem extends DistributedSystem {
     this.creationStack =
         TEST_CREATION_STACK_GENERATOR.get().generateCreationStack(this.originalConfig);
 
-    this.internalDistributedSystemStats = new InternalDistributedSystemStats(this.statsDisabled);
+    this.internalDistributedSystemStats = new InternalDistributedSystemStats(this.statsDisabled,this.getConfig(),
+        this,new StatisticsTypeFactoryImpl());
   }
 
   //////////////////// Instance Methods ////////////////////
@@ -813,12 +796,6 @@ public class InternalDistributedSystem extends DistributedSystem {
       } catch (IOException e) {
         throw new GemFireIOException("Problem finishing a locator service start", e);
       }
-
-      if (!statsDisabled) {
-        this.sampler = new GemFireStatSampler(this);
-        this.sampler.start();
-      }
-
       if (this.logWriterAppender != null) {
         LogWriterAppenders.startupComplete(LogWriterAppenders.Identifier.MAIN);
       }
@@ -1009,13 +986,6 @@ public class InternalDistributedSystem extends DistributedSystem {
   @Override
   public LogWriter getSecurityLogWriter() {
     return this.securityLogWriter;
-  }
-
-  /**
-   * Returns the stat sampler
-   */
-  public GemFireStatSampler getStatSampler() {
-    return this.sampler;
   }
 
   /**
@@ -1452,14 +1422,9 @@ public class InternalDistributedSystem extends DistributedSystem {
         doShutdownListeners(shutdownListeners);
       }
 
-      this.getInternalDistributedSystemStats().closeFunctionStats();
+      this.getInternalDistributedSystemStats().closeStats();
 
       (new FunctionServiceManager()).unregisterAllFunctions();
-
-      if (this.sampler != null) {
-        this.sampler.stop();
-        this.sampler = null;
-      }
 
       if (!this.attemptingToReconnect) {
         if (this.logWriterAppender != null) {

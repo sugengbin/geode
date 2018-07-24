@@ -280,7 +280,7 @@ public class HeapMemoryMonitor implements NotificationListener, MemoryMonitor {
       }
 
       // Stop the stats listener
-      final GemFireStatSampler sampler = this.cache.getInternalDistributedSystem().getStatSampler();
+      final GemFireStatSampler sampler = this.cache.getInternalDistributedSystem().getInternalDistributedSystemStats().getStatSampler();
       if (sampler != null) {
         sampler.removeLocalStatListener(this.statListener);
       }
@@ -295,7 +295,7 @@ public class HeapMemoryMonitor implements NotificationListener, MemoryMonitor {
    * @return True of the listener was correctly started, false otherwise.
    */
   private boolean startCacheStatListener() {
-    final GemFireStatSampler sampler = this.cache.getInternalDistributedSystem().getStatSampler();
+    final GemFireStatSampler sampler = this.cache.getInternalDistributedSystem().getInternalDistributedSystemStats().getStatSampler();
     if (sampler == null) {
       return false;
     }

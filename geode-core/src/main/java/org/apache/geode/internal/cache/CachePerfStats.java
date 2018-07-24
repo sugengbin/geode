@@ -33,481 +33,468 @@ public class CachePerfStats {
 
   ////////////////// Static fields ///////////////////////////
 
-  private static final StatisticsType type;
+  private StatisticsType type;
 
-  protected static final int loadsInProgressId;
-  protected static final int loadsCompletedId;
-  protected static final int loadTimeId;
-  protected static final int netloadsInProgressId;
-  protected static final int netloadsCompletedId;
-  protected static final int netloadTimeId;
-  protected static final int netsearchesInProgressId;
-  protected static final int netsearchesCompletedId;
-  protected static final int netsearchTimeId;
-  protected static final int cacheWriterCallsInProgressId;
-  protected static final int cacheWriterCallsCompletedId;
-  protected static final int cacheWriterCallTimeId;
-  protected static final int cacheListenerCallsInProgressId;
-  protected static final int cacheListenerCallsCompletedId;
-  protected static final int cacheListenerCallTimeId;
-  protected static final int getInitialImagesInProgressId;
-  protected static final int getInitialImagesCompletedId;
-  protected static final int deltaGetInitialImagesCompletedId;
-  protected static final int getInitialImageTimeId;
-  protected static final int getInitialImageKeysReceivedId;
-  protected static final int regionsId;
-  protected static final int partitionedRegionsId;
-  protected static final int destroysId;
-  protected static final int createsId;
-  protected static final int putsId;
-  protected static final int putTimeId;
-  protected static final int putallsId;
-  protected static final int putallTimeId;
-  protected static final int removeAllsId;
-  protected static final int removeAllTimeId;
-  protected static final int updatesId;
-  protected static final int updateTimeId;
-  protected static final int invalidatesId;
-  protected static final int getsId;
-  protected static final int getTimeId;
-  protected static final int eventQueueSizeId;
-  protected static final int eventQueueThrottleTimeId;
-  protected static final int eventQueueThrottleCountId;
-  protected static final int eventThreadsId;
-  protected static final int missesId;
-  protected static final int queryExecutionsId;
-  protected static final int queryExecutionTimeId;
-  protected static final int queryResultsHashCollisionsId;
-  protected static final int queryResultsHashCollisionProbeTimeId;
-  protected static final int partitionedRegionQueryRetriesId;
+  protected int loadsInProgressId;
+  protected int loadsCompletedId;
+  protected int loadTimeId;
+  protected int netloadsInProgressId;
+  protected int netloadsCompletedId;
+  protected int netloadTimeId;
+  protected int netsearchesInProgressId;
+  protected int netsearchesCompletedId;
+  protected int netsearchTimeId;
+  protected int cacheWriterCallsInProgressId;
+  protected int cacheWriterCallsCompletedId;
+  protected int cacheWriterCallTimeId;
+  protected int cacheListenerCallsInProgressId;
+  protected int cacheListenerCallsCompletedId;
+  protected int cacheListenerCallTimeId;
+  protected int getInitialImagesInProgressId;
+  protected int getInitialImagesCompletedId;
+  protected int deltaGetInitialImagesCompletedId;
+  protected int getInitialImageTimeId;
+  protected int getInitialImageKeysReceivedId;
+  protected int regionsId;
+  protected int partitionedRegionsId;
+  protected int destroysId;
+  protected int createsId;
+  protected int putsId;
+  protected int putTimeId;
+  protected int putallsId;
+  protected int putallTimeId;
+  protected int removeAllsId;
+  protected int removeAllTimeId;
+  protected int updatesId;
+  protected int updateTimeId;
+  protected int invalidatesId;
+  protected int getsId;
+  protected int getTimeId;
+  protected int eventQueueSizeId;
+  protected int eventQueueThrottleTimeId;
+  protected int eventQueueThrottleCountId;
+  protected int eventThreadsId;
+  protected int missesId;
+  protected int queryExecutionsId;
+  protected int queryExecutionTimeId;
+  protected int queryResultsHashCollisionsId;
+  protected int queryResultsHashCollisionProbeTimeId;
+  protected int partitionedRegionQueryRetriesId;
 
-  protected static final int txSuccessLifeTimeId;
-  protected static final int txFailedLifeTimeId;
-  protected static final int txRollbackLifeTimeId;
-  protected static final int txCommitsId;
-  protected static final int txFailuresId;
-  protected static final int txRollbacksId;
-  protected static final int txCommitTimeId;
-  protected static final int txFailureTimeId;
-  protected static final int txRollbackTimeId;
-  protected static final int txCommitChangesId;
-  protected static final int txFailureChangesId;
-  protected static final int txRollbackChangesId;
-  protected static final int txConflictCheckTimeId;
+  protected int txSuccessLifeTimeId;
+  protected int txFailedLifeTimeId;
+  protected int txRollbackLifeTimeId;
+  protected int txCommitsId;
+  protected int txFailuresId;
+  protected int txRollbacksId;
+  protected int txCommitTimeId;
+  protected int txFailureTimeId;
+  protected int txRollbackTimeId;
+  protected int txCommitChangesId;
+  protected int txFailureChangesId;
+  protected int txRollbackChangesId;
+  protected int txConflictCheckTimeId;
 
-  protected static final int reliableQueuedOpsId;
-  protected static final int reliableQueueSizeId;
-  protected static final int reliableQueueMaxId;
-  protected static final int reliableRegionsId;
-  protected static final int reliableRegionsMissingId;
-  protected static final int reliableRegionsQueuingId;
-  protected static final int reliableRegionsMissingFullAccessId;
-  protected static final int reliableRegionsMissingLimitedAccessId;
-  protected static final int reliableRegionsMissingNoAccessId;
-  protected static final int entryCountId;
-  protected static final int eventsQueuedId;
-  protected static final int retriesId;
+  protected int reliableQueuedOpsId;
+  protected int reliableQueueSizeId;
+  protected int reliableQueueMaxId;
+  protected int reliableRegionsId;
+  protected int reliableRegionsMissingId;
+  protected int reliableRegionsQueuingId;
+  protected int reliableRegionsMissingFullAccessId;
+  protected int reliableRegionsMissingLimitedAccessId;
+  protected int reliableRegionsMissingNoAccessId;
+  protected int entryCountId;
+  protected int eventsQueuedId;
+  protected int retriesId;
 
-  protected static final int diskTasksWaitingId;
-  protected static final int evictorJobsStartedId;
-  protected static final int evictorJobsCompletedId;
-  protected static final int evictorQueueSizeId;
+  protected int diskTasksWaitingId;
+  protected int evictorJobsStartedId;
+  protected int evictorJobsCompletedId;
+  protected int evictorQueueSizeId;
 
-  protected static final int evictWorkTimeId;
+  protected int evictWorkTimeId;
 
 
-  protected static final int indexUpdateInProgressId;
-  protected static final int indexUpdateCompletedId;
-  protected static final int indexUpdateTimeId;
-  protected static final int clearsId;
-  protected static final int indexInitializationInProgressId;
-  protected static final int indexInitializationCompletedId;
-  protected static final int indexInitializationTimeId;
+  protected int indexUpdateInProgressId;
+  protected int indexUpdateCompletedId;
+  protected int indexUpdateTimeId;
+  protected int clearsId;
+  protected int indexInitializationInProgressId;
+  protected int indexInitializationCompletedId;
+  protected int indexInitializationTimeId;
 
-  /** Id of the meta data refresh statistic */
-  protected static final int metaDataRefreshCountId;
+  /**
+   * Id of the meta data refresh statistic
+   */
+  protected int metaDataRefreshCountId;
 
-  protected static final int conflatedEventsId;
-  protected static final int tombstoneCountId;
-  protected static final int tombstoneGCCountId;
-  protected static final int tombstoneOverhead1Id;
-  protected static final int tombstoneOverhead2Id;
-  protected static final int clearTimeoutsId;
+  protected int conflatedEventsId;
+  protected int tombstoneCountId;
+  protected int tombstoneGCCountId;
+  protected int tombstoneOverhead1Id;
+  protected int tombstoneOverhead2Id;
+  protected int clearTimeoutsId;
 
-  protected static final int deltaUpdatesId;
-  protected static final int deltaUpdatesTimeId;
-  protected static final int deltaFailedUpdatesId;
+  protected int deltaUpdatesId;
+  protected int deltaUpdatesTimeId;
+  protected int deltaFailedUpdatesId;
 
-  protected static final int deltasPreparedId;
-  protected static final int deltasPreparedTimeId;
-  protected static final int deltasSentId;
+  protected int deltasPreparedId;
+  protected int deltasPreparedTimeId;
+  protected int deltasSentId;
 
-  protected static final int deltaFullValuesSentId;
-  protected static final int deltaFullValuesRequestedId;
+  protected int deltaFullValuesSentId;
+  protected int deltaFullValuesRequestedId;
 
-  protected static final int importedEntriesCountId;
-  protected static final int importTimeId;
-  protected static final int exportedEntriesCountId;
-  protected static final int exportTimeId;
+  protected int importedEntriesCountId;
+  protected int importTimeId;
+  protected int exportedEntriesCountId;
+  protected int exportTimeId;
 
-  protected static final int compressionCompressTimeId;
-  protected static final int compressionDecompressTimeId;
-  protected static final int compressionCompressionsId;
-  protected static final int compressionDecompressionsId;
-  protected static final int compressionPreCompressedBytesId;
-  protected static final int compressionPostCompressedBytesId;
+  protected int compressionCompressTimeId;
+  protected int compressionDecompressTimeId;
+  protected int compressionCompressionsId;
+  protected int compressionDecompressionsId;
+  protected int compressionPreCompressedBytesId;
+  protected int compressionPostCompressedBytesId;
 
-  /** The Statistics object that we delegate most behavior to */
+  /**
+   * The Statistics object that we delegate most behavior to
+   */
   protected final Statistics stats;
 
-  //////////////////////// Static methods ////////////////////////
+  private static final String loadsInProgressDesc =
+      "Current number of threads in this cache doing a cache load.";
+  private static final String loadsCompletedDesc =
+      "Total number of times a load on this cache has completed (as a result of either a local get() or a remote netload).";
+  private static final String loadTimeDesc = "Total time spent invoking loaders on this cache.";
+  private static final String netloadsInProgressDesc =
+      "Current number of threads doing a network load initiated by a get() in this cache.";
+  private static final String netloadsCompletedDesc =
+      "Total number of times a network load initiated on this cache has completed.";
+  private static final String netloadTimeDesc = "Total time spent doing network loads on this cache.";
+  private static final String netsearchesInProgressDesc =
+      "Current number of threads doing a network search initiated by a get() in this cache.";
+  private static final String netsearchesCompletedDesc =
+      "Total number of times network searches initiated by this cache have completed.";
+  private static final String netsearchTimeDesc = "Total time spent doing network searches for cache values.";
+  private static final String cacheWriterCallsInProgressDesc =
+      "Current number of threads doing a cache writer call.";
+  private static final String cacheWriterCallsCompletedDesc =
+      "Total number of times a cache writer call has completed.";
+  private static final String cacheWriterCallTimeDesc = "Total time spent doing cache writer calls.";
+  private static final String cacheListenerCallsInProgressDesc =
+      "Current number of threads doing a cache listener call.";
+  private static final String cacheListenerCallsCompletedDesc =
+      "Total number of times a cache listener call has completed.";
+  private static final String cacheListenerCallTimeDesc = "Total time spent doing cache listener calls.";
+  private static final String getInitialImagesInProgressDesc =
+      "Current number of getInitialImage operations currently in progress.";
+  private static final String getInitialImagesCompletedDesc =
+      "Total number of times getInitialImages (both delta and full GII) initiated by this cache have completed.";
+  private static final String deltaGetInitialImagesCompletedDesc =
+      "Total number of times delta getInitialImages initiated by this cache have completed.";
+  private static final String getInitialImageTimeDesc =
+      "Total time spent doing getInitialImages for region creation.";
+  private static final String getInitialImageKeysReceivedDesc =
+      "Total number of keys received while doing getInitialImage operations.";
+  private static final String regionsDesc = "The current number of regions in the cache.";
+  private static final String partitionedRegionsDesc = "The current number of partitioned regions in the cache.";
+  private static final String destroysDesc =
+      "The total number of times a cache object entry has been destroyed in this cache.";
+  private static final String updatesDesc =
+      "The total number of updates originating remotely that have been applied to this cache.";
+  private static final String updateTimeDesc = "Total time spent performing an update.";
+  private static final String invalidatesDesc =
+      "The total number of times an existing cache object entry value in this cache has been invalidated";
+  private static final String getsDesc =
+      "The total number of times a successful get has been done on this cache.";
+  private static final String createsDesc = "The total number of times an entry is added to this cache.";
+  private static final String putsDesc =
+      "The total number of times an entry is added or replaced in this cache as a result of a local operation (put(), create(), or get() which results in load, netsearch, or netloading a value). Note that this only counts puts done explicitly on this cache. It does not count updates pushed from other caches.";
+  private static final String putTimeDesc =
+      "Total time spent adding or replacing an entry in this cache as a result of a local operation.  This includes synchronizing on the map, invoking cache callbacks, sending messages to other caches and waiting for responses (if required).";
+  private static final String putallsDesc =
+      "The total number of times a map is added or replaced in this cache as a result of a local operation. Note that this only counts putAlls done explicitly on this cache. It does not count updates pushed from other caches.";
+  private static final String putallTimeDesc =
+      "Total time spent replacing a map in this cache as a result of a local operation.  This includes synchronizing on the map, invoking cache callbacks, sending messages to other caches and waiting for responses (if required).";
+  private static final String removeAllsDesc =
+      "The total number of removeAll operations that originated in this cache. Note that this only counts removeAlls done explicitly on this cache. It does not count removes pushed from other caches.";
+  private static final String removeAllTimeDesc =
+      "Total time spent performing removeAlls that originated in this cache. This includes time spent waiting for the removeAll to be done in remote caches (if required).";
+  private static final String getTimeDesc =
+      "Total time spent doing get operations from this cache (including netsearch and netload)";
+  private static final String eventQueueSizeDesc = "The number of cache events waiting to be processed.";
+  private static final String eventQueueThrottleTimeDesc =
+      "The total amount of time, in nanoseconds, spent delayed by the event queue throttle.";
+  private static final String eventQueueThrottleCountDesc =
+      "The total number of times a thread was delayed in adding an event to the event queue.";
+  private static final String eventThreadsDesc = "The number of threads currently processing events.";
+  private static final String missesDesc =
+      "Total number of times a get on the cache did not find a value already in local memory. The number of hits (i.e. gets that did not miss) can be calculated by subtracting misses from gets.";
+  private static final String queryExecutionsDesc = "Total number of times some query has been executed";
+  private static final String queryExecutionTimeDesc = "Total time spent executing queries";
+  private static final String queryResultsHashCollisionsDesc =
+      "Total number of times an hash code collision occurred when inserting an object into an OQL result set or rehashing it";
+  private static final String queryResultsHashCollisionProbeTimeDesc =
+      "Total time spent probing the hashtable in an OQL result set due to hash code collisions, includes reads, writes, and rehashes";
+  private static final String partitionedRegionOQLQueryRetriesDesc =
+      "Total number of times an OQL Query on a Partitioned Region had to be retried";
+  private static final String txSuccessLifeTimeDesc =
+      "The total amount of time, in nanoseconds, spent in a transaction before a successful commit. The time measured starts at transaction begin and ends when commit is called.";
+  private static final String txFailedLifeTimeDesc =
+      "The total amount of time, in nanoseconds, spent in a transaction before a failed commit. The time measured starts at transaction begin and ends when commit is called.";
+  private static final String txRollbackLifeTimeDesc =
+      "The total amount of time, in nanoseconds, spent in a transaction before an explicit rollback. The time measured starts at transaction begin and ends when rollback is called.";
+  private static final String txCommitsDesc = "Total number times a transaction commit has succeeded.";
+  private static final String txFailuresDesc = "Total number times a transaction commit has failed.";
+  private static final String txRollbacksDesc =
+      "Total number times a transaction has been explicitly rolled back.";
+  private static final String txCommitTimeDesc =
+      "The total amount of time, in nanoseconds, spent doing successful transaction commits.";
+  private static final String txFailureTimeDesc =
+      "The total amount of time, in nanoseconds, spent doing failed transaction commits.";
+  private static final String txRollbackTimeDesc =
+      "The total amount of time, in nanoseconds, spent doing explicit transaction rollbacks.";
+  private static final String txCommitChangesDesc = "Total number of changes made by committed transactions.";
+  private static final String txFailureChangesDesc = "Total number of changes lost by failed transactions.";
+  private static final String txRollbackChangesDesc =
+      "Total number of changes lost by explicit transaction rollbacks.";
+  private static final String txConflictCheckTimeDesc =
+      "The total amount of time, in nanoseconds, spent doing conflict checks during transaction commit";
+  private static final String reliableQueuedOpsDesc =
+      "Current number of cache operations queued for distribution to required roles.";
+  private static final String reliableQueueSizeDesc =
+      "Current size in megabytes of disk used to queue for distribution to required roles.";
+  private static final String reliableQueueMaxDesc =
+      "Maximum size in megabytes allotted for disk usage to queue for distribution to required roles.";
+  private static final String reliableRegionsDesc = "Current number of regions configured for reliability.";
+  private static final String reliableRegionsMissingDesc =
+      "Current number regions configured for reliability that are missing required roles.";
+  private static final String reliableRegionsQueuingDesc =
+      "Current number regions configured for reliability that are queuing for required roles.";
+  private static final String reliableRegionsMissingFullAccessDesc =
+      "Current number of regions configured for reliablity that are missing require roles with full access";
+  private static final String reliableRegionsMissingLimitedAccessDesc =
+      "Current number of regions configured for reliablity that are missing required roles with Limited access";
+  private static final String reliableRegionsMissingNoAccessDesc =
+      "Current number of regions configured for reliablity that are missing required roles with No access";
+  private static final String clearsDesc = "The total number of times a clear has been done on this cache.";
+  private static final String nonSingleHopsDesc =
+      "Total number of times client request observed more than one hop during operation.";
+  private static final String metaDataRefreshCountDesc =
+      "Total number of times the meta data is refreshed due to hopping observed.";
+  private static final String conflatedEventsDesc =
+      "Number of events not delivered due to conflation.  Typically this means that the event arrived after a later event was already applied to the cache.";
+  private static final String tombstoneCountDesc =
+      "Number of destroyed entries that are retained for concurrent modification detection";
+  private static final String tombstoneGCCountDesc =
+      "Number of garbage-collections performed on destroyed entries";
+  private static final String tombstoneOverhead1Desc =
+      "Amount of memory consumed by destroyed entries in replicated or partitioned regions";
+  private static final String tombstoneOverhead2Desc =
+      "Amount of memory consumed by destroyed entries in non-replicated regions";
+  private static final String clearTimeoutsDesc =
+      "Number of timeouts waiting for events concurrent to a clear() operation to be received and applied before performing the clear()";
+  private static final String deltaUpdatesDesc =
+      "The total number of times entries in this cache are updated through delta bytes.";
+  private static final String deltaUpdatesTimeDesc =
+      "Total time spent applying the received delta bytes to entries in this cache.";
+  private static final String deltaFailedUpdatesDesc =
+      "The total number of times entries in this cache failed to be updated through delta bytes.";
+  private static final String deltasPreparedDesc = "The total number of times delta was prepared in this cache.";
+  private static final String deltasPreparedTimeDesc = "Total time spent preparing delta bytes in this cache.";
+  private static final String deltasSentDesc =
+      "The total number of times delta was sent to remote caches. This excludes deltas sent from server to client.";
+  private static final String deltaFullValuesSentDesc =
+      "The total number of times a full value was sent to a remote cache.";
+  private static final String deltaFullValuesRequestedDesc =
+      "The total number of times a full value was requested by this cache.";
+  private static final String importedEntriesCountDesc =
+      "The total number of entries imported from a snapshot file.";
+  private static final String importTimeDesc = "The total time spent importing entries from a snapshot file.";
+  private static final String exportedEntriesCountDesc =
+      "The total number of entries exported into a snapshot file.";
+  private static final String exportTimeDesc = "The total time spent exporting entries into a snapshot file.";
+  private static final String compressionCompressTimeDesc = "The total time spent compressing data.";
+  private static final String compressionDecompressTimeDesc = "The total time spent decompressing data.";
+  private static final String compressionCompressionsDesc = "The total number of compression operations.";
+  private static final String compressionDecompressionsDesc = "The total number of decompression operations.";
+  private static final String compressionPreCompresssedBytesDesc =
+      "The total number of bytes before compressing.";
+  private static final String compressionPostCompressedBytesDesc =
+      "The total number of bytes after compressing.";
+  private static final String evictByCriteria_evictionsDesc = "The total number of entries evicted";// total actual evictions (entries evicted)
+  private static final String evictByCriteria_evictionTimeDesc = "Time taken for eviction process";// total eviction time including product +user expr.
+  private static final String evictByCriteria_evictionsInProgressDesc = "Total number of evictions in progress";
+  private static final String evictByCriteria_evaluationsDesc = "Total number of evaluations for eviction";// total eviction attempts
+  private static final String evictByCriteria_evaluationTimeDesc = "Total time taken for evaluation of user expression during eviction";// time taken to evaluate user expression.
 
-  static {
-    StatisticsTypeFactory f = StatisticsTypeFactoryImpl.singleton();
 
-    final String loadsInProgressDesc =
-        "Current number of threads in this cache doing a cache load.";
-    final String loadsCompletedDesc =
-        "Total number of times a load on this cache has completed (as a result of either a local get() or a remote netload).";
-    final String loadTimeDesc = "Total time spent invoking loaders on this cache.";
-    final String netloadsInProgressDesc =
-        "Current number of threads doing a network load initiated by a get() in this cache.";
-    final String netloadsCompletedDesc =
-        "Total number of times a network load initiated on this cache has completed.";
-    final String netloadTimeDesc = "Total time spent doing network loads on this cache.";
-    final String netsearchesInProgressDesc =
-        "Current number of threads doing a network search initiated by a get() in this cache.";
-    final String netsearchesCompletedDesc =
-        "Total number of times network searches initiated by this cache have completed.";
-    final String netsearchTimeDesc = "Total time spent doing network searches for cache values.";
-    final String cacheWriterCallsInProgressDesc =
-        "Current number of threads doing a cache writer call.";
-    final String cacheWriterCallsCompletedDesc =
-        "Total number of times a cache writer call has completed.";
-    final String cacheWriterCallTimeDesc = "Total time spent doing cache writer calls.";
-    final String cacheListenerCallsInProgressDesc =
-        "Current number of threads doing a cache listener call.";
-    final String cacheListenerCallsCompletedDesc =
-        "Total number of times a cache listener call has completed.";
-    final String cacheListenerCallTimeDesc = "Total time spent doing cache listener calls.";
-    final String getInitialImagesInProgressDesc =
-        "Current number of getInitialImage operations currently in progress.";
-    final String getInitialImagesCompletedDesc =
-        "Total number of times getInitialImages (both delta and full GII) initiated by this cache have completed.";
-    final String deltaGetInitialImagesCompletedDesc =
-        "Total number of times delta getInitialImages initiated by this cache have completed.";
-    final String getInitialImageTimeDesc =
-        "Total time spent doing getInitialImages for region creation.";
-    final String getInitialImageKeysReceivedDesc =
-        "Total number of keys received while doing getInitialImage operations.";
-    final String regionsDesc = "The current number of regions in the cache.";
-    final String partitionedRegionsDesc = "The current number of partitioned regions in the cache.";
-    final String destroysDesc =
-        "The total number of times a cache object entry has been destroyed in this cache.";
-    final String updatesDesc =
-        "The total number of updates originating remotely that have been applied to this cache.";
-    final String updateTimeDesc = "Total time spent performing an update.";
-    final String invalidatesDesc =
-        "The total number of times an existing cache object entry value in this cache has been invalidated";
-    final String getsDesc =
-        "The total number of times a successful get has been done on this cache.";
-    final String createsDesc = "The total number of times an entry is added to this cache.";
-    final String putsDesc =
-        "The total number of times an entry is added or replaced in this cache as a result of a local operation (put(), create(), or get() which results in load, netsearch, or netloading a value). Note that this only counts puts done explicitly on this cache. It does not count updates pushed from other caches.";
-    final String putTimeDesc =
-        "Total time spent adding or replacing an entry in this cache as a result of a local operation.  This includes synchronizing on the map, invoking cache callbacks, sending messages to other caches and waiting for responses (if required).";
-    final String putallsDesc =
-        "The total number of times a map is added or replaced in this cache as a result of a local operation. Note that this only counts putAlls done explicitly on this cache. It does not count updates pushed from other caches.";
-    final String putallTimeDesc =
-        "Total time spent replacing a map in this cache as a result of a local operation.  This includes synchronizing on the map, invoking cache callbacks, sending messages to other caches and waiting for responses (if required).";
-    final String removeAllsDesc =
-        "The total number of removeAll operations that originated in this cache. Note that this only counts removeAlls done explicitly on this cache. It does not count removes pushed from other caches.";
-    final String removeAllTimeDesc =
-        "Total time spent performing removeAlls that originated in this cache. This includes time spent waiting for the removeAll to be done in remote caches (if required).";
-    final String getTimeDesc =
-        "Total time spent doing get operations from this cache (including netsearch and netload)";
-    final String eventQueueSizeDesc = "The number of cache events waiting to be processed.";
-    final String eventQueueThrottleTimeDesc =
-        "The total amount of time, in nanoseconds, spent delayed by the event queue throttle.";
-    final String eventQueueThrottleCountDesc =
-        "The total number of times a thread was delayed in adding an event to the event queue.";
-    final String eventThreadsDesc = "The number of threads currently processing events.";
-    final String missesDesc =
-        "Total number of times a get on the cache did not find a value already in local memory. The number of hits (i.e. gets that did not miss) can be calculated by subtracting misses from gets.";
-    final String queryExecutionsDesc = "Total number of times some query has been executed";
-    final String queryExecutionTimeDesc = "Total time spent executing queries";
-    final String queryResultsHashCollisionsDesc =
-        "Total number of times an hash code collision occurred when inserting an object into an OQL result set or rehashing it";
-    final String queryResultsHashCollisionProbeTimeDesc =
-        "Total time spent probing the hashtable in an OQL result set due to hash code collisions, includes reads, writes, and rehashes";
-    final String partitionedRegionOQLQueryRetriesDesc =
-        "Total number of times an OQL Query on a Partitioned Region had to be retried";
-    final String txSuccessLifeTimeDesc =
-        "The total amount of time, in nanoseconds, spent in a transaction before a successful commit. The time measured starts at transaction begin and ends when commit is called.";
-    final String txFailedLifeTimeDesc =
-        "The total amount of time, in nanoseconds, spent in a transaction before a failed commit. The time measured starts at transaction begin and ends when commit is called.";
-    final String txRollbackLifeTimeDesc =
-        "The total amount of time, in nanoseconds, spent in a transaction before an explicit rollback. The time measured starts at transaction begin and ends when rollback is called.";
-    final String txCommitsDesc = "Total number times a transaction commit has succeeded.";
-    final String txFailuresDesc = "Total number times a transaction commit has failed.";
-    final String txRollbacksDesc =
-        "Total number times a transaction has been explicitly rolled back.";
-    final String txCommitTimeDesc =
-        "The total amount of time, in nanoseconds, spent doing successful transaction commits.";
-    final String txFailureTimeDesc =
-        "The total amount of time, in nanoseconds, spent doing failed transaction commits.";
-    final String txRollbackTimeDesc =
-        "The total amount of time, in nanoseconds, spent doing explicit transaction rollbacks.";
-    final String txCommitChangesDesc = "Total number of changes made by committed transactions.";
-    final String txFailureChangesDesc = "Total number of changes lost by failed transactions.";
-    final String txRollbackChangesDesc =
-        "Total number of changes lost by explicit transaction rollbacks.";
-    final String txConflictCheckTimeDesc =
-        "The total amount of time, in nanoseconds, spent doing conflict checks during transaction commit";
-    final String reliableQueuedOpsDesc =
-        "Current number of cache operations queued for distribution to required roles.";
-    final String reliableQueueSizeDesc =
-        "Current size in megabytes of disk used to queue for distribution to required roles.";
-    final String reliableQueueMaxDesc =
-        "Maximum size in megabytes allotted for disk usage to queue for distribution to required roles.";
-    final String reliableRegionsDesc = "Current number of regions configured for reliability.";
-    final String reliableRegionsMissingDesc =
-        "Current number regions configured for reliability that are missing required roles.";
-    final String reliableRegionsQueuingDesc =
-        "Current number regions configured for reliability that are queuing for required roles.";
-    final String reliableRegionsMissingFullAccessDesc =
-        "Current number of regions configured for reliablity that are missing require roles with full access";
-    final String reliableRegionsMissingLimitedAccessDesc =
-        "Current number of regions configured for reliablity that are missing required roles with Limited access";
-    final String reliableRegionsMissingNoAccessDesc =
-        "Current number of regions configured for reliablity that are missing required roles with No access";
-    final String clearsDesc = "The total number of times a clear has been done on this cache.";
-    final String nonSingleHopsDesc =
-        "Total number of times client request observed more than one hop during operation.";
-    final String metaDataRefreshCountDesc =
-        "Total number of times the meta data is refreshed due to hopping observed.";
-    final String conflatedEventsDesc =
-        "Number of events not delivered due to conflation.  Typically this means that the event arrived after a later event was already applied to the cache.";
-    final String tombstoneCountDesc =
-        "Number of destroyed entries that are retained for concurrent modification detection";
-    final String tombstoneGCCountDesc =
-        "Number of garbage-collections performed on destroyed entries";
-    final String tombstoneOverhead1Desc =
-        "Amount of memory consumed by destroyed entries in replicated or partitioned regions";
-    final String tombstoneOverhead2Desc =
-        "Amount of memory consumed by destroyed entries in non-replicated regions";
-    final String clearTimeoutsDesc =
-        "Number of timeouts waiting for events concurrent to a clear() operation to be received and applied before performing the clear()";
-    final String deltaUpdatesDesc =
-        "The total number of times entries in this cache are updated through delta bytes.";
-    final String deltaUpdatesTimeDesc =
-        "Total time spent applying the received delta bytes to entries in this cache.";
-    final String deltaFailedUpdatesDesc =
-        "The total number of times entries in this cache failed to be updated through delta bytes.";
-    final String deltasPreparedDesc = "The total number of times delta was prepared in this cache.";
-    final String deltasPreparedTimeDesc = "Total time spent preparing delta bytes in this cache.";
-    final String deltasSentDesc =
-        "The total number of times delta was sent to remote caches. This excludes deltas sent from server to client.";
-    final String deltaFullValuesSentDesc =
-        "The total number of times a full value was sent to a remote cache.";
-    final String deltaFullValuesRequestedDesc =
-        "The total number of times a full value was requested by this cache.";
-    final String importedEntriesCountDesc =
-        "The total number of entries imported from a snapshot file.";
-    final String importTimeDesc = "The total time spent importing entries from a snapshot file.";
-    final String exportedEntriesCountDesc =
-        "The total number of entries exported into a snapshot file.";
-    final String exportTimeDesc = "The total time spent exporting entries into a snapshot file.";
-    final String compressionCompressTimeDesc = "The total time spent compressing data.";
-    final String compressionDecompressTimeDesc = "The total time spent decompressing data.";
-    final String compressionCompressionsDesc = "The total number of compression operations.";
-    final String compressionDecompressionsDesc = "The total number of decompression operations.";
-    final String compressionPreCompresssedBytesDesc =
-        "The total number of bytes before compressing.";
-    final String compressionPostCompressedBytesDesc =
-        "The total number of bytes after compressing.";
-    final String evictByCriteria_evictionsDesc = "The total number of entries evicted";// total
-                                                                                       // actual
-                                                                                       // evictions
-                                                                                       // (entries
-                                                                                       // evicted)
-    final String evictByCriteria_evictionTimeDesc = "Time taken for eviction process";// total
-                                                                                      // eviction
-                                                                                      // time
-                                                                                      // including
-                                                                                      // product +
-                                                                                      // user expr.
-    final String evictByCriteria_evictionsInProgressDesc = "Total number of evictions in progress";
-    final String evictByCriteria_evaluationsDesc = "Total number of evaluations for eviction";// total
-                                                                                              // eviction
-                                                                                              // attempts
-    final String evictByCriteria_evaluationTimeDesc =
-        "Total time taken for evaluation of user expression during eviction";// time taken to
-                                                                             // evaluate user
-                                                                             // expression.
-
-    type = f.createType("CachePerfStats", "Statistics about GemFire cache performance",
-        new StatisticDescriptor[] {
-            f.createIntGauge("loadsInProgress", loadsInProgressDesc, "operations"),
-            f.createIntCounter("loadsCompleted", loadsCompletedDesc, "operations"),
-            f.createLongCounter("loadTime", loadTimeDesc, "nanoseconds", false),
-            f.createIntGauge("netloadsInProgress", netloadsInProgressDesc, "operations"),
-            f.createIntCounter("netloadsCompleted", netloadsCompletedDesc, "operations"),
-            f.createLongCounter("netloadTime", netloadTimeDesc, "nanoseconds", false),
-            f.createIntGauge("netsearchesInProgress", netsearchesInProgressDesc, "operations"),
-            f.createIntCounter("netsearchesCompleted", netsearchesCompletedDesc, "operations"),
-            f.createLongCounter("netsearchTime", netsearchTimeDesc, "nanoseconds"),
-            f.createIntGauge("cacheWriterCallsInProgress", cacheWriterCallsInProgressDesc,
+  private void initializeStats(StatisticsFactory factory) {
+    type = factory.createType("CachePerfStats", "Statistics about GemFire cache performance",
+        new StatisticDescriptor[]{
+            factory.createIntGauge("loadsInProgress", loadsInProgressDesc, "operations"),
+            factory.createIntCounter("loadsCompleted", loadsCompletedDesc, "operations"),
+            factory.createLongCounter("loadTime", loadTimeDesc, "nanoseconds", false),
+            factory.createIntGauge("netloadsInProgress", netloadsInProgressDesc, "operations"),
+            factory.createIntCounter("netloadsCompleted", netloadsCompletedDesc, "operations"),
+            factory.createLongCounter("netloadTime", netloadTimeDesc, "nanoseconds", false),
+            factory.createIntGauge("netsearchesInProgress", netsearchesInProgressDesc, "operations"),
+            factory.createIntCounter("netsearchesCompleted", netsearchesCompletedDesc, "operations"),
+            factory.createLongCounter("netsearchTime", netsearchTimeDesc, "nanoseconds"),
+            factory.createIntGauge("cacheWriterCallsInProgress", cacheWriterCallsInProgressDesc,
                 "operations"),
-            f.createIntCounter("cacheWriterCallsCompleted", cacheWriterCallsCompletedDesc,
+            factory.createIntCounter("cacheWriterCallsCompleted", cacheWriterCallsCompletedDesc,
                 "operations"),
-            f.createLongCounter("cacheWriterCallTime", cacheWriterCallTimeDesc, "nanoseconds"),
-            f.createIntGauge("cacheListenerCallsInProgress", cacheListenerCallsInProgressDesc,
+            factory.createLongCounter("cacheWriterCallTime", cacheWriterCallTimeDesc, "nanoseconds"),
+            factory.createIntGauge("cacheListenerCallsInProgress", cacheListenerCallsInProgressDesc,
                 "operations"),
-            f.createIntCounter("cacheListenerCallsCompleted", cacheListenerCallsCompletedDesc,
+            factory.createIntCounter("cacheListenerCallsCompleted", cacheListenerCallsCompletedDesc,
                 "operations"),
-            f.createLongCounter("cacheListenerCallTime", cacheListenerCallTimeDesc, "nanoseconds"),
-            f.createIntGauge("indexUpdateInProgress", "Current number of ops in progress",
+            factory.createLongCounter("cacheListenerCallTime", cacheListenerCallTimeDesc, "nanoseconds"),
+            factory.createIntGauge("indexUpdateInProgress", "Current number of ops in progress",
                 "operations"),
-            f.createIntCounter("indexUpdateCompleted", "Total number of ops that have completed",
+            factory.createIntCounter("indexUpdateCompleted", "Total number of ops that have completed",
                 "operations"),
-            f.createLongCounter("indexUpdateTime", "Total amount of time spent doing this op",
+            factory.createLongCounter("indexUpdateTime", "Total amount of time spent doing this op",
                 "nanoseconds"),
-            f.createIntGauge("indexInitializationInProgress",
+            factory.createIntGauge("indexInitializationInProgress",
                 "Current number of index initializations in progress", "operations"),
-            f.createIntCounter("indexInitializationCompleted",
+            factory.createIntCounter("indexInitializationCompleted",
                 "Total number of index initializations that have completed", "operations"),
-            f.createLongCounter("indexInitializationTime",
+            factory.createLongCounter("indexInitializationTime",
                 "Total amount of time spent initializing indexes", "nanoseconds"),
 
-            f.createIntGauge("getInitialImagesInProgress", getInitialImagesInProgressDesc,
+            factory.createIntGauge("getInitialImagesInProgress", getInitialImagesInProgressDesc,
                 "operations"),
-            f.createIntCounter("getInitialImagesCompleted", getInitialImagesCompletedDesc,
+            factory.createIntCounter("getInitialImagesCompleted", getInitialImagesCompletedDesc,
                 "operations"),
-            f.createIntCounter("deltaGetInitialImagesCompleted", deltaGetInitialImagesCompletedDesc,
+            factory.createIntCounter("deltaGetInitialImagesCompleted", deltaGetInitialImagesCompletedDesc,
                 "operations"),
-            f.createLongCounter("getInitialImageTime", getInitialImageTimeDesc, "nanoseconds"),
-            f.createIntCounter("getInitialImageKeysReceived", getInitialImageKeysReceivedDesc,
+            factory.createLongCounter("getInitialImageTime", getInitialImageTimeDesc, "nanoseconds"),
+            factory.createIntCounter("getInitialImageKeysReceived", getInitialImageKeysReceivedDesc,
                 "keys"),
-            f.createIntGauge("regions", regionsDesc, "regions"),
-            f.createIntGauge("partitionedRegions", partitionedRegionsDesc, "partitionedRegions"),
-            f.createIntCounter("destroys", destroysDesc, "operations"),
-            f.createIntCounter("updates", updatesDesc, "operations"),
-            f.createLongCounter("updateTime", updateTimeDesc, "nanoseconds"),
-            f.createIntCounter("invalidates", invalidatesDesc, "operations"),
-            f.createIntCounter("gets", getsDesc, "operations"),
-            f.createIntCounter("misses", missesDesc, "operations"),
-            f.createIntCounter("creates", createsDesc, "operations"),
-            f.createIntCounter("puts", putsDesc, "operations"),
-            f.createLongCounter("putTime", putTimeDesc, "nanoseconds", false),
-            f.createIntCounter("putalls", putallsDesc, "operations"),
-            f.createLongCounter("putallTime", putallTimeDesc, "nanoseconds", false),
-            f.createIntCounter("removeAlls", removeAllsDesc, "operations"),
-            f.createLongCounter("removeAllTime", removeAllTimeDesc, "nanoseconds", false),
-            f.createLongCounter("getTime", getTimeDesc, "nanoseconds", false),
-            f.createIntGauge("eventQueueSize", eventQueueSizeDesc, "messages"),
-            f.createIntGauge("eventQueueThrottleCount", eventQueueThrottleCountDesc, "delays"),
-            f.createLongCounter("eventQueueThrottleTime", eventQueueThrottleTimeDesc, "nanoseconds",
+            factory.createIntGauge("regions", regionsDesc, "regions"),
+            factory.createIntGauge("partitionedRegions", partitionedRegionsDesc, "partitionedRegions"),
+            factory.createIntCounter("destroys", destroysDesc, "operations"),
+            factory.createIntCounter("updates", updatesDesc, "operations"),
+            factory.createLongCounter("updateTime", updateTimeDesc, "nanoseconds"),
+            factory.createIntCounter("invalidates", invalidatesDesc, "operations"),
+            factory.createIntCounter("gets", getsDesc, "operations"),
+            factory.createIntCounter("misses", missesDesc, "operations"),
+            factory.createIntCounter("creates", createsDesc, "operations"),
+            factory.createIntCounter("puts", putsDesc, "operations"),
+            factory.createLongCounter("putTime", putTimeDesc, "nanoseconds", false),
+            factory.createIntCounter("putalls", putallsDesc, "operations"),
+            factory.createLongCounter("putallTime", putallTimeDesc, "nanoseconds", false),
+            factory.createIntCounter("removeAlls", removeAllsDesc, "operations"),
+            factory.createLongCounter("removeAllTime", removeAllTimeDesc, "nanoseconds", false),
+            factory.createLongCounter("getTime", getTimeDesc, "nanoseconds", false),
+            factory.createIntGauge("eventQueueSize", eventQueueSizeDesc, "messages"),
+            factory.createIntGauge("eventQueueThrottleCount", eventQueueThrottleCountDesc, "delays"),
+            factory.createLongCounter("eventQueueThrottleTime", eventQueueThrottleTimeDesc, "nanoseconds",
                 false),
-            f.createIntGauge("eventThreads", eventThreadsDesc, "threads"),
-            f.createIntCounter("queryExecutions", queryExecutionsDesc, "operations"),
-            f.createLongCounter("queryExecutionTime", queryExecutionTimeDesc, "nanoseconds"),
-            f.createIntCounter("queryResultsHashCollisions", queryResultsHashCollisionsDesc,
+            factory.createIntGauge("eventThreads", eventThreadsDesc, "threads"),
+            factory.createIntCounter("queryExecutions", queryExecutionsDesc, "operations"),
+            factory.createLongCounter("queryExecutionTime", queryExecutionTimeDesc, "nanoseconds"),
+            factory.createIntCounter("queryResultsHashCollisions", queryResultsHashCollisionsDesc,
                 "operations"),
-            f.createLongCounter("queryResultsHashCollisionProbeTime",
+            factory.createLongCounter("queryResultsHashCollisionProbeTime",
                 queryResultsHashCollisionProbeTimeDesc, "nanoseconds"),
-            f.createLongCounter("partitionedRegionQueryRetries",
+            factory.createLongCounter("partitionedRegionQueryRetries",
                 partitionedRegionOQLQueryRetriesDesc, "retries"),
 
-            f.createIntCounter("txCommits", txCommitsDesc, "commits"),
-            f.createIntCounter("txCommitChanges", txCommitChangesDesc, "changes"),
-            f.createLongCounter("txCommitTime", txCommitTimeDesc, "nanoseconds", false),
-            f.createLongCounter("txSuccessLifeTime", txSuccessLifeTimeDesc, "nanoseconds", false),
+            factory.createIntCounter("txCommits", txCommitsDesc, "commits"),
+            factory.createIntCounter("txCommitChanges", txCommitChangesDesc, "changes"),
+            factory.createLongCounter("txCommitTime", txCommitTimeDesc, "nanoseconds", false),
+            factory.createLongCounter("txSuccessLifeTime", txSuccessLifeTimeDesc, "nanoseconds", false),
 
-            f.createIntCounter("txFailures", txFailuresDesc, "failures"),
-            f.createIntCounter("txFailureChanges", txFailureChangesDesc, "changes"),
-            f.createLongCounter("txFailureTime", txFailureTimeDesc, "nanoseconds", false),
-            f.createLongCounter("txFailedLifeTime", txFailedLifeTimeDesc, "nanoseconds", false),
+            factory.createIntCounter("txFailures", txFailuresDesc, "failures"),
+            factory.createIntCounter("txFailureChanges", txFailureChangesDesc, "changes"),
+            factory.createLongCounter("txFailureTime", txFailureTimeDesc, "nanoseconds", false),
+            factory.createLongCounter("txFailedLifeTime", txFailedLifeTimeDesc, "nanoseconds", false),
 
-            f.createIntCounter("txRollbacks", txRollbacksDesc, "rollbacks"),
-            f.createIntCounter("txRollbackChanges", txRollbackChangesDesc, "changes"),
-            f.createLongCounter("txRollbackTime", txRollbackTimeDesc, "nanoseconds", false),
-            f.createLongCounter("txRollbackLifeTime", txRollbackLifeTimeDesc, "nanoseconds", false),
-            f.createLongCounter("txConflictCheckTime", txConflictCheckTimeDesc, "nanoseconds",
+            factory.createIntCounter("txRollbacks", txRollbacksDesc, "rollbacks"),
+            factory.createIntCounter("txRollbackChanges", txRollbackChangesDesc, "changes"),
+            factory.createLongCounter("txRollbackTime", txRollbackTimeDesc, "nanoseconds", false),
+            factory.createLongCounter("txRollbackLifeTime", txRollbackLifeTimeDesc, "nanoseconds", false),
+            factory.createLongCounter("txConflictCheckTime", txConflictCheckTimeDesc, "nanoseconds",
                 false),
 
-            f.createIntGauge("reliableQueuedOps", reliableQueuedOpsDesc, "operations"),
-            f.createIntGauge("reliableQueueSize", reliableQueueSizeDesc, "megabytes"),
-            f.createIntGauge("reliableQueueMax", reliableQueueMaxDesc, "megabytes"),
-            f.createIntGauge("reliableRegions", reliableRegionsDesc, "regions"),
-            f.createIntGauge("reliableRegionsMissing", reliableRegionsMissingDesc, "regions"),
-            f.createIntGauge("reliableRegionsQueuing", reliableRegionsQueuingDesc, "regions"),
-            f.createIntGauge("reliableRegionsMissingFullAccess",
+            factory.createIntGauge("reliableQueuedOps", reliableQueuedOpsDesc, "operations"),
+            factory.createIntGauge("reliableQueueSize", reliableQueueSizeDesc, "megabytes"),
+            factory.createIntGauge("reliableQueueMax", reliableQueueMaxDesc, "megabytes"),
+            factory.createIntGauge("reliableRegions", reliableRegionsDesc, "regions"),
+            factory.createIntGauge("reliableRegionsMissing", reliableRegionsMissingDesc, "regions"),
+            factory.createIntGauge("reliableRegionsQueuing", reliableRegionsQueuingDesc, "regions"),
+            factory.createIntGauge("reliableRegionsMissingFullAccess",
                 reliableRegionsMissingFullAccessDesc, "regions"),
-            f.createIntGauge("reliableRegionsMissingLimitedAccess",
+            factory.createIntGauge("reliableRegionsMissingLimitedAccess",
                 reliableRegionsMissingLimitedAccessDesc, "regions"),
-            f.createIntGauge("reliableRegionsMissingNoAccess", reliableRegionsMissingNoAccessDesc,
+            factory.createIntGauge("reliableRegionsMissingNoAccess", reliableRegionsMissingNoAccessDesc,
                 "regions"),
-            f.createLongGauge("entries",
+            factory.createLongGauge("entries",
                 "Current number of entries in the cache. This does not include any entries that are tombstones. See tombstoneCount.",
                 "entries"),
-            f.createLongCounter("eventsQueued",
+            factory.createLongCounter("eventsQueued",
                 "Number of events attached to " + "other events for callback invocation", "events"),
-            f.createIntCounter("retries",
+            factory.createIntCounter("retries",
                 "Number of times a concurrent destroy followed by a create has caused an entry operation to need to retry.",
                 "operations"),
-            f.createIntCounter("clears", clearsDesc, "operations"),
-            f.createIntGauge("diskTasksWaiting",
+            factory.createIntCounter("clears", clearsDesc, "operations"),
+            factory.createIntGauge("diskTasksWaiting",
                 "Current number of disk tasks (oplog compactions, asynchronous recoveries, etc) that are waiting for a thread to run the operation",
                 "operations"),
-            f.createLongCounter("conflatedEvents", conflatedEventsDesc, "operations"),
-            f.createIntGauge("tombstones", tombstoneCountDesc, "entries"),
-            f.createIntCounter("tombstoneGCs", tombstoneGCCountDesc, "operations"),
-            f.createLongGauge("replicatedTombstonesSize", tombstoneOverhead1Desc, "bytes"),
-            f.createLongGauge("nonReplicatedTombstonesSize", tombstoneOverhead2Desc, "bytes"),
-            f.createIntCounter("clearTimeouts", clearTimeoutsDesc, "timeouts"),
-            f.createIntGauge("evictorJobsStarted", "Number of evictor jobs started", "jobs"),
-            f.createIntGauge("evictorJobsCompleted", "Number of evictor jobs completed", "jobs"),
-            f.createIntGauge("evictorQueueSize",
+            factory.createLongCounter("conflatedEvents", conflatedEventsDesc, "operations"),
+            factory.createIntGauge("tombstones", tombstoneCountDesc, "entries"),
+            factory.createIntCounter("tombstoneGCs", tombstoneGCCountDesc, "operations"),
+            factory.createLongGauge("replicatedTombstonesSize", tombstoneOverhead1Desc, "bytes"),
+            factory.createLongGauge("nonReplicatedTombstonesSize", tombstoneOverhead2Desc, "bytes"),
+            factory.createIntCounter("clearTimeouts", clearTimeoutsDesc, "timeouts"),
+            factory.createIntGauge("evictorJobsStarted", "Number of evictor jobs started", "jobs"),
+            factory.createIntGauge("evictorJobsCompleted", "Number of evictor jobs completed", "jobs"),
+            factory.createIntGauge("evictorQueueSize",
                 "Number of jobs waiting to be picked up by evictor threads", "jobs"),
-            f.createLongCounter("evictWorkTime",
+            factory.createLongCounter("evictWorkTime",
                 "Total time spent doing eviction work in background threads", "nanoseconds", false),
-            f.createLongCounter("nonSingleHopsCount", nonSingleHopsDesc,
+            factory.createLongCounter("nonSingleHopsCount", nonSingleHopsDesc,
                 "Total number of times client request observed more than one hop during operation.",
                 false),
-            f.createLongCounter("metaDataRefreshCount", metaDataRefreshCountDesc,
+            factory.createLongCounter("metaDataRefreshCount", metaDataRefreshCountDesc,
                 "Total number of times the meta data is refreshed due to hopping.", false),
-            f.createIntCounter("deltaUpdates", deltaUpdatesDesc, "operations"),
-            f.createLongCounter("deltaUpdatesTime", deltaUpdatesTimeDesc, "nanoseconds", false),
-            f.createIntCounter("deltaFailedUpdates", deltaFailedUpdatesDesc, "operations"),
-            f.createIntCounter("deltasPrepared", deltasPreparedDesc, "operations"),
-            f.createLongCounter("deltasPreparedTime", deltasPreparedTimeDesc, "nanoseconds", false),
-            f.createIntCounter("deltasSent", deltasSentDesc, "operations"),
-            f.createIntCounter("deltaFullValuesSent", deltaFullValuesSentDesc, "operations"),
-            f.createIntCounter("deltaFullValuesRequested", deltaFullValuesRequestedDesc,
+            factory.createIntCounter("deltaUpdates", deltaUpdatesDesc, "operations"),
+            factory.createLongCounter("deltaUpdatesTime", deltaUpdatesTimeDesc, "nanoseconds", false),
+            factory.createIntCounter("deltaFailedUpdates", deltaFailedUpdatesDesc, "operations"),
+            factory.createIntCounter("deltasPrepared", deltasPreparedDesc, "operations"),
+            factory.createLongCounter("deltasPreparedTime", deltasPreparedTimeDesc, "nanoseconds", false),
+            factory.createIntCounter("deltasSent", deltasSentDesc, "operations"),
+            factory.createIntCounter("deltaFullValuesSent", deltaFullValuesSentDesc, "operations"),
+            factory.createIntCounter("deltaFullValuesRequested", deltaFullValuesRequestedDesc,
                 "operations"),
 
-            f.createLongCounter("importedEntries", importedEntriesCountDesc, "entries"),
-            f.createLongCounter("importTime", importTimeDesc, "nanoseconds"),
-            f.createLongCounter("exportedEntries", exportedEntriesCountDesc, "entries"),
-            f.createLongCounter("exportTime", exportTimeDesc, "nanoseconds"),
+            factory.createLongCounter("importedEntries", importedEntriesCountDesc, "entries"),
+            factory.createLongCounter("importTime", importTimeDesc, "nanoseconds"),
+            factory.createLongCounter("exportedEntries", exportedEntriesCountDesc, "entries"),
+            factory.createLongCounter("exportTime", exportTimeDesc, "nanoseconds"),
 
-            f.createLongCounter("compressTime", compressionCompressTimeDesc, "nanoseconds"),
-            f.createLongCounter("decompressTime", compressionDecompressTimeDesc, "nanoseconds"),
-            f.createLongCounter("compressions", compressionCompressionsDesc, "operations"),
-            f.createLongCounter("decompressions", compressionDecompressionsDesc, "operations"),
-            f.createLongCounter("preCompressedBytes", compressionPreCompresssedBytesDesc, "bytes"),
-            f.createLongCounter("postCompressedBytes", compressionPostCompressedBytesDesc, "bytes"),
+            factory.createLongCounter("compressTime", compressionCompressTimeDesc, "nanoseconds"),
+            factory.createLongCounter("decompressTime", compressionDecompressTimeDesc, "nanoseconds"),
+            factory.createLongCounter("compressions", compressionCompressionsDesc, "operations"),
+            factory.createLongCounter("decompressions", compressionDecompressionsDesc, "operations"),
+            factory.createLongCounter("preCompressedBytes", compressionPreCompresssedBytesDesc, "bytes"),
+            factory.createLongCounter("postCompressedBytes", compressionPostCompressedBytesDesc, "bytes"),
 
-            f.createLongCounter("evictByCriteria_evictions", evictByCriteria_evictionsDesc,
+            factory.createLongCounter("evictByCriteria_evictions", evictByCriteria_evictionsDesc,
                 "operations"),
-            f.createLongCounter("evictByCriteria_evictionTime", evictByCriteria_evictionTimeDesc,
+            factory.createLongCounter("evictByCriteria_evictionTime", evictByCriteria_evictionTimeDesc,
                 "nanoseconds"),
-            f.createLongCounter("evictByCriteria_evictionsInProgress",
+            factory.createLongCounter("evictByCriteria_evictionsInProgress",
                 evictByCriteria_evictionsInProgressDesc, "operations"),
-            f.createLongCounter("evictByCriteria_evaluations", evictByCriteria_evaluationsDesc,
+            factory.createLongCounter("evictByCriteria_evaluations", evictByCriteria_evaluationsDesc,
                 "operations"),
-            f.createLongCounter("evictByCriteria_evaluationTime",
+            factory.createLongCounter("evictByCriteria_evaluationTime",
                 evictByCriteria_evaluationTimeDesc, "nanoseconds")});
 
     // Initialize id fields
@@ -646,6 +633,7 @@ public class CachePerfStats {
    * factory.
    */
   public CachePerfStats(StatisticsFactory factory) {
+    initializeStats(factory);
     stats = factory.createAtomicStatistics(type, "cachePerfStats");
   }
 
@@ -654,12 +642,12 @@ public class CachePerfStats {
    * factory.
    */
   public CachePerfStats(StatisticsFactory factory, String name) {
+    initializeStats(factory);
     stats = factory.createAtomicStatistics(type, "RegionStats-" + name);
   }
 
   /**
    * Returns the current NanoTime or, if clock stats are disabled, zero.
-   *
    * @since GemFire 5.0
    */
   public static long getStatTime() {
@@ -1158,14 +1146,16 @@ public class CachePerfStats {
 
   public void endPutAll(long start) {
     stats.incInt(putallsId, 1);
-    if (enableClockStats)
+    if (enableClockStats) {
       stats.incLong(putallTimeId, getStatTime() - start);
+    }
   }
 
   public void endRemoveAll(long start) {
     stats.incInt(removeAllsId, 1);
-    if (enableClockStats)
+    if (enableClockStats) {
       stats.incLong(removeAllTimeId, getStatTime() - start);
+    }
   }
 
   public void endQueryExecution(long executionTime) {
@@ -1291,7 +1281,6 @@ public class CachePerfStats {
   /**
    * Closes these stats so that they can not longer be used. The stats are closed when the cache is
    * closed.
-   *
    * @since GemFire 3.5
    */
   void close() {
@@ -1300,7 +1289,6 @@ public class CachePerfStats {
 
   /**
    * Returns whether or not these stats have been closed
-   *
    * @since GemFire 3.5
    */
   public boolean isClosed() {
@@ -1373,7 +1361,6 @@ public class CachePerfStats {
 
   /**
    * Returns the Statistics instance that stores the cache perf stats.
-   *
    * @since GemFire 3.5
    */
   public Statistics getStats() {
@@ -1404,10 +1391,10 @@ public class CachePerfStats {
   // }
   // };
   // }
+
   /**
    * Returns a helper object so that the event pool can record its stats to the proper cache perf
    * stats.
-   *
    * @since GemFire 3.5
    */
   public PoolStatHelper getEventPoolHelper() {

@@ -221,7 +221,7 @@ public class EndpointManagerImpl implements EndpointManager {
       PoolImpl pool = (PoolImpl) PoolManager.find(this.poolName);
       if (pool != null) {
         if (pool.getGatewaySender() != null) {
-          stats = new ConnectionStats(new DummyStatisticsFactory(), statName,
+          stats = new ConnectionStats(new DummyStatisticsFactory(distributedSystem.getStatisticsFactory()), statName,
               this.poolStats/* , this.gatewayStats */);
         }
       }
@@ -238,7 +238,7 @@ public class EndpointManagerImpl implements EndpointManager {
   }
 
   public synchronized Map<ServerLocation, ConnectionStats> getAllStats() {
-    return new HashMap<ServerLocation, ConnectionStats>(statMap);
+    return new HashMap<>(statMap);
   }
 
   public int getConnectedServerCount() {

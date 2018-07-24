@@ -28,7 +28,7 @@ import org.apache.geode.internal.statistics.StatisticsTypeFactoryImpl;
  */
 public class HARegionQueueStats {
   /** The <code>StatisticsType</code> of the statistics */
-  private static final StatisticsType _type;
+  private StatisticsType _type;
 
   /** Name of the events queued statistic */
   protected static final String EVENTS_QUEUED = "eventsQueued";
@@ -71,76 +71,73 @@ public class HARegionQueueStats {
   protected static final String NUM_SEQUENCE_VIOLATED = "numSequenceViolated";
 
   /** Id of the events queued statistic */
-  private static final int _eventsQueuedId;
+  private int _eventsQueuedId;
 
   /** Id of the events conflated statistic */
-  private static final int _eventsConflatedId;
+  private int _eventsConflatedId;
 
   /** Id of the marker events conflated statistic */
-  private static final int _markerEventsConflatedId;
+  private int _markerEventsConflatedId;
 
   /** Id of the events removed statistic */
-  private static final int _eventsRemovedId;
+  private int _eventsRemovedId;
 
   /** Id of the events taken statistic */
-  private static final int _eventsTakenId;
+  private int _eventsTakenId;
 
   /** Id of the events expired statistic */
-  private static final int _eventsExpiredId;
+  private int _eventsExpiredId;
 
   /** Id of the events removed by qrm statistic */
-  private static final int _eventsRemovedByQrmId;
+  private int _eventsRemovedByQrmId;
 
   /** Id of the thread identifiers statistic */
-  private static final int _threadIdentifiersId;
+  private int _threadIdentifiersId;
 
   /** Id of the num events dispatched statistic */
-  private static final int _eventsDispatched;
+  private int _eventsDispatched;
 
   /** Id of the num void removal statistic */
-  private static final int _numVoidRemovals;
+  private int _numVoidRemovals;
 
   /** Id of the num sequence violated statistic */
-  private static final int _numSequenceViolated;
+  private int _numSequenceViolated;
 
   /**
    * Static initializer to create and initialize the <code>StatisticsType</code>
    */
-  static {
+  private void initializeStats(StatisticsFactory factory) {
     String statName = "ClientSubscriptionStats";
+    _type = factory.createType(statName, statName, new StatisticDescriptor[] {
+        factory.createLongCounter(EVENTS_QUEUED, "Number of events added to queue.", "operations"),
 
-    StatisticsTypeFactory f = StatisticsTypeFactoryImpl.singleton();
-
-    _type = f.createType(statName, statName, new StatisticDescriptor[] {
-        f.createLongCounter(EVENTS_QUEUED, "Number of events added to queue.", "operations"),
-
-        f.createLongCounter(EVENTS_CONFLATED, "Number of events conflated for the queue.",
+        factory.createLongCounter(EVENTS_CONFLATED, "Number of events conflated for the queue.",
             "operations"),
 
-        f.createLongCounter(MARKER_EVENTS_CONFLATED,
+        factory.createLongCounter(MARKER_EVENTS_CONFLATED,
             "Number of marker events conflated for the queue.", "operations"),
 
-        f.createLongCounter(EVENTS_REMOVED, "Number of events removed from the queue.",
+        factory.createLongCounter(EVENTS_REMOVED, "Number of events removed from the queue.",
             "operations"),
 
-        f.createLongCounter(EVENTS_TAKEN, "Number of events taken from the queue.", "operations"),
+        factory.createLongCounter(EVENTS_TAKEN, "Number of events taken from the queue.", "operations"),
 
-        f.createLongCounter(EVENTS_EXPIRED, "Number of events expired from the queue.",
+        factory.createLongCounter(EVENTS_EXPIRED, "Number of events expired from the queue.",
             "operations"),
 
-        f.createLongCounter(EVENTS_REMOVED_BY_QRM, "Number of events removed by QRM message.",
+        factory.createLongCounter(EVENTS_REMOVED_BY_QRM, "Number of events removed by QRM message.",
             "operations"),
 
-        f.createIntCounter(THREAD_IDENTIFIERS, "Number of ThreadIdenfier objects for the queue.",
+        factory.createIntCounter(THREAD_IDENTIFIERS, "Number of ThreadIdenfier objects for the queue.",
             "units"),
 
-        f.createLongCounter(EVENTS_DISPATCHED, "Number of events that have been dispatched.",
+        factory.createLongCounter(EVENTS_DISPATCHED, "Number of events that have been dispatched.",
             "operations"),
 
-        f.createLongCounter(NUM_VOID_REMOVALS, "Number of void removals from the queue.",
+        factory.createLongCounter(NUM_VOID_REMOVALS, "Number of void removals from the queue.",
             "operations"),
 
-        f.createLongCounter(NUM_SEQUENCE_VIOLATED, "Number of events that has violated sequence.",
+        factory.createLongCounter(NUM_SEQUENCE_VIOLATED, "Number of events that has violated sequence.",
             "operations")});
 
     // Initialize id fields
@@ -168,6 +165,7 @@ public class HARegionQueueStats {
    * @param name The name of the <code>Statistics</code>
    */
   public HARegionQueueStats(StatisticsFactory factory, String name) {
+    initializeStats(factory);
     this._stats = factory.createAtomicStatistics(_type, "ClientSubscriptionStats-" + name);
   }
 

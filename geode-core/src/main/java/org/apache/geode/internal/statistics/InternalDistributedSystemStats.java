@@ -7,8 +7,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.LongAdder;
 
+import org.apache.geode.distributed.internal.DistributionConfig;
 import org.apache.geode.distributed.internal.InternalDistributedSystem;
 import org.apache.geode.internal.cache.execute.FunctionServiceStats;
 import org.apache.geode.internal.cache.execute.FunctionStats;
@@ -23,20 +24,38 @@ import org.apache.geode.statistics.StatisticsTypeFactory;
 public class InternalDistributedSystemStats
     implements StatisticsFactory, StatisticsManager, OsStatisticsFactory {
 
+  /**
+   * The sampler for this DistributedSystem.
+   */
+  private GemFireStatSampler sampler = null;
+
   private final CopyOnWriteArrayList<Statistics> statsList = new CopyOnWriteArrayList<>();
   private int statsListModCount = 0;
-  private AtomicLong statsListUniqueId = new AtomicLong(1);
+  private LongAdder statsListUniqueId = new LongAdder();
 
   // As the function execution stats can be lot in number, its better to put
   // them in a map so that it will be accessible immediately
-  private final ConcurrentHashMap<String, FunctionStats> functionExecutionStatsMap = new ConcurrentHashMap<String, FunctionStats>();
+  private final ConcurrentHashMap<String, FunctionStats> functionExecutionStatsMap = new ConcurrentHashMap<>();
   private FunctionServiceStats functionServiceStats;
 
   private final boolean statsDisabled;
 
-  public InternalDistributedSystemStats(boolean statsDisabled) {
+  // StatisticsTypeFactory methods
+  private final StatisticsTypeFactory statisticsTypeFactory;
+
+  public InternalDistributedSystemStats(boolean statsDisabled,DistributionConfig distributionConfig,
+                                        InternalDistributedSystem internalDistributedSystem,
+                                        StatisticsTypeFactory statisticsTypeFactory) {
+    this.statisticsTypeFactory = statisticsTypeFactory;
     this.statsDisabled = statsDisabled;
     this.functionServiceStats = new FunctionServiceStats(this, "FunctionExecution");
+    if (!statsDisabled) {
+      this.sampler = new GemFireStatSampler(internalDistributedSystem.getId(),distributionConfig,
+          internalDistributedSystem.getCancelCriterion(),this,
+          internalDistributedSystem.getDistributionManager());
+      this.sampler.start();
+
+    }
   }
 
   @Override
@@ -72,9 +91,9 @@ public class InternalDistributedSystemStats
   @Override
   public Statistics findStatistics(long id) {
     List<Statistics> statsList = this.statsList;
-    for (Statistics s : statsList) {
-      if (s.getUniqueId() == id) {
-        return s;
+    for (Statistics statistics : statsList) {
+      if (statistics.getUniqueId() == id) {
+        return statistics;
       }
     }
     throw new RuntimeException(
@@ -84,8 +103,8 @@ public class InternalDistributedSystemStats
   @Override
   public boolean statisticsExists(long id) {
     List<Statistics> statsList = this.statsList;
-    for (Statistics s : statsList) {
-      if (s.getUniqueId() == id) {
+    for (Statistics statistics : statsList) {
+      if (statistics.getUniqueId() == id) {
         return true;
       }
     }
@@ -116,9 +135,9 @@ public class InternalDistributedSystemStats
     if (this.statsDisabled) {
       return new DummyStatisticsImpl(type, textId, numericId);
     }
-    long myUniqueId = statsListUniqueId.getAndIncrement();
+    statsListUniqueId.increment();
     Statistics result =
-        new LocalStatisticsImpl(type, textId, numericId, myUniqueId, false, osStatFlags, this);
+        new LocalStatisticsImpl(type, textId, numericId, statsListUniqueId.longValue(), false, osStatFlags, this);
     synchronized (statsList) {
       statsList.add(result);
       statsListModCount++;
@@ -127,42 +146,42 @@ public class InternalDistributedSystemStats
   }
 
   public Statistics[] findStatisticsByType(final StatisticsType type) {
-    final ArrayList hits = new ArrayList();
+    final ArrayList<Statistics> hits = new ArrayList<>();
     visitStatistics(vistorStatistic -> {
       if (type == vistorStatistic.getType()) {
         hits.add(vistorStatistic);
       }
     });
     Statistics[] result = new Statistics[hits.size()];
-    return (Statistics[]) hits.toArray(result);
+    return hits.toArray(result);
   }
 
   public Statistics[] findStatisticsByTextId(final String textId) {
-    final ArrayList hits = new ArrayList();
+    final ArrayList<Statistics> hits = new ArrayList<>();
     visitStatistics(vistorStatistic -> {
       if (vistorStatistic.getTextId().equals(textId)) {
         hits.add(vistorStatistic);
       }
     });
     Statistics[] result = new Statistics[hits.size()];
-    return (Statistics[]) hits.toArray(result);
+    return hits.toArray(result);
   }
 
   public Statistics[] findStatisticsByNumericId(final long numericId) {
-    final ArrayList hits = new ArrayList();
+    final ArrayList<Statistics> hits = new ArrayList<>();
     visitStatistics(vistorStatistic -> {
       if (numericId == vistorStatistic.getNumericId()) {
         hits.add(vistorStatistic);
       }
     });
     Statistics[] result = new Statistics[hits.size()];
-    return (Statistics[]) hits.toArray(result);
+    return hits.toArray(result);
   }
 
   public Statistics findStatisticsByUniqueId(final long uniqueId) {
-    for (Statistics s : this.statsList) {
-      if (uniqueId == s.getUniqueId()) {
-        return s;
+    for (Statistics statistics : this.statsList) {
+      if (uniqueId == statistics.getUniqueId()) {
+        return statistics;
       }
     }
     return null;
@@ -192,8 +211,8 @@ public class InternalDistributedSystemStats
       return new DummyStatisticsImpl(type, textId, numericId);
     }
 
-    long myUniqueId = statsListUniqueId.getAndIncrement();
-    Statistics result = StatisticsImpl.createAtomicNoOS(type, textId, numericId, myUniqueId, this);
+    statsListUniqueId.increment();
+    Statistics result = StatisticsImpl.createAtomicNoOS(type, textId, numericId,statsListUniqueId.longValue(), this);
     synchronized (statsList) {
       statsList.add(result);
       statsListModCount++;
@@ -201,92 +220,88 @@ public class InternalDistributedSystemStats
     return result;
   }
 
-
-  // StatisticsTypeFactory methods
-  private static final StatisticsTypeFactory tf = StatisticsTypeFactoryImpl.singleton();
-
   /**
    * Creates or finds a StatisticType for the given shared class.
    */
   @Override
   public StatisticsType createType(String name, String description, StatisticDescriptor[] stats) {
-    return tf.createType(name, description, stats);
+    return statisticsTypeFactory.createType(name, description, stats);
   }
 
   @Override
   public StatisticsType findType(String name) {
-    return tf.findType(name);
+    return statisticsTypeFactory.findType(name);
   }
 
   @Override
   public StatisticsType[] createTypesFromXml(Reader reader) throws IOException {
-    return tf.createTypesFromXml(reader);
+    return statisticsTypeFactory.createTypesFromXml(reader);
   }
 
   @Override
   public StatisticDescriptor createIntCounter(String name, String description, String units) {
-    return tf.createIntCounter(name, description, units);
+    return statisticsTypeFactory.createIntCounter(name, description, units);
   }
 
   @Override
   public StatisticDescriptor createLongCounter(String name, String description, String units) {
-    return tf.createLongCounter(name, description, units);
+    return statisticsTypeFactory.createLongCounter(name, description, units);
   }
 
   @Override
   public StatisticDescriptor createDoubleCounter(String name, String description, String units) {
-    return tf.createDoubleCounter(name, description, units);
+    return statisticsTypeFactory.createDoubleCounter(name, description, units);
   }
 
   @Override
   public StatisticDescriptor createIntGauge(String name, String description, String units) {
-    return tf.createIntGauge(name, description, units);
+    return statisticsTypeFactory.createIntGauge(name, description, units);
   }
 
   @Override
   public StatisticDescriptor createLongGauge(String name, String description, String units) {
-    return tf.createLongGauge(name, description, units);
+    return statisticsTypeFactory.createLongGauge(name, description, units);
   }
 
   @Override
   public StatisticDescriptor createDoubleGauge(String name, String description, String units) {
-    return tf.createDoubleGauge(name, description, units);
+    return statisticsTypeFactory.createDoubleGauge(name, description, units);
   }
 
   @Override
   public StatisticDescriptor createIntCounter(String name, String description, String units,
                                               boolean largerBetter) {
-    return tf.createIntCounter(name, description, units, largerBetter);
+    return statisticsTypeFactory.createIntCounter(name, description, units, largerBetter);
   }
 
   @Override
   public StatisticDescriptor createLongCounter(String name, String description, String units,
                                                boolean largerBetter) {
-    return tf.createLongCounter(name, description, units, largerBetter);
+    return statisticsTypeFactory.createLongCounter(name, description, units, largerBetter);
   }
 
   @Override
   public StatisticDescriptor createDoubleCounter(String name, String description, String units,
                                                  boolean largerBetter) {
-    return tf.createDoubleCounter(name, description, units, largerBetter);
+    return statisticsTypeFactory.createDoubleCounter(name, description, units, largerBetter);
   }
 
   @Override
   public StatisticDescriptor createIntGauge(String name, String description, String units,
                                             boolean largerBetter) {
-    return tf.createIntGauge(name, description, units, largerBetter);
+    return statisticsTypeFactory.createIntGauge(name, description, units, largerBetter);
   }
 
   @Override
   public StatisticDescriptor createLongGauge(String name, String description, String units,
                                              boolean largerBetter) {
-    return tf.createLongGauge(name, description, units, largerBetter);
+    return statisticsTypeFactory.createLongGauge(name, description, units, largerBetter);
   }
 
   @Override
   public StatisticDescriptor createDoubleGauge(String name, String description, String units,
                                                boolean largerBetter) {
-    return tf.createDoubleGauge(name, description, units, largerBetter);
+    return statisticsTypeFactory.createDoubleGauge(name, description, units, largerBetter);
   }
 
   public FunctionStats getFunctionStats(String textId) {
@@ -304,13 +319,6 @@ public class InternalDistributedSystemStats
 
 
   public FunctionServiceStats getFunctionServiceStats() {
-    if (functionServiceStats == null) {
-      synchronized (this) {
-        if (functionServiceStats == null) {
-
-        }
-      }
-    }
     return functionServiceStats;
   }
 
@@ -328,7 +336,7 @@ public class InternalDistributedSystemStats
     return functionExecutionStatsMap.keySet();
   }
 
-  public void closeFunctionStats() {
+  public void closeStats() {
     // closing the Aggregate stats
     if (functionServiceStats != null) {
       functionServiceStats.close();
@@ -337,5 +345,11 @@ public class InternalDistributedSystemStats
     for (FunctionStats functionstats : functionExecutionStatsMap.values()) {
       functionstats.close();
     }
+
+    this.sampler.stop();
+  }
+
+  public GemFireStatSampler getStatSampler() {
+    return this.sampler;
   }
 }

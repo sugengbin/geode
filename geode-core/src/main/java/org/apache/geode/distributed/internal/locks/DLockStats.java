@@ -36,81 +36,81 @@ public class DLockStats implements DistributedLockStats {
   // Statistic "Id" Fields
   // -------------------------------------------------------------------------
 
-  private static final StatisticsType type;
+  private StatisticsType type;
 
-  private static final int grantorsId;
-  private static final int servicesId;
-  private static final int tokensId;
-  private static final int grantTokensId;
-  private static final int requestQueuesId;
-  private static final int serialQueueSizeId;
-  private static final int serialThreadsId;
-  private static final int waitingQueueSizeId;
-  private static final int waitingThreadsId;
-  private static final int lockWaitsInProgressId;
-  private static final int lockWaitsCompletedId;
-  private static final int lockWaitTimeId;
-  private static final int lockWaitsFailedId;
-  private static final int lockWaitFailedTimeId;
-  private static final int grantWaitsInProgressId;
-  private static final int grantWaitsCompletedId;
-  private static final int grantWaitTimeId;
-  private static final int grantWaitsNotGrantorId;
-  private static final int grantWaitNotGrantorTimeId;
-  private static final int grantWaitsTimeoutId;
-  private static final int grantWaitTimeoutTimeId;
-  private static final int grantWaitsNotHolderId;
-  private static final int grantWaitNotHolderTimeId;
-  private static final int grantWaitsFailedId;
-  private static final int grantWaitFailedTimeId;
-  private static final int grantWaitsSuspendedId;
-  private static final int grantWaitSuspendedTimeId;
-  private static final int grantWaitsDestroyedId;
-  private static final int grantWaitDestroyedTimeId;
-  private static final int createGrantorsInProgressId;
-  private static final int createGrantorsCompletedId;
-  private static final int createGrantorTimeId;
-  private static final int serviceCreatesInProgressId;
-  private static final int serviceCreatesCompletedId;
-  private static final int serviceCreateLatchTimeId;
-  private static final int serviceInitLatchTimeId;
-  private static final int grantorWaitsInProgressId;
-  private static final int grantorWaitsCompletedId;
-  private static final int grantorWaitTimeId;
-  private static final int grantorWaitsFailedId;
-  private static final int grantorWaitFailedTimeId;
-  private static final int grantorThreadsInProgressId;
-  private static final int grantorThreadsCompletedId;
-  private static final int grantorThreadExpireAndGrantLocksTimeId;
-  private static final int grantorThreadHandleRequestTimeoutsTimeId;
-  private static final int grantorThreadRemoveUnusedTokensTimeId;
-  private static final int grantorThreadTimeId;
-  private static final int pendingRequestsId;
-  private static final int destroyReadWaitsInProgressId;
-  private static final int destroyReadWaitsCompletedId;
-  private static final int destroyReadWaitTimeId;
-  private static final int destroyReadWaitsFailedId;
-  private static final int destroyReadWaitFailedTimeId;
-  private static final int destroyWriteWaitsInProgressId;
-  private static final int destroyWriteWaitsCompletedId;
-  private static final int destroyWriteWaitTimeId;
-  private static final int destroyWriteWaitsFailedId;
-  private static final int destroyWriteWaitFailedTimeId;
-  private static final int destroyReadsId;
-  private static final int destroyWritesId;
-  private static final int lockReleasesInProgressId;
-  private static final int lockReleasesCompletedId;
-  private static final int lockReleaseTimeId;
-  private static final int becomeGrantorRequestsId;
-  private static final int freeResourcesCompletedId;
-  private static final int freeResourcesFailedId;
+  private int grantorsId;
+  private int servicesId;
+  private int tokensId;
+  private int grantTokensId;
+  private int requestQueuesId;
+  private int serialQueueSizeId;
+  private int serialThreadsId;
+  private int waitingQueueSizeId;
+  private int waitingThreadsId;
+  private int lockWaitsInProgressId;
+  private int lockWaitsCompletedId;
+  private int lockWaitTimeId;
+  private int lockWaitsFailedId;
+  private int lockWaitFailedTimeId;
+  private int grantWaitsInProgressId;
+  private int grantWaitsCompletedId;
+  private int grantWaitTimeId;
+  private int grantWaitsNotGrantorId;
+  private int grantWaitNotGrantorTimeId;
+  private int grantWaitsTimeoutId;
+  private int grantWaitTimeoutTimeId;
+  private int grantWaitsNotHolderId;
+  private int grantWaitNotHolderTimeId;
+  private int grantWaitsFailedId;
+  private int grantWaitFailedTimeId;
+  private int grantWaitsSuspendedId;
+  private int grantWaitSuspendedTimeId;
+  private int grantWaitsDestroyedId;
+  private int grantWaitDestroyedTimeId;
+  private int createGrantorsInProgressId;
+  private int createGrantorsCompletedId;
+  private int createGrantorTimeId;
+  private int serviceCreatesInProgressId;
+  private int serviceCreatesCompletedId;
+  private int serviceCreateLatchTimeId;
+  private int serviceInitLatchTimeId;
+  private int grantorWaitsInProgressId;
+  private int grantorWaitsCompletedId;
+  private int grantorWaitTimeId;
+  private int grantorWaitsFailedId;
+  private int grantorWaitFailedTimeId;
+  private int grantorThreadsInProgressId;
+  private int grantorThreadsCompletedId;
+  private int grantorThreadExpireAndGrantLocksTimeId;
+  private int grantorThreadHandleRequestTimeoutsTimeId;
+  private int grantorThreadRemoveUnusedTokensTimeId;
+  private int grantorThreadTimeId;
+  private int pendingRequestsId;
+  private int destroyReadWaitsInProgressId;
+  private int destroyReadWaitsCompletedId;
+  private int destroyReadWaitTimeId;
+  private int destroyReadWaitsFailedId;
+  private int destroyReadWaitFailedTimeId;
+  private int destroyWriteWaitsInProgressId;
+  private int destroyWriteWaitsCompletedId;
+  private int destroyWriteWaitTimeId;
+  private int destroyWriteWaitsFailedId;
+  private int destroyWriteWaitFailedTimeId;
+  private int destroyReadsId;
+  private int destroyWritesId;
+  private int lockReleasesInProgressId;
+  private int lockReleasesCompletedId;
+  private int lockReleaseTimeId;
+  private int becomeGrantorRequestsId;
+  private int freeResourcesCompletedId;
+  private int freeResourcesFailedId;
 
   /** returns the current nano time, if time stats are enabled */
   static long getStatTime() {
     return DistributionStats.getStatTime();
   }
 
-  static {
+  private void initializeStats(StatisticsFactory factory) {
     String statName = "DLockStats";
     String statDescription = "Statistics on the gemfire distribution lock service.";
 
@@ -241,90 +241,88 @@ public class DLockStats implements DistributedLockStats {
     final String freeResourcesFailedDesc =
         "Total number of times this member has attempted to free resources for a distributed lock which remained in use.";
 
-    StatisticsTypeFactory f = StatisticsTypeFactoryImpl.singleton();
-
-    type = f.createType(statName, statDescription, new StatisticDescriptor[] {
-        f.createIntGauge("grantors", grantorsDesc, "grantors"),
-        f.createIntGauge("services", servicesDesc, "services"),
-        f.createIntGauge("tokens", tokensDesc, "tokens"),
-        f.createIntGauge("grantTokens", grantTokensDesc, "grantTokens"),
-        f.createIntGauge("requestQueues", requestQueuesDesc, "requestQueues"),
-        f.createIntGauge("serialQueueSize", serialQueueSizeDesc, "messages"),
-        f.createIntGauge("serialThreads", serialThreadsDesc, "threads"),
-        f.createIntGauge("waitingQueueSize", waitingQueueSizeDesc, "messages"),
-        f.createIntGauge("waitingThreads", waitingThreadsDesc, "threads"),
-        f.createIntGauge("lockWaitsInProgress", lockWaitsInProgressDesc, "operations"),
-        f.createIntCounter("lockWaitsCompleted", lockWaitsCompletedDesc, "operations"),
-        f.createLongCounter("lockWaitTime", lockWaitTimeDesc, "nanoseconds", false),
-        f.createIntCounter("lockWaitsFailed", lockWaitsFailedDesc, "operations"),
-        f.createLongCounter("lockWaitFailedTime", lockWaitFailedTimeDesc, "nanoseconds", false),
-        f.createIntGauge("grantWaitsInProgress", grantWaitsInProgressDesc, "operations"),
-        f.createIntCounter("grantWaitsCompleted", grantWaitsCompletedDesc, "operations"),
-        f.createLongCounter("grantWaitTime", grantWaitTimeDesc, "nanoseconds", false),
-        f.createIntCounter("grantWaitsNotGrantor", grantWaitsNotGrantorDesc, "operations"),
-        f.createLongCounter("grantWaitNotGrantorTime", grantWaitNotGrantorTimeDesc, "nanoseconds",
+    type = factory.createType(statName, statDescription, new StatisticDescriptor[] {
+        factory.createIntGauge("grantors", grantorsDesc, "grantors"),
+        factory.createIntGauge("services", servicesDesc, "services"),
+        factory.createIntGauge("tokens", tokensDesc, "tokens"),
+        factory.createIntGauge("grantTokens", grantTokensDesc, "grantTokens"),
+        factory.createIntGauge("requestQueues", requestQueuesDesc, "requestQueues"),
+        factory.createIntGauge("serialQueueSize", serialQueueSizeDesc, "messages"),
+        factory.createIntGauge("serialThreads", serialThreadsDesc, "threads"),
+        factory.createIntGauge("waitingQueueSize", waitingQueueSizeDesc, "messages"),
+        factory.createIntGauge("waitingThreads", waitingThreadsDesc, "threads"),
+        factory.createIntGauge("lockWaitsInProgress", lockWaitsInProgressDesc, "operations"),
+        factory.createIntCounter("lockWaitsCompleted", lockWaitsCompletedDesc, "operations"),
+        factory.createLongCounter("lockWaitTime", lockWaitTimeDesc, "nanoseconds", false),
+        factory.createIntCounter("lockWaitsFailed", lockWaitsFailedDesc, "operations"),
+        factory.createLongCounter("lockWaitFailedTime", lockWaitFailedTimeDesc, "nanoseconds", false),
+        factory.createIntGauge("grantWaitsInProgress", grantWaitsInProgressDesc, "operations"),
+        factory.createIntCounter("grantWaitsCompleted", grantWaitsCompletedDesc, "operations"),
+        factory.createLongCounter("grantWaitTime", grantWaitTimeDesc, "nanoseconds", false),
+        factory.createIntCounter("grantWaitsNotGrantor", grantWaitsNotGrantorDesc, "operations"),
+        factory.createLongCounter("grantWaitNotGrantorTime", grantWaitNotGrantorTimeDesc, "nanoseconds",
             false),
-        f.createIntCounter("grantWaitsTimeout", grantWaitsTimeoutDesc, "operations"),
-        f.createLongCounter("grantWaitTimeoutTime", grantWaitTimeoutTimeDesc, "nanoseconds", false),
-        f.createIntCounter("grantWaitsNotHolder", grantWaitsNotHolderDesc, "operations"),
-        f.createLongCounter("grantWaitNotHolderTime", grantWaitNotHolderTimeDesc, "nanoseconds",
+        factory.createIntCounter("grantWaitsTimeout", grantWaitsTimeoutDesc, "operations"),
+        factory.createLongCounter("grantWaitTimeoutTime", grantWaitTimeoutTimeDesc, "nanoseconds", false),
+        factory.createIntCounter("grantWaitsNotHolder", grantWaitsNotHolderDesc, "operations"),
+        factory.createLongCounter("grantWaitNotHolderTime", grantWaitNotHolderTimeDesc, "nanoseconds",
             false),
-        f.createIntCounter("grantWaitsFailed", grantWaitsFailedDesc, "operations"),
-        f.createLongCounter("grantWaitFailedTime", grantWaitFailedTimeDesc, "nanoseconds", false),
-        f.createIntCounter("grantWaitsSuspended", grantWaitsSuspendedDesc, "operations"),
-        f.createLongCounter("grantWaitSuspendedTime", grantWaitSuspendedTimeDesc, "nanoseconds",
+        factory.createIntCounter("grantWaitsFailed", grantWaitsFailedDesc, "operations"),
+        factory.createLongCounter("grantWaitFailedTime", grantWaitFailedTimeDesc, "nanoseconds", false),
+        factory.createIntCounter("grantWaitsSuspended", grantWaitsSuspendedDesc, "operations"),
+        factory.createLongCounter("grantWaitSuspendedTime", grantWaitSuspendedTimeDesc, "nanoseconds",
             false),
-        f.createIntCounter("grantWaitsDestroyed", grantWaitsDestroyedDesc, "operations"),
-        f.createLongCounter("grantWaitDestroyedTime", grantWaitDestroyedTimeDesc, "nanoseconds",
+        factory.createIntCounter("grantWaitsDestroyed", grantWaitsDestroyedDesc, "operations"),
+        factory.createLongCounter("grantWaitDestroyedTime", grantWaitDestroyedTimeDesc, "nanoseconds",
             false),
-        f.createIntGauge("createGrantorsInProgress", createGrantorsInProgressDesc, "operations"),
-        f.createIntCounter("createGrantorsCompleted", createGrantorsCompletedDesc, "operations"),
-        f.createLongCounter("createGrantorTime", createGrantorTimeDesc, "nanoseconds", false),
-        f.createIntGauge("serviceCreatesInProgress", serviceCreatesInProgressDesc, "operations"),
-        f.createIntCounter("serviceCreatesCompleted", serviceCreatesCompletedDesc, "operations"),
-        f.createLongCounter("serviceCreateLatchTime", serviceCreateLatchTimeDesc, "nanoseconds",
+        factory.createIntGauge("createGrantorsInProgress", createGrantorsInProgressDesc, "operations"),
+        factory.createIntCounter("createGrantorsCompleted", createGrantorsCompletedDesc, "operations"),
+        factory.createLongCounter("createGrantorTime", createGrantorTimeDesc, "nanoseconds", false),
+        factory.createIntGauge("serviceCreatesInProgress", serviceCreatesInProgressDesc, "operations"),
+        factory.createIntCounter("serviceCreatesCompleted", serviceCreatesCompletedDesc, "operations"),
+        factory.createLongCounter("serviceCreateLatchTime", serviceCreateLatchTimeDesc, "nanoseconds",
             false),
-        f.createLongCounter("serviceInitLatchTime", serviceInitLatchTimeDesc, "nanoseconds", false),
-        f.createIntGauge("grantorWaitsInProgress", grantorWaitsInProgressDesc, "operations"),
-        f.createIntCounter("grantorWaitsCompleted", grantorWaitsCompletedDesc, "operations"),
-        f.createLongCounter("grantorWaitTime", grantorWaitTimeDesc, "nanoseconds", false),
-        f.createIntCounter("grantorWaitsFailed", grantorWaitsFailedDesc, "operations"),
-        f.createLongCounter("grantorWaitFailedTime", grantorWaitFailedTimeDesc, "nanoseconds",
+        factory.createLongCounter("serviceInitLatchTime", serviceInitLatchTimeDesc, "nanoseconds", false),
+        factory.createIntGauge("grantorWaitsInProgress", grantorWaitsInProgressDesc, "operations"),
+        factory.createIntCounter("grantorWaitsCompleted", grantorWaitsCompletedDesc, "operations"),
+        factory.createLongCounter("grantorWaitTime", grantorWaitTimeDesc, "nanoseconds", false),
+        factory.createIntCounter("grantorWaitsFailed", grantorWaitsFailedDesc, "operations"),
+        factory.createLongCounter("grantorWaitFailedTime", grantorWaitFailedTimeDesc, "nanoseconds",
             false),
-        f.createIntGauge("grantorThreadsInProgress", grantorThreadsInProgressDesc, "operations"),
-        f.createIntCounter("grantorThreadsCompleted", grantorThreadsCompletedDesc, "operations"),
-        f.createLongCounter("grantorThreadExpireAndGrantLocksTime",
+        factory.createIntGauge("grantorThreadsInProgress", grantorThreadsInProgressDesc, "operations"),
+        factory.createIntCounter("grantorThreadsCompleted", grantorThreadsCompletedDesc, "operations"),
+        factory.createLongCounter("grantorThreadExpireAndGrantLocksTime",
             grantorThreadExpireAndGrantLocksTimeDesc, "nanoseconds", false),
-        f.createLongCounter("grantorThreadHandleRequestTimeoutsTime",
+        factory.createLongCounter("grantorThreadHandleRequestTimeoutsTime",
             grantorThreadHandleRequestTimeoutsTimeDesc, "nanoseconds", false),
-        f.createLongCounter("grantorThreadRemoveUnusedTokensTime",
+        factory.createLongCounter("grantorThreadRemoveUnusedTokensTime",
             grantorThreadRemoveUnusedTokensTimeDesc, "nanoseconds", false),
-        f.createLongCounter("grantorThreadTime", grantorThreadTimeDesc, "nanoseconds", false),
-        f.createIntGauge("pendingRequests", pendingRequestsDesc, "pendingRequests"),
-        f.createIntGauge("destroyReadWaitsInProgress", destroyReadWaitsInProgressDesc,
+        factory.createLongCounter("grantorThreadTime", grantorThreadTimeDesc, "nanoseconds", false),
+        factory.createIntGauge("pendingRequests", pendingRequestsDesc, "pendingRequests"),
+        factory.createIntGauge("destroyReadWaitsInProgress", destroyReadWaitsInProgressDesc,
             "operations"),
-        f.createIntCounter("destroyReadWaitsCompleted", destroyReadWaitsCompletedDesc,
+        factory.createIntCounter("destroyReadWaitsCompleted", destroyReadWaitsCompletedDesc,
             "operations"),
-        f.createLongCounter("destroyReadWaitTime", destroyReadWaitTimeDesc, "nanoseconds", false),
-        f.createIntCounter("destroyReadWaitsFailed", destroyReadWaitsFailedDesc, "operations"),
-        f.createLongCounter("destroyReadWaitFailedTime", destroyReadWaitFailedTimeDesc,
+        factory.createLongCounter("destroyReadWaitTime", destroyReadWaitTimeDesc, "nanoseconds", false),
+        factory.createIntCounter("destroyReadWaitsFailed", destroyReadWaitsFailedDesc, "operations"),
+        factory.createLongCounter("destroyReadWaitFailedTime", destroyReadWaitFailedTimeDesc,
             "nanoseconds", false),
-        f.createIntGauge("destroyWriteWaitsInProgress", destroyWriteWaitsInProgressDesc,
+        factory.createIntGauge("destroyWriteWaitsInProgress", destroyWriteWaitsInProgressDesc,
             "operations"),
-        f.createIntCounter("destroyWriteWaitsCompleted", destroyWriteWaitsCompletedDesc,
+        factory.createIntCounter("destroyWriteWaitsCompleted", destroyWriteWaitsCompletedDesc,
             "operations"),
-        f.createLongCounter("destroyWriteWaitTime", destroyWriteWaitTimeDesc, "nanoseconds", false),
-        f.createIntCounter("destroyWriteWaitsFailed", destroyWriteWaitsFailedDesc, "operations"),
-        f.createLongCounter("destroyWriteWaitFailedTime", destroyWriteWaitFailedTimeDesc,
+        factory.createLongCounter("destroyWriteWaitTime", destroyWriteWaitTimeDesc, "nanoseconds", false),
+        factory.createIntCounter("destroyWriteWaitsFailed", destroyWriteWaitsFailedDesc, "operations"),
+        factory.createLongCounter("destroyWriteWaitFailedTime", destroyWriteWaitFailedTimeDesc,
             "nanoseconds", false),
-        f.createIntGauge("destroyReads", destroyReadsDesc, "destroyReads"),
-        f.createIntGauge("destroyWrites", destroyWritesDesc, "destroyWrites"),
-        f.createIntGauge("lockReleasesInProgress", lockReleasesInProgressDesc, "operations"),
-        f.createIntCounter("lockReleasesCompleted", lockReleasesCompletedDesc, "operations"),
-        f.createLongCounter("lockReleaseTime", lockReleaseTimeDesc, "nanoseconds", false),
-        f.createIntCounter("becomeGrantorRequests", becomeGrantorRequestsDesc, "operations"),
-        f.createIntCounter("freeResourcesCompleted", freeResourcesCompletedDesc, "operations"),
-        f.createIntCounter("freeResourcesFailed", freeResourcesFailedDesc, "operations"),});
+        factory.createIntGauge("destroyReads", destroyReadsDesc, "destroyReads"),
+        factory.createIntGauge("destroyWrites", destroyWritesDesc, "destroyWrites"),
+        factory.createIntGauge("lockReleasesInProgress", lockReleasesInProgressDesc, "operations"),
+        factory.createIntCounter("lockReleasesCompleted", lockReleasesCompletedDesc, "operations"),
+        factory.createLongCounter("lockReleaseTime", lockReleaseTimeDesc, "nanoseconds", false),
+        factory.createIntCounter("becomeGrantorRequests", becomeGrantorRequestsDesc, "operations"),
+        factory.createIntCounter("freeResourcesCompleted", freeResourcesCompletedDesc, "operations"),
+        factory.createIntCounter("freeResourcesFailed", freeResourcesFailedDesc, "operations"),});
 
     // Initialize id fields
     grantorsId = type.nameToId("grantors");
@@ -406,15 +404,9 @@ public class DLockStats implements DistributedLockStats {
   /**
    * Creates a new <code>DLockStats</code> and registers itself with the given statistics factory.
    */
-  public DLockStats(StatisticsFactory f, long statId) {
-    this.stats = f.createAtomicStatistics(type, "dlockStats", statId);
-  }
-
-  /**
-   * Used by tests to create an instance given its already existings stats.
-   */
-  public DLockStats(Statistics stats) {
-    this.stats = stats;
+  public DLockStats(StatisticsFactory factory, long statId) {
+    initializeStats(factory);
+    this.stats = factory.createAtomicStatistics(type, "dlockStats", statId);
   }
 
   // -------------------------------------------------------------------------

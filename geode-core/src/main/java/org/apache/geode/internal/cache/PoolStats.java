@@ -32,7 +32,7 @@ import org.apache.geode.internal.statistics.StatisticsTypeFactoryImpl;
  */
 public class PoolStats {
 
-  private static final StatisticsType _type;
+  private StatisticsType _type;
 
   //////////////////// Statistic "Id" Fields ////////////////////
 
@@ -43,106 +43,104 @@ public class PoolStats {
   private static final String ENDPOINTS_KNOWN = "servers"; // gauge
   private static final String SUBSCRIPTION_SERVERS = "subscriptionServers"; // gauge
 
-  private static final int _INITIAL_CONTACTS;
-  private static final int _KNOWN_LOCATORS;
-  private static final int _REQUESTS_TO_LOCATOR;
-  private static final int _RESPONSES_FROM_LOCATOR;
-  private static final int _ENDPOINTS_KNOWN;
-  private static final int _SUBSCRIPTION_SERVERS;
-  private static final int _PREFILL_CONNECT;
-  private static final int _LOAD_CONDITIONING_CHECK;
-  private static final int _LOAD_CONDITIONING_EXTENSIONS;
-  private static final int _IDLE_CHECK;
-  private static final int _LOAD_CONDITIONING_CONNECT;
-  private static final int _LOAD_CONDITIONING_DISCONNECT;
-  private static final int _LOAD_CONDITIONING_REPLACE_TIMEOUT;
-  private static final int _IDLE_EXPIRE;
-  private static final int _CONNECTION_WAIT_IN_PROGRESS;
-  private static final int _CONNECTION_WAITS;
-  private static final int _CONNECTION_WAIT_TIME;
-  private static final int connectionsId;
-  // private static final int conCountId;
-  private static final int poolConnectionsId;
-  private static final int connectsId;
-  private static final int disconnectsId;
-  private static final int clientOpInProgressId;
-  private static final int clientOpSendInProgressId;
-  private static final int clientOpSendId;
-  private static final int clientOpSendFailedId;
-  private static final int clientOpSendDurationId;
-  private static final int clientOpId;
-  private static final int clientOpTimedOutId;
-  private static final int clientOpFailedId;
-  private static final int clientOpDurationId;
+  private int _INITIAL_CONTACTS;
+  private int _KNOWN_LOCATORS;
+  private int _REQUESTS_TO_LOCATOR;
+  private int _RESPONSES_FROM_LOCATOR;
+  private int _ENDPOINTS_KNOWN;
+  private int _SUBSCRIPTION_SERVERS;
+  private int _PREFILL_CONNECT;
+  private int _LOAD_CONDITIONING_CHECK;
+  private int _LOAD_CONDITIONING_EXTENSIONS;
+  private int _IDLE_CHECK;
+  private int _LOAD_CONDITIONING_CONNECT;
+  private int _LOAD_CONDITIONING_DISCONNECT;
+  private int _LOAD_CONDITIONING_REPLACE_TIMEOUT;
+  private int _IDLE_EXPIRE;
+  private int _CONNECTION_WAIT_IN_PROGRESS;
+  private int _CONNECTION_WAITS;
+  private int _CONNECTION_WAIT_TIME;
+  private int connectionsId;
+  // private int conCountId;
+  private int poolConnectionsId;
+  private int connectsId;
+  private int disconnectsId;
+  private int clientOpInProgressId;
+  private int clientOpSendInProgressId;
+  private int clientOpSendId;
+  private int clientOpSendFailedId;
+  private int clientOpSendDurationId;
+  private int clientOpId;
+  private int clientOpTimedOutId;
+  private int clientOpFailedId;
+  private int clientOpDurationId;
 
-  static {
+  private void initializeStats(StatisticsFactory factory) {
     String statName = "PoolStats";
 
-    StatisticsTypeFactory f = StatisticsTypeFactoryImpl.singleton();
-
-    _type = f.createType(statName, statName,
+    _type = factory.createType(statName, statName,
         new StatisticDescriptor[] {
-            f.createIntGauge(INITIAL_CONTACTS, "Number of contacts initially by user", "contacts"),
-            f.createIntGauge(KNOWN_LOCATORS, "Current number of locators discovered", LOCATORS),
-            f.createIntGauge(ENDPOINTS_KNOWN, "Current number of servers discovered", "servers"),
-            f.createIntGauge(SUBSCRIPTION_SERVERS,
+            factory.createIntGauge(INITIAL_CONTACTS, "Number of contacts initially by user", "contacts"),
+            factory.createIntGauge(KNOWN_LOCATORS, "Current number of locators discovered", LOCATORS),
+            factory.createIntGauge(ENDPOINTS_KNOWN, "Current number of servers discovered", "servers"),
+            factory.createIntGauge(SUBSCRIPTION_SERVERS,
                 "Number of servers hosting this clients subscriptions", "servers"),
-            f.createLongCounter(REQUESTS_TO_LOCATOR,
+            factory.createLongCounter(REQUESTS_TO_LOCATOR,
                 "Number of requests from this connection pool to a locator", "requests"),
-            f.createLongCounter(RESPONSES_FROM_LOCATOR,
+            factory.createLongCounter(RESPONSES_FROM_LOCATOR,
                 "Number of responses from the locator to this connection pool", "responses"),
 
-            f.createIntGauge("connections", "Current number of connections", "connections"),
-            // f.createIntGauge("conCount", "Current number of connections", "connections"),
-            f.createIntGauge("poolConnections", "Current number of pool connections",
+            factory.createIntGauge("connections", "Current number of connections", "connections"),
+            // factory.createIntGauge("conCount", "Current number of connections", "connections"),
+            factory.createIntGauge("poolConnections", "Current number of pool connections",
                 "connections"),
-            f.createIntCounter("connects", "Total number of times a connection has been created.",
+            factory.createIntCounter("connects", "Total number of times a connection has been created.",
                 "connects"),
-            f.createIntCounter("disconnects",
+            factory.createIntCounter("disconnects",
                 "Total number of times a connection has been destroyed.", "disconnects"),
-            f.createIntCounter("minPoolSizeConnects",
+            factory.createIntCounter("minPoolSizeConnects",
                 "Total number of connects done to maintain minimum pool size.", "connects"),
-            f.createIntCounter("loadConditioningConnects",
+            factory.createIntCounter("loadConditioningConnects",
                 "Total number of connects done due to load conditioning.", "connects"),
-            f.createIntCounter("loadConditioningReplaceTimeouts",
+            factory.createIntCounter("loadConditioningReplaceTimeouts",
                 "Total number of times a load conditioning connect was done but was not used.",
                 "timeouts"),
-            f.createIntCounter("idleDisconnects",
+            factory.createIntCounter("idleDisconnects",
                 "Total number of disconnects done due to idle expiration.", "disconnects"),
-            f.createIntCounter("loadConditioningDisconnects",
+            factory.createIntCounter("loadConditioningDisconnects",
                 "Total number of disconnects done due to load conditioning expiration.",
                 "disconnects"),
-            f.createIntCounter("idleChecks", "Total number of checks done for idle expiration.",
+            factory.createIntCounter("idleChecks", "Total number of checks done for idle expiration.",
                 "checks"),
-            f.createIntCounter("loadConditioningChecks",
+            factory.createIntCounter("loadConditioningChecks",
                 "Total number of checks done for load conditioning expiration.", "checks"),
-            f.createIntCounter("loadConditioningExtensions",
+            factory.createIntCounter("loadConditioningExtensions",
                 "Total number of times a connection's load conditioning has been extended because the servers are still balanced.",
                 "extensions"),
-            f.createIntGauge("connectionWaitsInProgress",
+            factory.createIntGauge("connectionWaitsInProgress",
                 "Current number of threads waiting for a connection", "threads"),
-            f.createIntCounter("connectionWaits",
+            factory.createIntCounter("connectionWaits",
                 "Total number of times a thread completed waiting for a connection (by timing out or by getting a connection).",
                 "waits"),
-            f.createLongCounter("connectionWaitTime",
+            factory.createLongCounter("connectionWaitTime",
                 "Total number of nanoseconds spent waiting for a connection.", "nanoseconds"),
-            f.createIntGauge("clientOpsInProgress", "Current number of clientOps being executed",
+            factory.createIntGauge("clientOpsInProgress", "Current number of clientOps being executed",
                 "clientOps"),
-            f.createIntGauge("clientOpSendsInProgress",
+            factory.createIntGauge("clientOpSendsInProgress",
                 "Current number of clientOp sends being executed", "sends"),
-            f.createIntCounter("clientOpSends",
+            factory.createIntCounter("clientOpSends",
                 "Total number of clientOp sends that have completed successfully", "sends"),
-            f.createIntCounter("clientOpSendFailures",
+            factory.createIntCounter("clientOpSendFailures",
                 "Total number of clientOp sends that have failed", "sends"),
-            f.createIntCounter("clientOps", "Total number of clientOps completed successfully",
+            factory.createIntCounter("clientOps", "Total number of clientOps completed successfully",
                 "clientOps"),
-            f.createIntCounter("clientOpFailures",
+            factory.createIntCounter("clientOpFailures",
                 "Total number of clientOp attempts that have failed", "clientOps"),
-            f.createIntCounter("clientOpTimeouts",
+            factory.createIntCounter("clientOpTimeouts",
                 "Total number of clientOp attempts that have timed out", "clientOps"),
-            f.createLongCounter("clientOpSendTime",
+            factory.createLongCounter("clientOpSendTime",
                 "Total amount of time, in nanoseconds spent doing clientOp sends", "nanoseconds"),
-            f.createLongCounter("clientOpTime",
+            factory.createLongCounter("clientOpTime",
                 "Total amount of time, in nanoseconds spent doing clientOps", "nanoseconds"),});
 
     // Initialize id fields
@@ -188,8 +186,9 @@ public class PoolStats {
 
   /////////////////////// Constructors ///////////////////////
 
-  public PoolStats(StatisticsFactory f, String name) {
-    this._stats = f.createAtomicStatistics(_type, name);
+  public PoolStats(StatisticsFactory factory, String name) {
+    initializeStats(factory);
+    this._stats = factory.createAtomicStatistics(_type, name);
   }
 
   ///////////////////// Instance Methods /////////////////////

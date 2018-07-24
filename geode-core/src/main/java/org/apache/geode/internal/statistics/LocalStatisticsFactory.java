@@ -42,7 +42,7 @@ public class LocalStatisticsFactory extends AbstractStatisticsFactory
   private final boolean statsDisabled;
 
   public LocalStatisticsFactory(CancelCriterion stopper) {
-    super(initId(), initName(), initStartTime());
+    super((StatisticsFactory) new StatisticsTypeFactoryImpl(),initId(), initName(), initStartTime());
 
     this.statsDisabled = Boolean.getBoolean(STATS_DISABLE_NAME_PROPERTY);
     if (statsDisabled) {

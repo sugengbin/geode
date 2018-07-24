@@ -30,7 +30,7 @@ import org.apache.geode.internal.statistics.StatisticsTypeFactoryImpl;
  */
 public class CqQueryVsdStats {
   /** The <code>StatisticsType</code> of the statistics */
-  private static final StatisticsType _type;
+  private StatisticsType _type;
 
   /** Name of the created CQs statistic */
   protected static final String CQ_INITIAL_RESULTS_TIME = "cqInitialResultsTime";
@@ -57,60 +57,58 @@ public class CqQueryVsdStats {
   protected static final String QUEUED_CQ_LISTENER_EVENTS = "queuedCqListenerEvents";
 
   /** Id of the initial results time statistic */
-  private static final int _cqInitialResultsTimeId;
+  private int _cqInitialResultsTimeId;
 
   /** Id of the num inserts statistic */
-  private static final int _numInsertsId;
+  private int _numInsertsId;
 
   /** Id of the num updates statistic */
-  private static final int _numUpdatesId;
+  private int _numUpdatesId;
 
   /** Id of the num deletes statistic */
-  private static final int _numDeletesId;
+  private int _numDeletesId;
 
   /** Id of the num events statistic */
-  private static final int _numEventsId;
+  private int _numEventsId;
 
   /** Id of the num queued events in the ha queue for the cq statistic */
-  private static final int _numHAQueuedEventsId;
+  private int _numHAQueuedEventsId;
 
   /** Id of the num cqListener invocation statistic */
-  private static final int _numCqListenerInvocationsId;
+  private int _numCqListenerInvocationsId;
 
   /** Id for the queued CQ events size during execute with initial results */
-  private static final int _queuedCqListenerEventsId;
+  private int _queuedCqListenerEventsId;
 
   /**
    * Static initializer to create and initialize the <code>StatisticsType</code>
    */
-  static {
+  private void initializeStats(StatisticsFactory factory) {
     String statName = "CqQueryStats";
 
-    StatisticsTypeFactory f = StatisticsTypeFactoryImpl.singleton();
-
-    _type = f.createType(statName, statName,
-        new StatisticDescriptor[] {f.createLongCounter(CQ_INITIAL_RESULTS_TIME,
+    _type = factory.createType(statName, statName,
+        new StatisticDescriptor[] {factory.createLongCounter(CQ_INITIAL_RESULTS_TIME,
             "The total amount of time, in nanoseconds, it took to do this initial query and send the results to the client.",
             "nanoseconds"),
 
-            f.createLongCounter(CQ_INSERTS, "Total number of inserts done on this cq.",
+            factory.createLongCounter(CQ_INSERTS, "Total number of inserts done on this cq.",
                 "operations"),
 
-            f.createLongCounter(CQ_UPDATES, "Total number of updates done on this cq.",
+            factory.createLongCounter(CQ_UPDATES, "Total number of updates done on this cq.",
                 "operations"),
 
-            f.createLongCounter(CQ_DELETES, "Total number of deletes done on this cq.",
+            factory.createLongCounter(CQ_DELETES, "Total number of deletes done on this cq.",
                 "operations"),
 
-            f.createLongCounter(CQ_EVENTS,
+            factory.createLongCounter(CQ_EVENTS,
                 "Total number of inserts, updates, and deletes done on this cq.", "operations"),
 
-            f.createLongGauge(NUM_HA_QUEUED_CQ_EVENTS, "Number of events in this cq.", "events"),
+            factory.createLongGauge(NUM_HA_QUEUED_CQ_EVENTS, "Number of events in this cq.", "events"),
 
-            f.createLongCounter(CQ_LISTENER_INVOCATIONS, "Total number of CqListener invocations.",
+            factory.createLongCounter(CQ_LISTENER_INVOCATIONS, "Total number of CqListener invocations.",
                 "operations"),
 
-            f.createLongGauge(QUEUED_CQ_LISTENER_EVENTS,
+            factory.createLongGauge(QUEUED_CQ_LISTENER_EVENTS,
                 "Number of events queued while CQ registration is in progress. This is not the main cq queue but a temporary internal one used while the cq is starting up.",
                 "events"),});
 
@@ -136,6 +134,7 @@ public class CqQueryVsdStats {
    * @param name The name of the <code>Statistics</code>
    */
   public CqQueryVsdStats(StatisticsFactory factory, String name) {
+    initializeStats(factory);
     this._stats = factory.createAtomicStatistics(_type, "CqQueryStats-" + name);
   }
 

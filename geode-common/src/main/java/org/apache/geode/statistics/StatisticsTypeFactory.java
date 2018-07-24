@@ -17,8 +17,6 @@ package org.apache.geode.statistics;
 import java.io.IOException;
 import java.io.Reader;
 
-import org.apache.geode.internal.statistics.StatArchiveFormat;
-
 /**
  * Instances of this interface provide methods that create instances of {@link StatisticDescriptor}
  * and {@link StatisticsType}. Every {@link StatisticsFactory} is also a type factory.
@@ -180,7 +178,7 @@ public interface StatisticsTypeFactory {
    * <P>
    * Current value is: <code>254</code>
    */
-  int MAX_DESCRIPTORS_PER_TYPE = StatArchiveFormat.ILLEGAL_STAT_OFFSET - 1;
+  int MAX_DESCRIPTORS_PER_TYPE = 254;
 
   /**
    * Creates or finds and returns a {@link StatisticsType} with the given <code>name</code>,

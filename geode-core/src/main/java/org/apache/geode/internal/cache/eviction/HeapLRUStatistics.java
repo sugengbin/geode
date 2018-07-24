@@ -22,30 +22,29 @@ import org.apache.geode.statistics.StatisticsTypeFactory;
 import org.apache.geode.internal.statistics.StatisticsTypeFactoryImpl;
 
 public class HeapLRUStatistics implements EvictionStats {
-  private static final StatisticsType statType;
-  private static final int counterId;
-  private static final int evictionsId;
-  private static final int destroysId;
-  private static final int evaluationsId;
-  private static final int greedyReturnsId;
+  private StatisticsType statType;
+  private int counterId;
+  private int evictionsId;
+  private int destroysId;
+  private int evaluationsId;
+  private int greedyReturnsId;
 
-  static {
-    StatisticsTypeFactory f = StatisticsTypeFactoryImpl.singleton();
-
+  private void initializeStats(StatisticsFactory factory) {
     final String entryBytesDesc =
         "The amount of memory currently used by regions configured for eviction.";
     final String lruEvictionsDesc = "Number of total entry evictions triggered by LRU.";
-    final String lruDestroysDesc =
+    final String
+        lruDestroysDesc =
         "Number of entries destroyed in the region through both destroy cache operations and eviction.";
     final String lruEvaluationsDesc = "Number of entries evaluated during LRU operations.";
     final String lruGreedyReturnsDesc = "Number of non-LRU entries evicted during LRU operations";
 
-    statType = f.createType("HeapLRUStatistics", "Statistics related to heap based eviction",
-        new StatisticDescriptor[] {f.createLongGauge("entryBytes", entryBytesDesc, "bytes"),
-            f.createLongCounter("lruEvictions", lruEvictionsDesc, "entries"),
-            f.createLongCounter("lruDestroys", lruDestroysDesc, "entries"),
-            f.createLongCounter("lruEvaluations", lruEvaluationsDesc, "entries"),
-            f.createLongCounter("lruGreedyReturns", lruGreedyReturnsDesc, "entries")});
+    statType = factory.createType("HeapLRUStatistics", "Statistics related to heap based eviction",
+        new StatisticDescriptor[]{factory.createLongGauge("entryBytes", entryBytesDesc, "bytes"),
+            factory.createLongCounter("lruEvictions", lruEvictionsDesc, "entries"),
+            factory.createLongCounter("lruDestroys", lruDestroysDesc, "entries"),
+            factory.createLongCounter("lruEvaluations", lruEvaluationsDesc, "entries"),
+            factory.createLongCounter("lruGreedyReturns", lruGreedyReturnsDesc, "entries")});
 
     counterId = statType.nameToId("entryBytes");
     evictionsId = statType.nameToId("lruEvictions");
@@ -57,6 +56,7 @@ public class HeapLRUStatistics implements EvictionStats {
   private final Statistics stats;
 
   public HeapLRUStatistics(StatisticsFactory factory, String name) {
+    initializeStats(factory);
     this.stats = factory.createAtomicStatistics(statType, "HeapLRUStatistics-" + name);
   }
 

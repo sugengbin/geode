@@ -28,11 +28,12 @@ import org.apache.geode.statistics.StatisticsType;
  */
 public class DummyStatisticsFactory implements StatisticsFactory {
 
-  private static final StatisticsTypeFactoryImpl tf =
-      (StatisticsTypeFactoryImpl) StatisticsTypeFactoryImpl.singleton();
+  private final StatisticsFactory factory;
 
   /** Creates a new instance of DummyStatisticsFactory */
-  public DummyStatisticsFactory() {}
+  public DummyStatisticsFactory(StatisticsFactory factory) {
+    this.factory = factory;
+  }
 
   // StatisticsFactory methods
   public Statistics createStatistics(StatisticsType type) {
@@ -81,69 +82,69 @@ public class DummyStatisticsFactory implements StatisticsFactory {
   }
 
   public StatisticsType createType(String name, String description, StatisticDescriptor[] stats) {
-    return tf.createType(name, description, stats);
+    return factory.createType(name, description, stats);
   }
 
   public StatisticsType findType(String name) {
-    return tf.findType(name);
+    return factory.findType(name);
   }
 
   public StatisticsType[] createTypesFromXml(Reader reader) throws IOException {
-    return tf.createTypesFromXml(reader);
+    return factory.createTypesFromXml(reader);
   }
 
   public StatisticDescriptor createIntCounter(String name, String description, String units) {
-    return tf.createIntCounter(name, description, units);
+    return factory.createIntCounter(name, description, units);
   }
 
   public StatisticDescriptor createLongCounter(String name, String description, String units) {
-    return tf.createLongCounter(name, description, units);
+    return factory.createLongCounter(name, description, units);
   }
 
   public StatisticDescriptor createDoubleCounter(String name, String description, String units) {
-    return tf.createDoubleCounter(name, description, units);
+    return factory.createDoubleCounter(name, description, units);
   }
 
   public StatisticDescriptor createIntGauge(String name, String description, String units) {
-    return tf.createIntGauge(name, description, units);
+    return factory.createIntGauge(name, description, units);
   }
 
   public StatisticDescriptor createLongGauge(String name, String description, String units) {
-    return tf.createLongGauge(name, description, units);
+    return factory.createLongGauge(name, description, units);
   }
 
   public StatisticDescriptor createDoubleGauge(String name, String description, String units) {
-    return tf.createDoubleGauge(name, description, units);
+    return factory.createDoubleGauge(name, description, units);
   }
 
   public StatisticDescriptor createIntCounter(String name, String description, String units,
       boolean largerBetter) {
-    return tf.createIntCounter(name, description, units, largerBetter);
+    return factory.createIntCounter(name, description, units, largerBetter);
   }
 
   public StatisticDescriptor createLongCounter(String name, String description, String units,
       boolean largerBetter) {
-    return tf.createLongCounter(name, description, units, largerBetter);
+    return factory.createLongCounter(name, description, units, largerBetter);
   }
 
   public StatisticDescriptor createDoubleCounter(String name, String description, String units,
       boolean largerBetter) {
-    return tf.createDoubleCounter(name, description, units, largerBetter);
+    return factory.createDoubleCounter(name, description, units, largerBetter);
   }
 
   public StatisticDescriptor createIntGauge(String name, String description, String units,
       boolean largerBetter) {
-    return tf.createIntGauge(name, description, units, largerBetter);
+    return factory.createIntGauge(name, description, units, largerBetter);
   }
 
   public StatisticDescriptor createLongGauge(String name, String description, String units,
       boolean largerBetter) {
-    return tf.createLongGauge(name, description, units, largerBetter);
+    return factory.createLongGauge(name, description, units, largerBetter);
   }
 
   public StatisticDescriptor createDoubleGauge(String name, String description, String units,
       boolean largerBetter) {
-    return tf.createDoubleGauge(name, description, units, largerBetter);
+    return factory.createDoubleGauge(name, description, units, largerBetter);
   }
 
 }

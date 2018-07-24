@@ -31,409 +31,409 @@ import org.apache.geode.internal.statistics.StatisticsTypeFactoryImpl;
  */
 public class ConnectionStats implements MessageStats {
   // static fields
-  private static final StatisticsType type;
-  private static final StatisticsType sendType;
+  private StatisticsType type;
+  private StatisticsType sendType;
 
   ///////////////////////////////////////////////////////////////////////
   /*
-   * private static final int opInProgressId; private static final int opSendInProgressId; private
-   * static final int opSendFailedId; private static final int opSendId; private static final int
-   * opSendDurationId; private static final int opTimedOutId; private static final int opFailedId;
-   * private static final int opId; private static final int opDurationId;
+   * private int opInProgressId; private int opSendInProgressId; private
+   * static final int opSendFailedId; private int opSendId; private int
+   * opSendDurationId; private int opTimedOutId; private int opFailedId;
+   * private int opId; private int opDurationId;
    */
   ///////////////////////////////////////////////////////////////////////
 
-  private static final int getInProgressId;
-  private static final int getSendInProgressId;
-  private static final int getSendFailedId;
-  private static final int getSendId;
-  private static final int getSendDurationId;
-  private static final int getTimedOutId;
-  private static final int getFailedId;
-  private static final int getId;
-  private static final int getDurationId;
+  private int getInProgressId;
+  private int getSendInProgressId;
+  private int getSendFailedId;
+  private int getSendId;
+  private int getSendDurationId;
+  private int getTimedOutId;
+  private int getFailedId;
+  private int getId;
+  private int getDurationId;
 
-  private static final int putInProgressId;
-  private static final int putSendInProgressId;
-  private static final int putSendFailedId;
-  private static final int putSendId;
-  private static final int putSendDurationId;
-  private static final int putTimedOutId;
-  private static final int putFailedId;
-  private static final int putId;
-  private static final int putDurationId;
+  private int putInProgressId;
+  private int putSendInProgressId;
+  private int putSendFailedId;
+  private int putSendId;
+  private int putSendDurationId;
+  private int putTimedOutId;
+  private int putFailedId;
+  private int putId;
+  private int putDurationId;
 
-  private static final int destroyInProgressId;
-  private static final int destroySendInProgressId;
-  private static final int destroySendFailedId;
-  private static final int destroySendId;
-  private static final int destroySendDurationId;
-  private static final int destroyTimedOutId;
-  private static final int destroyFailedId;
-  private static final int destroyId;
-  private static final int destroyDurationId;
+  private int destroyInProgressId;
+  private int destroySendInProgressId;
+  private int destroySendFailedId;
+  private int destroySendId;
+  private int destroySendDurationId;
+  private int destroyTimedOutId;
+  private int destroyFailedId;
+  private int destroyId;
+  private int destroyDurationId;
 
-  private static final int destroyRegionInProgressId;
-  private static final int destroyRegionSendInProgressId;
-  private static final int destroyRegionSendFailedId;
-  private static final int destroyRegionSendId;
-  private static final int destroyRegionSendDurationId;
-  private static final int destroyRegionTimedOutId;
-  private static final int destroyRegionFailedId;
-  private static final int destroyRegionId;
-  private static final int destroyRegionDurationId;
+  private int destroyRegionInProgressId;
+  private int destroyRegionSendInProgressId;
+  private int destroyRegionSendFailedId;
+  private int destroyRegionSendId;
+  private int destroyRegionSendDurationId;
+  private int destroyRegionTimedOutId;
+  private int destroyRegionFailedId;
+  private int destroyRegionId;
+  private int destroyRegionDurationId;
 
-  private static final int clearInProgressId;
-  private static final int clearSendInProgressId;
-  private static final int clearSendFailedId;
-  private static final int clearSendId;
-  private static final int clearSendDurationId;
-  private static final int clearTimedOutId;
-  private static final int clearFailedId;
-  private static final int clearId;
-  private static final int clearDurationId;
+  private int clearInProgressId;
+  private int clearSendInProgressId;
+  private int clearSendFailedId;
+  private int clearSendId;
+  private int clearSendDurationId;
+  private int clearTimedOutId;
+  private int clearFailedId;
+  private int clearId;
+  private int clearDurationId;
 
-  private static final int containsKeyInProgressId;
-  private static final int containsKeySendInProgressId;
-  private static final int containsKeySendFailedId;
-  private static final int containsKeySendId;
-  private static final int containsKeySendDurationId;
-  private static final int containsKeyTimedOutId;
-  private static final int containsKeyFailedId;
-  private static final int containsKeyId;
-  private static final int containsKeyDurationId;
+  private int containsKeyInProgressId;
+  private int containsKeySendInProgressId;
+  private int containsKeySendFailedId;
+  private int containsKeySendId;
+  private int containsKeySendDurationId;
+  private int containsKeyTimedOutId;
+  private int containsKeyFailedId;
+  private int containsKeyId;
+  private int containsKeyDurationId;
 
-  private static final int keySetInProgressId;
-  private static final int keySetSendInProgressId;
-  private static final int keySetSendFailedId;
-  private static final int keySetSendId;
-  private static final int keySetSendDurationId;
-  private static final int keySetTimedOutId;
-  private static final int keySetFailedId;
-  private static final int keySetId;
-  private static final int keySetDurationId;
+  private int keySetInProgressId;
+  private int keySetSendInProgressId;
+  private int keySetSendFailedId;
+  private int keySetSendId;
+  private int keySetSendDurationId;
+  private int keySetTimedOutId;
+  private int keySetFailedId;
+  private int keySetId;
+  private int keySetDurationId;
 
-  private static final int commitInProgressId;
-  private static final int commitSendInProgressId;
-  private static final int commitSendFailedId;
-  private static final int commitSendId;
-  private static final int commitSendDurationId;
+  private int commitInProgressId;
+  private int commitSendInProgressId;
+  private int commitSendFailedId;
+  private int commitSendId;
+  private int commitSendDurationId;
 
-  private static final int commitFailedId;
-  private static final int commitTimedOutId;
-  private static final int commitId;
-  private static final int commitDurationId;
+  private int commitFailedId;
+  private int commitTimedOutId;
+  private int commitId;
+  private int commitDurationId;
 
-  private static final int rollbackInProgressId;
-  private static final int rollbackSendInProgressId;
-  private static final int rollbackSendFailedId;
-  private static final int rollbackSendId;
-  private static final int rollbackSendDurationId;
+  private int rollbackInProgressId;
+  private int rollbackSendInProgressId;
+  private int rollbackSendFailedId;
+  private int rollbackSendId;
+  private int rollbackSendDurationId;
 
-  private static final int rollbackFailedId;
-  private static final int rollbackTimedOutId;
-  private static final int rollbackId;
-  private static final int rollbackDurationId;
+  private int rollbackFailedId;
+  private int rollbackTimedOutId;
+  private int rollbackId;
+  private int rollbackDurationId;
 
-  private static final int getEntryInProgressId;
-  private static final int getEntrySendInProgressId;
-  private static final int getEntrySendFailedId;
-  private static final int getEntrySendId;
-  private static final int getEntrySendDurationId;
+  private int getEntryInProgressId;
+  private int getEntrySendInProgressId;
+  private int getEntrySendFailedId;
+  private int getEntrySendId;
+  private int getEntrySendDurationId;
 
-  private static final int getEntryFailedId;
-  private static final int getEntryTimedOutId;
-  private static final int getEntryId;
-  private static final int getEntryDurationId;
+  private int getEntryFailedId;
+  private int getEntryTimedOutId;
+  private int getEntryId;
+  private int getEntryDurationId;
 
-  private static final int txSynchronizationInProgressId;
-  private static final int txSynchronizationSendInProgressId;
-  private static final int txSynchronizationSendFailedId;
-  private static final int txSynchronizationSendId;
-  private static final int txSynchronizationSendDurationId;
+  private int txSynchronizationInProgressId;
+  private int txSynchronizationSendInProgressId;
+  private int txSynchronizationSendFailedId;
+  private int txSynchronizationSendId;
+  private int txSynchronizationSendDurationId;
 
-  private static final int txSynchronizationFailedId;
-  private static final int txSynchronizationTimedOutId;
-  private static final int txSynchronizationId;
-  private static final int txSynchronizationDurationId;
+  private int txSynchronizationFailedId;
+  private int txSynchronizationTimedOutId;
+  private int txSynchronizationId;
+  private int txSynchronizationDurationId;
 
-  private static final int txFailoverInProgressId;
-  private static final int txFailoverSendInProgressId;
-  private static final int txFailoverSendFailedId;
-  private static final int txFailoverSendId;
-  private static final int txFailoverSendDurationId;
+  private int txFailoverInProgressId;
+  private int txFailoverSendInProgressId;
+  private int txFailoverSendFailedId;
+  private int txFailoverSendId;
+  private int txFailoverSendDurationId;
 
-  private static final int txFailoverFailedId;
-  private static final int txFailoverTimedOutId;
-  private static final int txFailoverId;
-  private static final int txFailoverDurationId;
+  private int txFailoverFailedId;
+  private int txFailoverTimedOutId;
+  private int txFailoverId;
+  private int txFailoverDurationId;
 
-  private static final int sizeInProgressId;
-  private static final int sizeSendInProgressId;
-  private static final int sizeSendFailedId;
-  private static final int sizeSendId;
-  private static final int sizeSendDurationId;
+  private int sizeInProgressId;
+  private int sizeSendInProgressId;
+  private int sizeSendFailedId;
+  private int sizeSendId;
+  private int sizeSendDurationId;
 
-  private static final int sizeFailedId;
-  private static final int sizeTimedOutId;
-  private static final int sizeId;
-  private static final int sizeDurationId;
+  private int sizeFailedId;
+  private int sizeTimedOutId;
+  private int sizeId;
+  private int sizeDurationId;
 
-  private static final int invalidateInProgressId;
-  private static final int invalidateSendInProgressId;
-  private static final int invalidateSendFailedId;
-  private static final int invalidateSendId;
-  private static final int invalidateSendDurationId;
+  private int invalidateInProgressId;
+  private int invalidateSendInProgressId;
+  private int invalidateSendFailedId;
+  private int invalidateSendId;
+  private int invalidateSendDurationId;
 
-  private static final int invalidateFailedId;
-  private static final int invalidateTimedOutId;
-  private static final int invalidateId;
-  private static final int invalidateDurationId;
+  private int invalidateFailedId;
+  private int invalidateTimedOutId;
+  private int invalidateId;
+  private int invalidateDurationId;
 
 
-  private static final int registerInterestInProgressId;
-  private static final int registerInterestSendInProgressId;
-  private static final int registerInterestSendFailedId;
-  private static final int registerInterestSendId;
-  private static final int registerInterestSendDurationId;
-  private static final int registerInterestTimedOutId;
-  private static final int registerInterestFailedId;
-  private static final int registerInterestId;
-  private static final int registerInterestDurationId;
+  private int registerInterestInProgressId;
+  private int registerInterestSendInProgressId;
+  private int registerInterestSendFailedId;
+  private int registerInterestSendId;
+  private int registerInterestSendDurationId;
+  private int registerInterestTimedOutId;
+  private int registerInterestFailedId;
+  private int registerInterestId;
+  private int registerInterestDurationId;
 
-  private static final int unregisterInterestInProgressId;
-  private static final int unregisterInterestSendInProgressId;
-  private static final int unregisterInterestSendFailedId;
-  private static final int unregisterInterestSendId;
-  private static final int unregisterInterestSendDurationId;
-  private static final int unregisterInterestTimedOutId;
-  private static final int unregisterInterestFailedId;
-  private static final int unregisterInterestId;
-  private static final int unregisterInterestDurationId;
+  private int unregisterInterestInProgressId;
+  private int unregisterInterestSendInProgressId;
+  private int unregisterInterestSendFailedId;
+  private int unregisterInterestSendId;
+  private int unregisterInterestSendDurationId;
+  private int unregisterInterestTimedOutId;
+  private int unregisterInterestFailedId;
+  private int unregisterInterestId;
+  private int unregisterInterestDurationId;
 
-  private static final int queryInProgressId;
-  private static final int querySendInProgressId;
-  private static final int querySendFailedId;
-  private static final int querySendId;
-  private static final int querySendDurationId;
-  private static final int queryTimedOutId;
-  private static final int queryFailedId;
-  private static final int queryId;
-  private static final int queryDurationId;
+  private int queryInProgressId;
+  private int querySendInProgressId;
+  private int querySendFailedId;
+  private int querySendId;
+  private int querySendDurationId;
+  private int queryTimedOutId;
+  private int queryFailedId;
+  private int queryId;
+  private int queryDurationId;
 
-  private static final int createCQInProgressId;
-  private static final int createCQSendInProgressId;
-  private static final int createCQSendFailedId;
-  private static final int createCQSendId;
-  private static final int createCQSendDurationId;
-  private static final int createCQTimedOutId;
-  private static final int createCQFailedId;
-  private static final int createCQId;
-  private static final int createCQDurationId;
-  private static final int stopCQInProgressId;
-  private static final int stopCQSendInProgressId;
-  private static final int stopCQSendFailedId;
-  private static final int stopCQSendId;
-  private static final int stopCQSendDurationId;
-  private static final int stopCQTimedOutId;
-  private static final int stopCQFailedId;
-  private static final int stopCQId;
-  private static final int stopCQDurationId;
-  private static final int closeCQInProgressId;
-  private static final int closeCQSendInProgressId;
-  private static final int closeCQSendFailedId;
-  private static final int closeCQSendId;
-  private static final int closeCQSendDurationId;
-  private static final int closeCQTimedOutId;
-  private static final int closeCQFailedId;
-  private static final int closeCQId;
-  private static final int closeCQDurationId;
-  private static final int gatewayBatchInProgressId;
-  private static final int gatewayBatchSendInProgressId;
-  private static final int gatewayBatchSendFailedId;
-  private static final int gatewayBatchSendId;
-  private static final int gatewayBatchSendDurationId;
-  private static final int gatewayBatchTimedOutId;
-  private static final int gatewayBatchFailedId;
-  private static final int gatewayBatchId;
-  private static final int gatewayBatchDurationId;
-  private static final int getDurableCQsInProgressId;
-  private static final int getDurableCQsSendsInProgressId;
-  private static final int getDurableCQsSendFailedId;
-  private static final int getDurableCQsSendId;
-  private static final int getDurableCQsSendDurationId;
-  private static final int getDurableCQsTimedOutId;
-  private static final int getDurableCQsFailedId;
-  private static final int getDurableCQsId;
-  private static final int getDurableCQsDurationId;
+  private int createCQInProgressId;
+  private int createCQSendInProgressId;
+  private int createCQSendFailedId;
+  private int createCQSendId;
+  private int createCQSendDurationId;
+  private int createCQTimedOutId;
+  private int createCQFailedId;
+  private int createCQId;
+  private int createCQDurationId;
+  private int stopCQInProgressId;
+  private int stopCQSendInProgressId;
+  private int stopCQSendFailedId;
+  private int stopCQSendId;
+  private int stopCQSendDurationId;
+  private int stopCQTimedOutId;
+  private int stopCQFailedId;
+  private int stopCQId;
+  private int stopCQDurationId;
+  private int closeCQInProgressId;
+  private int closeCQSendInProgressId;
+  private int closeCQSendFailedId;
+  private int closeCQSendId;
+  private int closeCQSendDurationId;
+  private int closeCQTimedOutId;
+  private int closeCQFailedId;
+  private int closeCQId;
+  private int closeCQDurationId;
+  private int gatewayBatchInProgressId;
+  private int gatewayBatchSendInProgressId;
+  private int gatewayBatchSendFailedId;
+  private int gatewayBatchSendId;
+  private int gatewayBatchSendDurationId;
+  private int gatewayBatchTimedOutId;
+  private int gatewayBatchFailedId;
+  private int gatewayBatchId;
+  private int gatewayBatchDurationId;
+  private int getDurableCQsInProgressId;
+  private int getDurableCQsSendsInProgressId;
+  private int getDurableCQsSendFailedId;
+  private int getDurableCQsSendId;
+  private int getDurableCQsSendDurationId;
+  private int getDurableCQsTimedOutId;
+  private int getDurableCQsFailedId;
+  private int getDurableCQsId;
+  private int getDurableCQsDurationId;
 
-  private static final int readyForEventsInProgressId;
-  private static final int readyForEventsSendInProgressId;
-  private static final int readyForEventsSendFailedId;
-  private static final int readyForEventsSendId;
-  private static final int readyForEventsSendDurationId;
-  private static final int readyForEventsTimedOutId;
-  private static final int readyForEventsFailedId;
-  private static final int readyForEventsId;
-  private static final int readyForEventsDurationId;
+  private int readyForEventsInProgressId;
+  private int readyForEventsSendInProgressId;
+  private int readyForEventsSendFailedId;
+  private int readyForEventsSendId;
+  private int readyForEventsSendDurationId;
+  private int readyForEventsTimedOutId;
+  private int readyForEventsFailedId;
+  private int readyForEventsId;
+  private int readyForEventsDurationId;
 
-  private static final int makePrimaryInProgressId;
-  private static final int makePrimarySendInProgressId;
-  private static final int makePrimarySendFailedId;
-  private static final int makePrimarySendId;
-  private static final int makePrimarySendDurationId;
-  private static final int makePrimaryTimedOutId;
-  private static final int makePrimaryFailedId;
-  private static final int makePrimaryId;
-  private static final int makePrimaryDurationId;
+  private int makePrimaryInProgressId;
+  private int makePrimarySendInProgressId;
+  private int makePrimarySendFailedId;
+  private int makePrimarySendId;
+  private int makePrimarySendDurationId;
+  private int makePrimaryTimedOutId;
+  private int makePrimaryFailedId;
+  private int makePrimaryId;
+  private int makePrimaryDurationId;
 
-  private static final int closeConInProgressId;
-  private static final int closeConSendInProgressId;
-  private static final int closeConSendFailedId;
-  private static final int closeConSendId;
-  private static final int closeConSendDurationId;
-  private static final int closeConTimedOutId;
-  private static final int closeConFailedId;
-  private static final int closeConId;
-  private static final int closeConDurationId;
+  private int closeConInProgressId;
+  private int closeConSendInProgressId;
+  private int closeConSendFailedId;
+  private int closeConSendId;
+  private int closeConSendDurationId;
+  private int closeConTimedOutId;
+  private int closeConFailedId;
+  private int closeConId;
+  private int closeConDurationId;
 
-  private static final int primaryAckInProgressId;
-  private static final int primaryAckSendInProgressId;
-  private static final int primaryAckSendFailedId;
-  private static final int primaryAckSendId;
-  private static final int primaryAckSendDurationId;
-  private static final int primaryAckTimedOutId;
-  private static final int primaryAckFailedId;
-  private static final int primaryAckId;
-  private static final int primaryAckDurationId;
+  private int primaryAckInProgressId;
+  private int primaryAckSendInProgressId;
+  private int primaryAckSendFailedId;
+  private int primaryAckSendId;
+  private int primaryAckSendDurationId;
+  private int primaryAckTimedOutId;
+  private int primaryAckFailedId;
+  private int primaryAckId;
+  private int primaryAckDurationId;
 
-  private static final int pingInProgressId;
-  private static final int pingSendInProgressId;
-  private static final int pingSendFailedId;
-  private static final int pingSendId;
-  private static final int pingSendDurationId;
-  private static final int pingTimedOutId;
-  private static final int pingFailedId;
-  private static final int pingId;
-  private static final int pingDurationId;
+  private int pingInProgressId;
+  private int pingSendInProgressId;
+  private int pingSendFailedId;
+  private int pingSendId;
+  private int pingSendDurationId;
+  private int pingTimedOutId;
+  private int pingFailedId;
+  private int pingId;
+  private int pingDurationId;
 
-  private static final int registerInstantiatorsInProgressId;
-  private static final int registerInstantiatorsSendInProgressId;
-  private static final int registerInstantiatorsSendFailedId;
-  private static final int registerInstantiatorsSendId;
-  private static final int registerInstantiatorsSendDurationId;
-  private static final int registerInstantiatorsTimedOutId;
-  private static final int registerInstantiatorsFailedId;
-  private static final int registerInstantiatorsId;
-  private static final int registerInstantiatorsDurationId;
+  private int registerInstantiatorsInProgressId;
+  private int registerInstantiatorsSendInProgressId;
+  private int registerInstantiatorsSendFailedId;
+  private int registerInstantiatorsSendId;
+  private int registerInstantiatorsSendDurationId;
+  private int registerInstantiatorsTimedOutId;
+  private int registerInstantiatorsFailedId;
+  private int registerInstantiatorsId;
+  private int registerInstantiatorsDurationId;
 
-  private static final int registerDataSerializersInProgressId;
-  private static final int registerDataSerializersSendInProgressId;
-  private static final int registerDataSerializersSendFailedId;
-  private static final int registerDataSerializersSendId;
-  private static final int registerDataSerializersSendDurationId;
-  private static final int registerDataSerializersTimedOutId;
-  private static final int registerDataSerializersFailedId;
-  private static final int registerDataSerializersId;
-  private static final int registerDataSerializersDurationId;
+  private int registerDataSerializersInProgressId;
+  private int registerDataSerializersSendInProgressId;
+  private int registerDataSerializersSendFailedId;
+  private int registerDataSerializersSendId;
+  private int registerDataSerializersSendDurationId;
+  private int registerDataSerializersTimedOutId;
+  private int registerDataSerializersFailedId;
+  private int registerDataSerializersId;
+  private int registerDataSerializersDurationId;
 
-  private static final int putAllInProgressId;
-  private static final int putAllSendInProgressId;
-  private static final int putAllSendFailedId;
-  private static final int putAllSendId;
-  private static final int putAllSendDurationId;
-  private static final int putAllTimedOutId;
-  private static final int putAllFailedId;
-  private static final int putAllId;
-  private static final int putAllDurationId;
+  private int putAllInProgressId;
+  private int putAllSendInProgressId;
+  private int putAllSendFailedId;
+  private int putAllSendId;
+  private int putAllSendDurationId;
+  private int putAllTimedOutId;
+  private int putAllFailedId;
+  private int putAllId;
+  private int putAllDurationId;
 
-  private static final int removeAllInProgressId;
-  private static final int removeAllSendInProgressId;
-  private static final int removeAllSendFailedId;
-  private static final int removeAllSendId;
-  private static final int removeAllSendDurationId;
-  private static final int removeAllTimedOutId;
-  private static final int removeAllFailedId;
-  private static final int removeAllId;
-  private static final int removeAllDurationId;
+  private int removeAllInProgressId;
+  private int removeAllSendInProgressId;
+  private int removeAllSendFailedId;
+  private int removeAllSendId;
+  private int removeAllSendDurationId;
+  private int removeAllTimedOutId;
+  private int removeAllFailedId;
+  private int removeAllId;
+  private int removeAllDurationId;
 
-  private static final int getAllInProgressId;
-  private static final int getAllSendInProgressId;
-  private static final int getAllSendFailedId;
-  private static final int getAllSendId;
-  private static final int getAllSendDurationId;
-  private static final int getAllTimedOutId;
-  private static final int getAllFailedId;
-  private static final int getAllId;
-  private static final int getAllDurationId;
+  private int getAllInProgressId;
+  private int getAllSendInProgressId;
+  private int getAllSendFailedId;
+  private int getAllSendId;
+  private int getAllSendDurationId;
+  private int getAllTimedOutId;
+  private int getAllFailedId;
+  private int getAllId;
+  private int getAllDurationId;
 
-  private static final int connectionsId;
-  private static final int connectsId;
-  private static final int disconnectsId;
-  private static final int messagesBeingReceivedId;
-  private static final int messageBytesBeingReceivedId;
-  private static final int receivedBytesId;
-  private static final int sentBytesId;
+  private int connectionsId;
+  private int connectsId;
+  private int disconnectsId;
+  private int messagesBeingReceivedId;
+  private int messageBytesBeingReceivedId;
+  private int receivedBytesId;
+  private int sentBytesId;
 
-  private static final int executeFunctionInProgressId;
-  private static final int executeFunctionSendInProgressId;
-  private static final int executeFunctionSendFailedId;
-  private static final int executeFunctionSendId;
-  private static final int executeFunctionSendDurationId;
-  private static final int executeFunctionTimedOutId;
-  private static final int executeFunctionFailedId;
-  private static final int executeFunctionId;
-  private static final int executeFunctionDurationId;
+  private int executeFunctionInProgressId;
+  private int executeFunctionSendInProgressId;
+  private int executeFunctionSendFailedId;
+  private int executeFunctionSendId;
+  private int executeFunctionSendDurationId;
+  private int executeFunctionTimedOutId;
+  private int executeFunctionFailedId;
+  private int executeFunctionId;
+  private int executeFunctionDurationId;
 
-  private static final int getClientPRMetadataInProgressId;
-  private static final int getClientPRMetadataSendInProgressId;
-  private static final int getClientPRMetadataSendFailedId;
-  private static final int getClientPRMetadataSendId;
-  private static final int getClientPRMetadataSendDurationId;
-  private static final int getClientPRMetadataTimedOutId;
-  private static final int getClientPRMetadataFailedId;
-  private static final int getClientPRMetadataId;
-  private static final int getClientPRMetadataDurationId;
+  private int getClientPRMetadataInProgressId;
+  private int getClientPRMetadataSendInProgressId;
+  private int getClientPRMetadataSendFailedId;
+  private int getClientPRMetadataSendId;
+  private int getClientPRMetadataSendDurationId;
+  private int getClientPRMetadataTimedOutId;
+  private int getClientPRMetadataFailedId;
+  private int getClientPRMetadataId;
+  private int getClientPRMetadataDurationId;
 
-  private static final int getClientPartitionAttributesInProgressId;
-  private static final int getClientPartitionAttributesSendInProgressId;
-  private static final int getClientPartitionAttributesSendFailedId;
-  private static final int getClientPartitionAttributesSendId;
-  private static final int getClientPartitionAttributesSendDurationId;
-  private static final int getClientPartitionAttributesTimedOutId;
-  private static final int getClientPartitionAttributesFailedId;
-  private static final int getClientPartitionAttributesId;
-  private static final int getClientPartitionAttributesDurationId;
+  private int getClientPartitionAttributesInProgressId;
+  private int getClientPartitionAttributesSendInProgressId;
+  private int getClientPartitionAttributesSendFailedId;
+  private int getClientPartitionAttributesSendId;
+  private int getClientPartitionAttributesSendDurationId;
+  private int getClientPartitionAttributesTimedOutId;
+  private int getClientPartitionAttributesFailedId;
+  private int getClientPartitionAttributesId;
+  private int getClientPartitionAttributesDurationId;
 
-  private static final int getPDXIdForTypeInProgressId;
-  private static final int getPDXIdForTypeSendInProgressId;
-  private static final int getPDXIdForTypeSendFailedId;
-  private static final int getPDXIdForTypeSendId;
-  private static final int getPDXIdForTypeSendDurationId;
-  private static final int getPDXIdForTypeTimedOutId;
-  private static final int getPDXIdForTypeFailedId;
-  private static final int getPDXIdForTypeId;
-  private static final int getPDXIdForTypeDurationId;
+  private int getPDXIdForTypeInProgressId;
+  private int getPDXIdForTypeSendInProgressId;
+  private int getPDXIdForTypeSendFailedId;
+  private int getPDXIdForTypeSendId;
+  private int getPDXIdForTypeSendDurationId;
+  private int getPDXIdForTypeTimedOutId;
+  private int getPDXIdForTypeFailedId;
+  private int getPDXIdForTypeId;
+  private int getPDXIdForTypeDurationId;
 
-  private static final int getPDXTypeByIdInProgressId;
-  private static final int getPDXTypeByIdSendInProgressId;
-  private static final int getPDXTypeByIdSendFailedId;
-  private static final int getPDXTypeByIdSendId;
-  private static final int getPDXTypeByIdSendDurationId;
-  private static final int getPDXTypeByIdTimedOutId;
-  private static final int getPDXTypeByIdFailedId;
-  private static final int getPDXTypeByIdId;
-  private static final int getPDXTypeByIdDurationId;
+  private int getPDXTypeByIdInProgressId;
+  private int getPDXTypeByIdSendInProgressId;
+  private int getPDXTypeByIdSendFailedId;
+  private int getPDXTypeByIdSendId;
+  private int getPDXTypeByIdSendDurationId;
+  private int getPDXTypeByIdTimedOutId;
+  private int getPDXTypeByIdFailedId;
+  private int getPDXTypeByIdId;
+  private int getPDXTypeByIdDurationId;
 
-  private static final int addPdxTypeInProgressId;
-  private static final int addPdxTypeSendInProgressId;
-  private static final int addPdxTypeSendFailedId;
-  private static final int addPdxTypeSendId;
-  private static final int addPdxTypeSendDurationId;
-  private static final int addPdxTypeTimedOutId;
-  private static final int addPdxTypeFailedId;
-  private static final int addPdxTypeId;
-  private static final int addPdxTypeDurationId;
+  private int addPdxTypeInProgressId;
+  private int addPdxTypeSendInProgressId;
+  private int addPdxTypeSendFailedId;
+  private int addPdxTypeSendId;
+  private int addPdxTypeSendDurationId;
+  private int addPdxTypeTimedOutId;
+  private int addPdxTypeFailedId;
+  private int addPdxTypeId;
+  private int addPdxTypeDurationId;
 
 
   // An array of all of the ids that represent operation statistics. This
@@ -441,856 +441,844 @@ public class ConnectionStats implements MessageStats {
   // into a total value for all operations.
   private static int[] opIds;
 
-  static {
+  private void initializeStats(StatisticsFactory factory) {
     try {
-      StatisticsTypeFactory f = StatisticsTypeFactoryImpl.singleton();
-      type = f.createType("ClientStats", "Statistics about client to server communication",
+      type = factory.createType("ClientStats", "Statistics about client to server communication",
           new StatisticDescriptor[] {
-              ///////////////////////////////////////////////////////////////////////
-              /*
-               * f.createIntGauge("opsInProgress", "Current number of ops being executed", "ops"),
-               * f.createIntCounter("ops", "Total number of ops completed successfully", "ops"),
-               * f.createIntCounter("opFailures", "Total number of op attempts that have failed",
-               * "ops"), f.createIntCounter("opTimeouts",
-               * "Total number of op attempts that have timed out", "ops"),
-               * f.createLongCounter("opTime",
-               * "Total amount of time, in nanoseconds spent doing ops", "nanoseconds"),
-               */
-              ///////////////////////////////////////////////////////////////////////
-              f.createIntGauge("getsInProgress", "Current number of gets being executed", "gets"),
-              f.createIntCounter("gets", "Total number of gets completed successfully", "gets"),
-              f.createIntCounter("getFailures", "Total number of get attempts that have failed",
+              factory.createIntGauge("getsInProgress", "Current number of gets being executed", "gets"),
+              factory.createIntCounter("gets", "Total number of gets completed successfully", "gets"),
+              factory.createIntCounter("getFailures", "Total number of get attempts that have failed",
                   "gets"),
-              f.createIntCounter("getTimeouts", "Total number of get attempts that have timed out",
+              factory.createIntCounter("getTimeouts", "Total number of get attempts that have timed out",
                   "gets"),
-              f.createLongCounter("getTime",
+              factory.createLongCounter("getTime",
                   "Total amount of time, in nanoseconds spent doing gets", "nanoseconds"),
-              f.createIntGauge("putsInProgress", "Current number of puts being executed", "puts"),
-              f.createIntCounter("puts", "Total number of puts completed successfully", "puts"),
-              f.createIntCounter("putFailures", "Total number of put attempts that have failed",
+              factory.createIntGauge("putsInProgress", "Current number of puts being executed", "puts"),
+              factory.createIntCounter("puts", "Total number of puts completed successfully", "puts"),
+              factory.createIntCounter("putFailures", "Total number of put attempts that have failed",
                   "puts"),
-              f.createIntCounter("putTimeouts", "Total number of put attempts that have timed out",
+              factory.createIntCounter("putTimeouts", "Total number of put attempts that have timed out",
                   "puts"),
-              f.createLongCounter("putTime",
+              factory.createLongCounter("putTime",
                   "Total amount of time, in nanoseconds spent doing puts", "nanoseconds"),
-              f.createIntGauge("destroysInProgress", "Current number of destroys being executed",
+              factory.createIntGauge("destroysInProgress", "Current number of destroys being executed",
                   "destroys"),
-              f.createIntCounter("destroys", "Total number of destroys completed successfully",
+              factory.createIntCounter("destroys", "Total number of destroys completed successfully",
                   "destroys"),
-              f.createIntCounter("destroyFailures",
+              factory.createIntCounter("destroyFailures",
                   "Total number of destroy attempts that have failed", "destroys"),
-              f.createIntCounter("destroyTimeouts",
+              factory.createIntCounter("destroyTimeouts",
                   "Total number of destroy attempts that have timed out", "destroys"),
-              f.createLongCounter("destroyTime",
+              factory.createLongCounter("destroyTime",
                   "Total amount of time, in nanoseconds spent doing destroys", "nanoseconds"),
-              f.createIntGauge("destroyRegionsInProgress",
+              factory.createIntGauge("destroyRegionsInProgress",
                   "Current number of destroyRegions being executed", "destroyRegions"),
-              f.createIntCounter("destroyRegions",
+              factory.createIntCounter("destroyRegions",
                   "Total number of destroyRegions completed successfully", "destroyRegions"),
-              f.createIntCounter("destroyRegionFailures",
+              factory.createIntCounter("destroyRegionFailures",
                   "Total number of destroyRegion attempts that have failed", "destroyRegions"),
-              f.createIntCounter("destroyRegionTimeouts",
+              factory.createIntCounter("destroyRegionTimeouts",
                   "Total number of destroyRegion attempts that have timed out", "destroyRegions"),
-              f.createLongCounter("destroyRegionTime",
+              factory.createLongCounter("destroyRegionTime",
                   "Total amount of time, in nanoseconds spent doing destroyRegions", "nanoseconds"),
-              f.createIntGauge("clearsInProgress", "Current number of clears being executed",
+              factory.createIntGauge("clearsInProgress", "Current number of clears being executed",
                   "clears"),
-              f.createIntCounter("clears", "Total number of clears completed successfully",
+              factory.createIntCounter("clears", "Total number of clears completed successfully",
                   "clears"),
-              f.createIntCounter("clearFailures", "Total number of clear attempts that have failed",
+              factory.createIntCounter("clearFailures", "Total number of clear attempts that have failed",
                   "clears"),
-              f.createIntCounter("clearTimeouts",
+              factory.createIntCounter("clearTimeouts",
                   "Total number of clear attempts that have timed out", "clears"),
-              f.createLongCounter("clearTime",
+              factory.createLongCounter("clearTime",
                   "Total amount of time, in nanoseconds spent doing clears", "nanoseconds"),
-              f.createIntGauge("containsKeysInProgress",
+              factory.createIntGauge("containsKeysInProgress",
                   "Current number of containsKeys being executed", "containsKeys"),
-              f.createIntCounter("containsKeys",
+              factory.createIntCounter("containsKeys",
                   "Total number of containsKeys completed successfully", "containsKeys"),
-              f.createIntCounter("containsKeyFailures",
+              factory.createIntCounter("containsKeyFailures",
                   "Total number of containsKey attempts that have failed", "containsKeys"),
-              f.createIntCounter("containsKeyTimeouts",
+              factory.createIntCounter("containsKeyTimeouts",
                   "Total number of containsKey attempts that have timed out", "containsKeys"),
-              f.createLongCounter("containsKeyTime",
+              factory.createLongCounter("containsKeyTime",
                   "Total amount of time, in nanoseconds spent doing containsKeys", "nanoseconds"),
-              f.createIntGauge("keySetsInProgress", "Current number of keySets being executed",
+              factory.createIntGauge("keySetsInProgress", "Current number of keySets being executed",
                   "keySets"),
-              f.createIntCounter("keySets", "Total number of keySets completed successfully",
+              factory.createIntCounter("keySets", "Total number of keySets completed successfully",
                   "keySets"),
-              f.createIntCounter("keySetFailures",
+              factory.createIntCounter("keySetFailures",
                   "Total number of keySet attempts that have failed", "keySets"),
-              f.createIntCounter("keySetTimeouts",
+              factory.createIntCounter("keySetTimeouts",
                   "Total number of keySet attempts that have timed out", "keySets"),
-              f.createLongCounter("keySetTime",
+              factory.createLongCounter("keySetTime",
                   "Total amount of time, in nanoseconds spent doing keySets", "nanoseconds"),
 
-              f.createIntGauge("commitsInProgress", "Current number of commits being executed",
+              factory.createIntGauge("commitsInProgress", "Current number of commits being executed",
                   "commits"),
-              f.createIntCounter("commits", "Total number of commits completed successfully",
+              factory.createIntCounter("commits", "Total number of commits completed successfully",
                   "commits"),
-              f.createIntCounter("commitFailures",
+              factory.createIntCounter("commitFailures",
                   "Total number of commit attempts that have failed", "commits"),
-              f.createIntCounter("commitTimeouts",
+              factory.createIntCounter("commitTimeouts",
                   "Total number of commit attempts that have timed out", "commits"),
-              f.createLongCounter("commitTime",
+              factory.createLongCounter("commitTime",
                   "Total amount of time, in nanoseconds spent doing commits", "nanoseconds"),
 
-              f.createIntGauge("rollbacksInProgress", "Current number of rollbacks being executed",
+              factory.createIntGauge("rollbacksInProgress", "Current number of rollbacks being executed",
                   "rollbacks"),
-              f.createIntCounter("rollbacks", "Total number of rollbacks completed successfully",
+              factory.createIntCounter("rollbacks", "Total number of rollbacks completed successfully",
                   "rollbacks"),
-              f.createIntCounter("rollbackFailures",
+              factory.createIntCounter("rollbackFailures",
                   "Total number of rollback attempts that have failed", "rollbacks"),
-              f.createIntCounter("rollbackTimeouts",
+              factory.createIntCounter("rollbackTimeouts",
                   "Total number of rollback attempts that have timed out", "rollbacks"),
-              f.createLongCounter("rollbackTime",
+              factory.createLongCounter("rollbackTime",
                   "Total amount of time, in nanoseconds spent doing rollbacks", "nanoseconds"),
 
-              f.createIntGauge("getEntrysInProgress",
+              factory.createIntGauge("getEntrysInProgress",
                   "Current number of getEntry messages being executed", "messages"),
-              f.createIntCounter("getEntrys",
+              factory.createIntCounter("getEntrys",
                   "Total number of getEntry messages completed successfully", "messages"),
-              f.createIntCounter("getEntryFailures",
+              factory.createIntCounter("getEntryFailures",
                   "Total number of getEntry attempts that have failed", "attempts"),
-              f.createIntCounter("getEntryTimeouts",
+              factory.createIntCounter("getEntryTimeouts",
                   "Total number of getEntry attempts that have timed out", "attempts"),
-              f.createLongCounter("getEntryTime",
+              factory.createLongCounter("getEntryTime",
                   "Total amount of time, in nanoseconds spent doing getEntry processings",
                   "nanoseconds"),
 
-              f.createIntGauge("jtaSynchronizationsInProgress",
+              factory.createIntGauge("jtaSynchronizationsInProgress",
                   "Current number of jtaSynchronizations being executed", "sizes"),
-              f.createIntCounter("jtaSynchronizations",
+              factory.createIntCounter("jtaSynchronizations",
                   "Total number of jtaSynchronizations completed successfully",
                   "jtaSynchronizations"),
-              f.createIntCounter("jtaSynchronizationFailures",
+              factory.createIntCounter("jtaSynchronizationFailures",
                   "Total number of jtaSynchronization attempts that have failed",
                   "jtaSynchronizations"),
-              f.createIntCounter("jtaSynchronizationTimeouts",
+              factory.createIntCounter("jtaSynchronizationTimeouts",
                   "Total number of jtaSynchronization attempts that have timed out",
                   "jtaSynchronizations"),
-              f.createLongCounter("jtaSynchronizationTime",
+              factory.createLongCounter("jtaSynchronizationTime",
                   "Total amount of time, in nanoseconds spent doing jtaSynchronizations",
                   "nanoseconds"),
 
-              f.createIntGauge("txFailoversInProgress",
+              factory.createIntGauge("txFailoversInProgress",
                   "Current number of txFailovers being executed", "txFailovers"),
-              f.createIntCounter("txFailovers",
+              factory.createIntCounter("txFailovers",
                   "Total number of txFailovers completed successfully", "txFailovers"),
-              f.createIntCounter("txFailoverFailures",
+              factory.createIntCounter("txFailoverFailures",
                   "Total number of txFailover attempts that have failed", "txFailovers"),
-              f.createIntCounter("txFailoverTimeouts",
+              factory.createIntCounter("txFailoverTimeouts",
                   "Total number of txFailover attempts that have timed out", "sizes"),
-              f.createLongCounter("txFailoverTime",
+              factory.createLongCounter("txFailoverTime",
                   "Total amount of time, in nanoseconds spent doing txFailovers", "nanoseconds"),
 
-              f.createIntGauge("sizesInProgress", "Current number of sizes being executed",
+              factory.createIntGauge("sizesInProgress", "Current number of sizes being executed",
                   "sizes"),
-              f.createIntCounter("sizes", "Total number of sizes completed successfully", "sizes"),
-              f.createIntCounter("sizeFailures", "Total number of size attempts that have failed",
+              factory.createIntCounter("sizes", "Total number of sizes completed successfully", "sizes"),
+              factory.createIntCounter("sizeFailures", "Total number of size attempts that have failed",
                   "sizes"),
-              f.createIntCounter("sizeTimeouts",
+              factory.createIntCounter("sizeTimeouts",
                   "Total number of size attempts that have timed out", "sizes"),
-              f.createLongCounter("sizeTime",
+              factory.createLongCounter("sizeTime",
                   "Total amount of time, in nanoseconds spent doing sizes", "nanoseconds"),
 
-              f.createIntGauge("invalidatesInProgress",
+              factory.createIntGauge("invalidatesInProgress",
                   "Current number of invalidates being executed", "invalidates"),
-              f.createIntCounter("invalidates",
+              factory.createIntCounter("invalidates",
                   "Total number of invalidates completed successfully", "invalidates"),
-              f.createIntCounter("invalidateFailures",
+              factory.createIntCounter("invalidateFailures",
                   "Total number of invalidate attempts that have failed", "invalidates"),
-              f.createIntCounter("invalidateTimeouts",
+              factory.createIntCounter("invalidateTimeouts",
                   "Total number of invalidate attempts that have timed out", "invalidates"),
-              f.createLongCounter("invalidateTime",
+              factory.createLongCounter("invalidateTime",
                   "Total amount of time, in nanoseconds spent doing invalidates", "nanoseconds"),
 
 
-              f.createIntGauge("registerInterestsInProgress",
+              factory.createIntGauge("registerInterestsInProgress",
                   "Current number of registerInterests being executed", "registerInterests"),
-              f.createIntCounter("registerInterests",
+              factory.createIntCounter("registerInterests",
                   "Total number of registerInterests completed successfully", "registerInterests"),
-              f.createIntCounter("registerInterestFailures",
+              factory.createIntCounter("registerInterestFailures",
                   "Total number of registerInterest attempts that have failed",
                   "registerInterests"),
-              f.createIntCounter("registerInterestTimeouts",
+              factory.createIntCounter("registerInterestTimeouts",
                   "Total number of registerInterest attempts that have timed out",
                   "registerInterests"),
-              f.createLongCounter("registerInterestTime",
+              factory.createLongCounter("registerInterestTime",
                   "Total amount of time, in nanoseconds spent doing registerInterests",
                   "nanoseconds"),
-              f.createIntGauge("unregisterInterestsInProgress",
+              factory.createIntGauge("unregisterInterestsInProgress",
                   "Current number of unregisterInterests being executed", "unregisterInterests"),
-              f.createIntCounter("unregisterInterests",
+              factory.createIntCounter("unregisterInterests",
                   "Total number of unregisterInterests completed successfully",
                   "unregisterInterests"),
-              f.createIntCounter("unregisterInterestFailures",
+              factory.createIntCounter("unregisterInterestFailures",
                   "Total number of unregisterInterest attempts that have failed",
                   "unregisterInterests"),
-              f.createIntCounter("unregisterInterestTimeouts",
+              factory.createIntCounter("unregisterInterestTimeouts",
                   "Total number of unregisterInterest attempts that have timed out",
                   "unregisterInterests"),
-              f.createLongCounter("unregisterInterestTime",
+              factory.createLongCounter("unregisterInterestTime",
                   "Total amount of time, in nanoseconds spent doing unregisterInterests",
                   "nanoseconds"),
-              f.createIntGauge("querysInProgress", "Current number of querys being executed",
+              factory.createIntGauge("querysInProgress", "Current number of querys being executed",
                   "querys"),
-              f.createIntCounter("querys", "Total number of querys completed successfully",
+              factory.createIntCounter("querys", "Total number of querys completed successfully",
                   "querys"),
-              f.createIntCounter("queryFailures", "Total number of query attempts that have failed",
+              factory.createIntCounter("queryFailures", "Total number of query attempts that have failed",
                   "querys"),
-              f.createIntCounter("queryTimeouts",
+              factory.createIntCounter("queryTimeouts",
                   "Total number of query attempts that have timed out", "querys"),
-              f.createLongCounter("queryTime",
+              factory.createLongCounter("queryTime",
                   "Total amount of time, in nanoseconds spent doing querys", "nanoseconds"),
-              f.createIntGauge("createCQsInProgress", "Current number of createCQs being executed",
+              factory.createIntGauge("createCQsInProgress", "Current number of createCQs being executed",
                   "createCQs"),
-              f.createIntCounter("createCQs", "Total number of createCQs completed successfully",
+              factory.createIntCounter("createCQs", "Total number of createCQs completed successfully",
                   "createCQs"),
-              f.createIntCounter("createCQFailures",
+              factory.createIntCounter("createCQFailures",
                   "Total number of createCQ attempts that have failed", "createCQs"),
-              f.createIntCounter("createCQTimeouts",
+              factory.createIntCounter("createCQTimeouts",
                   "Total number of createCQ attempts that have timed out", "createCQs"),
-              f.createLongCounter("createCQTime",
+              factory.createLongCounter("createCQTime",
                   "Total amount of time, in nanoseconds spent doing createCQs", "nanoseconds"),
-              f.createIntGauge("stopCQsInProgress", "Current number of stopCQs being executed",
+              factory.createIntGauge("stopCQsInProgress", "Current number of stopCQs being executed",
                   "stopCQs"),
-              f.createIntCounter("stopCQs", "Total number of stopCQs completed successfully",
+              factory.createIntCounter("stopCQs", "Total number of stopCQs completed successfully",
                   "stopCQs"),
-              f.createIntCounter("stopCQFailures",
+              factory.createIntCounter("stopCQFailures",
                   "Total number of stopCQ attempts that have failed", "stopCQs"),
-              f.createIntCounter("stopCQTimeouts",
+              factory.createIntCounter("stopCQTimeouts",
                   "Total number of stopCQ attempts that have timed out", "stopCQs"),
-              f.createLongCounter("stopCQTime",
+              factory.createLongCounter("stopCQTime",
                   "Total amount of time, in nanoseconds spent doing stopCQs", "nanoseconds"),
-              f.createIntGauge("closeCQsInProgress", "Current number of closeCQs being executed",
+              factory.createIntGauge("closeCQsInProgress", "Current number of closeCQs being executed",
                   "closeCQs"),
-              f.createIntCounter("closeCQs", "Total number of closeCQs completed successfully",
+              factory.createIntCounter("closeCQs", "Total number of closeCQs completed successfully",
                   "closeCQs"),
-              f.createIntCounter("closeCQFailures",
+              factory.createIntCounter("closeCQFailures",
                   "Total number of closeCQ attempts that have failed", "closeCQs"),
-              f.createIntCounter("closeCQTimeouts",
+              factory.createIntCounter("closeCQTimeouts",
                   "Total number of closeCQ attempts that have timed out", "closeCQs"),
-              f.createLongCounter("closeCQTime",
+              factory.createLongCounter("closeCQTime",
                   "Total amount of time, in nanoseconds spent doing closeCQs", "nanoseconds"),
-              f.createIntGauge("gatewayBatchsInProgress",
+              factory.createIntGauge("gatewayBatchsInProgress",
                   "Current number of gatewayBatchs being executed", "gatewayBatchs"),
-              f.createIntCounter("gatewayBatchs",
+              factory.createIntCounter("gatewayBatchs",
                   "Total number of gatewayBatchs completed successfully", "gatewayBatchs"),
-              f.createIntCounter("gatewayBatchFailures",
+              factory.createIntCounter("gatewayBatchFailures",
                   "Total number of gatewayBatch attempts that have failed", "gatewayBatchs"),
-              f.createIntCounter("gatewayBatchTimeouts",
+              factory.createIntCounter("gatewayBatchTimeouts",
                   "Total number of gatewayBatch attempts that have timed out", "gatewayBatchs"),
-              f.createLongCounter("gatewayBatchTime",
+              factory.createLongCounter("gatewayBatchTime",
                   "Total amount of time, in nanoseconds spent doing gatewayBatchs", "nanoseconds"),
-              f.createIntGauge("getDurableCQsInProgress",
+              factory.createIntGauge("getDurableCQsInProgress",
                   "Current number of getDurableCQs being executed", "getDurableCQs"),
-              f.createIntCounter("getDurableCQs",
+              factory.createIntCounter("getDurableCQs",
                   "Total number of getDurableCQs completed successfully", "getDurableCQs"),
-              f.createIntCounter("getDurableCQsFailures",
+              factory.createIntCounter("getDurableCQsFailures",
                   "Total number of getDurableCQs attempts that have failed", "getDurableCQs"),
-              f.createIntCounter("getDurableCQsTimeouts",
+              factory.createIntCounter("getDurableCQsTimeouts",
                   "Total number of getDurableCQs attempts that have timed out", "getDurableCQs"),
-              f.createLongCounter("getDurableCQsTime",
+              factory.createLongCounter("getDurableCQsTime",
                   "Total amount of time, in nanoseconds spent doing getDurableCQs", "nanoseconds"),
-              f.createIntGauge("readyForEventsInProgress",
+              factory.createIntGauge("readyForEventsInProgress",
                   "Current number of readyForEvents being executed", "readyForEvents"),
-              f.createIntCounter("readyForEvents",
+              factory.createIntCounter("readyForEvents",
                   "Total number of readyForEvents completed successfully", "readyForEvents"),
-              f.createIntCounter("readyForEventsFailures",
+              factory.createIntCounter("readyForEventsFailures",
                   "Total number of readyForEvents attempts that have failed", "readyForEvents"),
-              f.createIntCounter("readyForEventsTimeouts",
+              factory.createIntCounter("readyForEventsTimeouts",
                   "Total number of readyForEvents attempts that have timed out", "readyForEvents"),
-              f.createLongCounter("readyForEventsTime",
+              factory.createLongCounter("readyForEventsTime",
                   "Total amount of time, in nanoseconds spent doing readyForEvents", "nanoseconds"),
-              f.createIntGauge("makePrimarysInProgress",
+              factory.createIntGauge("makePrimarysInProgress",
                   "Current number of makePrimarys being executed", "makePrimarys"),
-              f.createIntCounter("makePrimarys",
+              factory.createIntCounter("makePrimarys",
                   "Total number of makePrimarys completed successfully", "makePrimarys"),
-              f.createIntCounter("makePrimaryFailures",
+              factory.createIntCounter("makePrimaryFailures",
                   "Total number of makePrimary attempts that have failed", "makePrimarys"),
-              f.createIntCounter("makePrimaryTimeouts",
+              factory.createIntCounter("makePrimaryTimeouts",
                   "Total number of makePrimary attempts that have timed out", "makePrimarys"),
-              f.createLongCounter("makePrimaryTime",
+              factory.createLongCounter("makePrimaryTime",
                   "Total amount of time, in nanoseconds spent doing makePrimarys", "nanoseconds"),
 
-              f.createIntGauge("closeConsInProgress", "Current number of closeCons being executed",
+              factory.createIntGauge("closeConsInProgress", "Current number of closeCons being executed",
                   "closeCons"),
-              f.createIntCounter("closeCons", "Total number of closeCons completed successfully",
+              factory.createIntCounter("closeCons", "Total number of closeCons completed successfully",
                   "closeCons"),
-              f.createIntCounter("closeConFailures",
+              factory.createIntCounter("closeConFailures",
                   "Total number of closeCon attempts that have failed", "closeCons"),
-              f.createIntCounter("closeConTimeouts",
+              factory.createIntCounter("closeConTimeouts",
                   "Total number of closeCon attempts that have timed out", "closeCons"),
-              f.createLongCounter("closeConTime",
+              factory.createLongCounter("closeConTime",
                   "Total amount of time, in nanoseconds spent doing closeCons", "nanoseconds"),
 
-              f.createIntGauge("primaryAcksInProgress",
+              factory.createIntGauge("primaryAcksInProgress",
                   "Current number of primaryAcks being executed", "primaryAcks"),
-              f.createIntCounter("primaryAcks",
+              factory.createIntCounter("primaryAcks",
                   "Total number of primaryAcks completed successfully", "primaryAcks"),
-              f.createIntCounter("primaryAckFailures",
+              factory.createIntCounter("primaryAckFailures",
                   "Total number of primaryAck attempts that have failed", "primaryAcks"),
-              f.createIntCounter("primaryAckTimeouts",
+              factory.createIntCounter("primaryAckTimeouts",
                   "Total number of primaryAck attempts that have timed out", "primaryAcks"),
-              f.createLongCounter("primaryAckTime",
+              factory.createLongCounter("primaryAckTime",
                   "Total amount of time, in nanoseconds spent doing primaryAcks", "nanoseconds"),
 
-              f.createIntGauge("pingsInProgress", "Current number of pings being executed",
+              factory.createIntGauge("pingsInProgress", "Current number of pings being executed",
                   "pings"),
-              f.createIntCounter("pings", "Total number of pings completed successfully", "pings"),
-              f.createIntCounter("pingFailures", "Total number of ping attempts that have failed",
+              factory.createIntCounter("pings", "Total number of pings completed successfully", "pings"),
+              factory.createIntCounter("pingFailures", "Total number of ping attempts that have failed",
                   "pings"),
-              f.createIntCounter("pingTimeouts",
+              factory.createIntCounter("pingTimeouts",
                   "Total number of ping attempts that have timed out", "pings"),
-              f.createLongCounter("pingTime",
+              factory.createLongCounter("pingTime",
                   "Total amount of time, in nanoseconds spent doing pings", "nanoseconds"),
 
-              f.createIntGauge("registerInstantiatorsInProgress",
+              factory.createIntGauge("registerInstantiatorsInProgress",
                   "Current number of registerInstantiators being executed",
                   "registerInstantiators"),
-              f.createIntCounter("registerInstantiators",
+              factory.createIntCounter("registerInstantiators",
                   "Total number of registerInstantiators completed successfully",
                   "registerInstantiators"),
-              f.createIntCounter("registerInstantiatorsFailures",
+              factory.createIntCounter("registerInstantiatorsFailures",
                   "Total number of registerInstantiators attempts that have failed",
                   "registerInstantiators"),
-              f.createIntCounter("registerInstantiatorsTimeouts",
+              factory.createIntCounter("registerInstantiatorsTimeouts",
                   "Total number of registerInstantiators attempts that have timed out",
                   "registerInstantiators"),
-              f.createLongCounter("registerInstantiatorsTime",
+              factory.createLongCounter("registerInstantiatorsTime",
                   "Total amount of time, in nanoseconds spent doing registerInstantiators",
                   "nanoseconds"),
 
-              f.createIntGauge("registerDataSerializersInProgress",
+              factory.createIntGauge("registerDataSerializersInProgress",
                   "Current number of registerDataSerializers being executed",
                   "registerDataSerializers"),
-              f.createIntCounter("registerDataSerializers",
+              factory.createIntCounter("registerDataSerializers",
                   "Total number of registerDataSerializers completed successfully",
                   "registerDataSerializers"),
-              f.createIntCounter("registerDataSerializersFailures",
+              factory.createIntCounter("registerDataSerializersFailures",
                   "Total number of registerDataSerializers attempts that have failed",
                   "registerDataSerializers"),
-              f.createIntCounter("registerDataSerializersTimeouts",
+              factory.createIntCounter("registerDataSerializersTimeouts",
                   "Total number of registerDataSerializers attempts that have timed out",
                   "registerDataSerializers"),
-              f.createLongCounter("registerDataSerializersTime",
+              factory.createLongCounter("registerDataSerializersTime",
                   "Total amount of time, in nanoseconds spent doing registerDataSerializers",
                   "nanoseconds"),
 
-              f.createIntGauge("connections", "Current number of connections", "connections"),
-              f.createIntCounter("connects", "Total number of times a connection has been created.",
+              factory.createIntGauge("connections", "Current number of connections", "connections"),
+              factory.createIntCounter("connects", "Total number of times a connection has been created.",
                   "connects"),
-              f.createIntCounter("disconnects",
+              factory.createIntCounter("disconnects",
                   "Total number of times a connection has been destroyed.", "disconnects"),
-              f.createIntGauge("putAllsInProgress", "Current number of putAlls being executed",
+              factory.createIntGauge("putAllsInProgress", "Current number of putAlls being executed",
                   "putAlls"),
-              f.createIntCounter("putAlls", "Total number of putAlls completed successfully",
+              factory.createIntCounter("putAlls", "Total number of putAlls completed successfully",
                   "putAlls"),
-              f.createIntCounter("putAllFailures",
+              factory.createIntCounter("putAllFailures",
                   "Total number of putAll attempts that have failed", "putAlls"),
-              f.createIntCounter("putAllTimeouts",
+              factory.createIntCounter("putAllTimeouts",
                   "Total number of putAll attempts that have timed out", "putAlls"),
-              f.createLongCounter("putAllTime",
+              factory.createLongCounter("putAllTime",
                   "Total amount of time, in nanoseconds spent doing putAlls", "nanoseconds"),
-              f.createIntGauge("removeAllsInProgress",
+              factory.createIntGauge("removeAllsInProgress",
                   "Current number of removeAlls being executed", "removeAlls"),
-              f.createIntCounter("removeAlls", "Total number of removeAlls completed successfully",
+              factory.createIntCounter("removeAlls", "Total number of removeAlls completed successfully",
                   "removeAlls"),
-              f.createIntCounter("removeAllFailures",
+              factory.createIntCounter("removeAllFailures",
                   "Total number of removeAll attempts that have failed", "removeAlls"),
-              f.createIntCounter("removeAllTimeouts",
+              factory.createIntCounter("removeAllTimeouts",
                   "Total number of removeAll attempts that have timed out", "removeAlls"),
-              f.createLongCounter("removeAllTime",
+              factory.createLongCounter("removeAllTime",
                   "Total amount of time, in nanoseconds spent doing removeAlls", "nanoseconds"),
-              f.createIntGauge("getAllsInProgress", "Current number of getAlls being executed",
+              factory.createIntGauge("getAllsInProgress", "Current number of getAlls being executed",
                   "getAlls"),
-              f.createIntCounter("getAlls", "Total number of getAlls completed successfully",
+              factory.createIntCounter("getAlls", "Total number of getAlls completed successfully",
                   "getAlls"),
-              f.createIntCounter("getAllFailures",
+              factory.createIntCounter("getAllFailures",
                   "Total number of getAll attempts that have failed", "getAlls"),
-              f.createIntCounter("getAllTimeouts",
+              factory.createIntCounter("getAllTimeouts",
                   "Total number of getAll attempts that have timed out", "getAlls"),
-              f.createLongCounter("getAllTime",
+              factory.createLongCounter("getAllTime",
                   "Total amount of time, in nanoseconds spent doing getAlls", "nanoseconds"),
-              f.createLongCounter("receivedBytes",
+              factory.createLongCounter("receivedBytes",
                   "Total number of bytes received (as responses) from server over a client-to-server connection.",
                   "bytes"),
-              f.createLongCounter("sentBytes",
+              factory.createLongCounter("sentBytes",
                   "Total number of bytes sent to server over a client-to-server connection.",
                   "bytes"),
-              f.createIntGauge("messagesBeingReceived",
+              factory.createIntGauge("messagesBeingReceived",
                   "Current number of message being received off the network or being processed after reception over a client-to-server connection.",
                   "messages"),
-              f.createLongGauge("messageBytesBeingReceived",
+              factory.createLongGauge("messageBytesBeingReceived",
                   "Current number of bytes consumed by messages being received or processed over a client-to-server connection.",
                   "bytes"),
 
-              f.createIntGauge("executeFunctionsInProgress",
+              factory.createIntGauge("executeFunctionsInProgress",
                   "Current number of Functions being executed", "executeFunctions"),
-              f.createIntCounter("executeFunctions",
+              factory.createIntCounter("executeFunctions",
                   "Total number of Functions completed successfully", "executeFunctions"),
-              f.createIntCounter("executeFunctionFailures",
+              factory.createIntCounter("executeFunctionFailures",
                   "Total number of Function attempts that have failed", "executeFunctions"),
-              f.createIntCounter("executeFunctionTimeouts",
+              factory.createIntCounter("executeFunctionTimeouts",
                   "Total number of Function attempts that have timed out", "executeFunctions"),
-              f.createLongCounter("executeFunctionTime",
+              factory.createLongCounter("executeFunctionTime",
                   "Total amount of time, in nanoseconds spent doing Functions", "nanoseconds"),
 
-              f.createIntGauge("asyncExecuteFunctionsInProgress",
+              factory.createIntGauge("asyncExecuteFunctionsInProgress",
                   "Current number of Functions being executed asynchronously",
                   "asyncExecuteFunctions"),
-              f.createIntCounter("asyncExecuteFunctions",
+              factory.createIntCounter("asyncExecuteFunctions",
                   "Total number of asynchronous Functions completed successfully",
                   "asyncExecuteFunctions"),
-              f.createIntCounter("asyncExecuteFunctionFailures",
+              factory.createIntCounter("asyncExecuteFunctionFailures",
                   "Total number of asynchronous Function attempts that have failed",
                   "asyncExecuteFunctions"),
-              f.createIntCounter("asyncExecuteFunctionTimeouts",
+              factory.createIntCounter("asyncExecuteFunctionTimeouts",
                   "Total number of asynchronous Function attempts that have timed out",
                   "asyncExecuteFunctions"),
-              f.createLongCounter("asyncExecuteFunctionTime",
+              factory.createLongCounter("asyncExecuteFunctionTime",
                   "Total amount of time, in nanoseconds spent doing asynchronous Functions",
                   "nanoseconds"),
 
-              f.createIntGauge("getClientPRMetadataInProgress",
+              factory.createIntGauge("getClientPRMetadataInProgress",
                   "Current number of getClientPRMetadata operations being executed",
                   "getClientPRMetadata"),
-              f.createIntCounter("getClientPRMetadataFailures",
+              factory.createIntCounter("getClientPRMetadataFailures",
                   "Total number of getClientPRMetadata operation attempts that have failed",
                   "getClientPRMetadata"),
-              f.createIntCounter("getClientPRMetadataSuccessful",
+              factory.createIntCounter("getClientPRMetadataSuccessful",
                   "Total number of getClientPRMetadata operations completed successfully",
                   "getClientPRMetadata"),
-              f.createIntCounter("getClientPRMetadataTimeouts",
+              factory.createIntCounter("getClientPRMetadataTimeouts",
                   "Total number of getClientPRMetadata operation attempts that have timed out",
                   "getClientPRMetadata"),
-              f.createLongCounter("getClientPRMetadataTime",
+              factory.createLongCounter("getClientPRMetadataTime",
                   "Total amount of time, in nanoseconds spent doing getClientPRMetadata successfully/unsuccessfully",
                   "nanoseconds"),
 
-              f.createIntGauge("getClientPartitionAttributesInProgress",
+              factory.createIntGauge("getClientPartitionAttributesInProgress",
                   "Current number of getClientPartitionAttributes operations being executed",
                   "getClientPartitionAttributes"),
-              f.createIntCounter("getClientPartitionAttributesFailures",
+              factory.createIntCounter("getClientPartitionAttributesFailures",
                   "Total number of getClientPartitionAttributes operation attempts that have failed",
                   "getClientPartitionAttributes"),
-              f.createIntCounter("getClientPartitionAttributesSuccessful",
+              factory.createIntCounter("getClientPartitionAttributesSuccessful",
                   "Total number of getClientPartitionAttributes operations completed successfully",
                   "getClientPartitionAttributes"),
-              f.createIntCounter("getClientPartitionAttributesTimeouts",
+              factory.createIntCounter("getClientPartitionAttributesTimeouts",
                   "Total number of getClientPartitionAttributes operation attempts that have timed out",
                   "getClientPartitionAttributes"),
-              f.createLongCounter("getClientPartitionAttributesTime",
+              factory.createLongCounter("getClientPartitionAttributesTime",
                   "Total amount of time, in nanoseconds spent doing getClientPartitionAttributes successfully/unsuccessfully.",
                   "nanoseconds"),
 
-              f.createIntGauge("getPDXTypeByIdInProgress",
+              factory.createIntGauge("getPDXTypeByIdInProgress",
                   "Current number of getPDXTypeById operations being executed", "getPDXTypeById"),
-              f.createIntCounter("getPDXTypeByIdFailures",
+              factory.createIntCounter("getPDXTypeByIdFailures",
                   "Total number of getPDXTypeById operation attempts that have failed",
                   "getPDXTypeById"),
-              f.createIntCounter("getPDXTypeByIdSuccessful",
+              factory.createIntCounter("getPDXTypeByIdSuccessful",
                   "Total number of getPDXTypeById operations completed successfully",
                   "getPDXTypeById"),
-              f.createIntCounter("getPDXTypeByIdTimeouts",
+              factory.createIntCounter("getPDXTypeByIdTimeouts",
                   "Total number of getPDXTypeById operation attempts that have timed out",
                   "getPDXTypeById"),
-              f.createLongCounter("getPDXTypeByIdTime",
+              factory.createLongCounter("getPDXTypeByIdTime",
                   "Total amount of time, in nanoseconds spent doing getPDXTypeById successfully/unsuccessfully.",
                   "nanoseconds"),
 
-              f.createIntGauge("getPDXIdForTypeInProgress",
+              factory.createIntGauge("getPDXIdForTypeInProgress",
                   "Current number of getPDXIdForType operations being executed", "getPDXIdForType"),
-              f.createIntCounter("getPDXIdForTypeFailures",
+              factory.createIntCounter("getPDXIdForTypeFailures",
                   "Total number of getPDXIdForType operation attempts that have failed",
                   "getPDXIdForType"),
-              f.createIntCounter("getPDXIdForTypeSuccessful",
+              factory.createIntCounter("getPDXIdForTypeSuccessful",
                   "Total number of getPDXIdForType operations completed successfully",
                   "getPDXIdForType"),
-              f.createIntCounter("getPDXIdForTypeTimeouts",
+              factory.createIntCounter("getPDXIdForTypeTimeouts",
                   "Total number of getPDXIdForType operation attempts that have timed out",
                   "getPDXIdForType"),
-              f.createLongCounter("getPDXIdForTypeTime",
+              factory.createLongCounter("getPDXIdForTypeTime",
                   "Total amount of time, in nanoseconds spent doing getPDXIdForType successfully/unsuccessfully.",
                   "nanoseconds"),
 
-              f.createIntGauge("addPdxTypeInProgress",
+              factory.createIntGauge("addPdxTypeInProgress",
                   "Current number of addPdxType operations being executed", "addPdxType"),
-              f.createIntCounter("addPdxTypeFailures",
+              factory.createIntCounter("addPdxTypeFailures",
                   "Total number of addPdxType operation attempts that have failed", "addPdxType"),
-              f.createIntCounter("addPdxTypeSuccessful",
+              factory.createIntCounter("addPdxTypeSuccessful",
                   "Total number of addPdxType operations completed successfully", "addPdxType"),
-              f.createIntCounter("addPdxTypeTimeouts",
+              factory.createIntCounter("addPdxTypeTimeouts",
                   "Total number of addPdxType operation attempts that have timed out",
                   "addPdxType"),
-              f.createLongCounter("addPdxTypeTime",
+              factory.createLongCounter("addPdxTypeTime",
                   "Total amount of time, in nanoseconds spent doing addPdxType successfully/unsuccessfully.",
                   "nanoseconds"),});
 
-      sendType = f.createType("ClientSendStats", "Statistics about client to server communication",
+      sendType = factory.createType("ClientSendStats", "Statistics about client to server communication",
           new StatisticDescriptor[] {
               ///////////////////////////////////////////////////////////////////////
               /*
-               * f.createIntGauge("opSendsInProgress", "Current number of op sends being executed",
-               * "sends"), f.createIntCounter("opSends",
+               * factory.createIntGauge("opSendsInProgress", "Current number of op sends being executed",
+               * "sends"), factory.createIntCounter("opSends",
                * "Total number of op sends that have completed successfully", "sends"),
-               * f.createIntCounter("opSendFailures", "Total number of op sends that have failed",
-               * "sends"), f.createLongCounter("opSendTime",
+               * factory.createIntCounter("opSendFailures", "Total number of op sends that have failed",
+               * "sends"), factory.createLongCounter("opSendTime",
                * "Total amount of time, in nanoseconds spent doing op sends", "nanoseconds"),
                */
               ///////////////////////////////////////////////////////////////////////
-              f.createIntGauge("getSendsInProgress", "Current number of get sends being executed",
+              factory.createIntGauge("getSendsInProgress", "Current number of get sends being executed",
                   "sends"),
-              f.createIntCounter("getSends",
+              factory.createIntCounter("getSends",
                   "Total number of get sends that have completed successfully", "sends"),
-              f.createIntCounter("getSendFailures", "Total number of get sends that have failed",
+              factory.createIntCounter("getSendFailures", "Total number of get sends that have failed",
                   "sends"),
-              f.createLongCounter("getSendTime",
+              factory.createLongCounter("getSendTime",
                   "Total amount of time, in nanoseconds spent doing get sends", "nanoseconds"),
-              f.createIntGauge("putSendsInProgress", "Current number of put sends being executed",
+              factory.createIntGauge("putSendsInProgress", "Current number of put sends being executed",
                   "sends"),
-              f.createIntCounter("putSends",
+              factory.createIntCounter("putSends",
                   "Total number of put sends that have completed successfully", "sends"),
-              f.createIntCounter("putSendFailures", "Total number of put sends that have failed",
+              factory.createIntCounter("putSendFailures", "Total number of put sends that have failed",
                   "sends"),
-              f.createLongCounter("putSendTime",
+              factory.createLongCounter("putSendTime",
                   "Total amount of time, in nanoseconds spent doing put sends", "nanoseconds"),
-              f.createIntGauge("destroySendsInProgress",
+              factory.createIntGauge("destroySendsInProgress",
                   "Current number of destroy sends being executed", "sends"),
-              f.createIntCounter("destroySends",
+              factory.createIntCounter("destroySends",
                   "Total number of destroy sends that have completed successfully", "sends"),
-              f.createIntCounter("destroySendFailures",
+              factory.createIntCounter("destroySendFailures",
                   "Total number of destroy sends that have failed", "sends"),
-              f.createLongCounter("destroySendTime",
+              factory.createLongCounter("destroySendTime",
                   "Total amount of time, in nanoseconds spent doing destroy sends", "nanoseconds"),
-              f.createIntGauge("destroyRegionSendsInProgress",
+              factory.createIntGauge("destroyRegionSendsInProgress",
                   "Current number of destroyRegion sends being executed", "sends"),
-              f.createIntCounter("destroyRegionSends",
+              factory.createIntCounter("destroyRegionSends",
                   "Total number of destroyRegion sends that have completed successfully", "sends"),
-              f.createIntCounter("destroyRegionSendFailures",
+              factory.createIntCounter("destroyRegionSendFailures",
                   "Total number of destroyRegion sends that have failed", "sends"),
-              f.createLongCounter("destroyRegionSendTime",
+              factory.createLongCounter("destroyRegionSendTime",
                   "Total amount of time, in nanoseconds spent doing destroyRegion sends",
                   "nanoseconds"),
-              f.createIntGauge("clearSendsInProgress",
+              factory.createIntGauge("clearSendsInProgress",
                   "Current number of clear sends being executed", "sends"),
-              f.createIntCounter("clearSends",
+              factory.createIntCounter("clearSends",
                   "Total number of clear sends that have completed successfully", "sends"),
-              f.createIntCounter("clearSendFailures",
+              factory.createIntCounter("clearSendFailures",
                   "Total number of clear sends that have failed", "sends"),
-              f.createLongCounter("clearSendTime",
+              factory.createLongCounter("clearSendTime",
                   "Total amount of time, in nanoseconds spent doing clear sends", "nanoseconds"),
-              f.createIntGauge("containsKeySendsInProgress",
+              factory.createIntGauge("containsKeySendsInProgress",
                   "Current number of containsKey sends being executed", "sends"),
-              f.createIntCounter("containsKeySends",
+              factory.createIntCounter("containsKeySends",
                   "Total number of containsKey sends that have completed successfully", "sends"),
-              f.createIntCounter("containsKeySendFailures",
+              factory.createIntCounter("containsKeySendFailures",
                   "Total number of containsKey sends that have failed", "sends"),
-              f.createLongCounter("containsKeySendTime",
+              factory.createLongCounter("containsKeySendTime",
                   "Total amount of time, in nanoseconds spent doing containsKey sends",
                   "nanoseconds"),
-              f.createIntGauge("keySetSendsInProgress",
+              factory.createIntGauge("keySetSendsInProgress",
                   "Current number of keySet sends being executed", "sends"),
-              f.createIntCounter("keySetSends",
+              factory.createIntCounter("keySetSends",
                   "Total number of keySet sends that have completed successfully", "sends"),
-              f.createIntCounter("keySetSendFailures",
+              factory.createIntCounter("keySetSendFailures",
                   "Total number of keySet sends that have failed", "sends"),
-              f.createLongCounter("keySetSendTime",
+              factory.createLongCounter("keySetSendTime",
                   "Total amount of time, in nanoseconds spent doing keySet sends", "nanoseconds"),
 
-              f.createIntGauge("commitSendsInProgress",
+              factory.createIntGauge("commitSendsInProgress",
                   "Current number of commit sends being executed", "sends"),
-              f.createIntCounter("commitSendFailures",
+              factory.createIntCounter("commitSendFailures",
                   "Total number of commit sends that have failed", "sends"),
-              f.createIntCounter("commitSends", "Total number of commit sends that have failed",
+              factory.createIntCounter("commitSends", "Total number of commit sends that have failed",
                   "sends"),
-              f.createLongCounter("commitSendTime",
+              factory.createLongCounter("commitSendTime",
                   "Total amount of time, in nanoseconds spent doing commits", "nanoseconds"),
-              f.createIntGauge("rollbackSendsInProgress",
+              factory.createIntGauge("rollbackSendsInProgress",
                   "Current number of rollback sends being executed", "sends"),
-              f.createIntCounter("rollbackSendFailures",
+              factory.createIntCounter("rollbackSendFailures",
                   "Total number of rollback sends that have failed", "sends"),
-              f.createIntCounter("rollbackSends", "Total number of rollback sends that have failed",
+              factory.createIntCounter("rollbackSends", "Total number of rollback sends that have failed",
                   "sends"),
-              f.createLongCounter("rollbackSendTime",
+              factory.createLongCounter("rollbackSendTime",
                   "Total amount of time, in nanoseconds spent doing rollbacks", "nanoseconds"),
-              f.createIntGauge("getEntrySendsInProgress",
+              factory.createIntGauge("getEntrySendsInProgress",
                   "Current number of getEntry sends being executed", "sends"),
-              f.createIntCounter("getEntrySendFailures",
+              factory.createIntCounter("getEntrySendFailures",
                   "Total number of getEntry sends that have failed", "sends"),
-              f.createIntCounter("getEntrySends", "Total number of getEntry sends that have failed",
+              factory.createIntCounter("getEntrySends", "Total number of getEntry sends that have failed",
                   "sends"),
-              f.createLongCounter("getEntrySendTime",
+              factory.createLongCounter("getEntrySendTime",
                   "Total amount of time, in nanoseconds spent sending getEntry messages",
                   "nanoseconds"),
-              f.createIntGauge("jtaSynchronizationSendsInProgress",
+              factory.createIntGauge("jtaSynchronizationSendsInProgress",
                   "Current number of jtaSynchronization sends being executed", "sends"),
-              f.createIntCounter("jtaSynchronizationSendFailures",
+              factory.createIntCounter("jtaSynchronizationSendFailures",
                   "Total number of jtaSynchronization sends that have failed", "sends"),
-              f.createIntCounter("jtaSynchronizationSends",
+              factory.createIntCounter("jtaSynchronizationSends",
                   "Total number of jtaSynchronization sends that have failed", "sends"),
-              f.createLongCounter("jtaSynchronizationSendTime",
+              factory.createLongCounter("jtaSynchronizationSendTime",
                   "Total amount of time, in nanoseconds spent doing jtaSynchronizations",
                   "nanoseconds"),
-              f.createIntGauge("txFailoverSendsInProgress",
+              factory.createIntGauge("txFailoverSendsInProgress",
                   "Current number of txFailover sends being executed", "sends"),
-              f.createIntCounter("txFailoverSendFailures",
+              factory.createIntCounter("txFailoverSendFailures",
                   "Total number of txFailover sends that have failed", "sends"),
-              f.createIntCounter("txFailoverSends",
+              factory.createIntCounter("txFailoverSends",
                   "Total number of txFailover sends that have failed", "sends"),
-              f.createLongCounter("txFailoverSendTime",
+              factory.createLongCounter("txFailoverSendTime",
                   "Total amount of time, in nanoseconds spent doing txFailovers", "nanoseconds"),
-              f.createIntGauge("sizeSendsInProgress", "Current number of size sends being executed",
+              factory.createIntGauge("sizeSendsInProgress", "Current number of size sends being executed",
                   "sends"),
-              f.createIntCounter("sizeSendFailures", "Total number of size sends that have failed",
+              factory.createIntCounter("sizeSendFailures", "Total number of size sends that have failed",
                   "sends"),
-              f.createIntCounter("sizeSends", "Total number of size sends that have failed",
+              factory.createIntCounter("sizeSends", "Total number of size sends that have failed",
                   "sends"),
-              f.createLongCounter("sizeSendTime",
+              factory.createLongCounter("sizeSendTime",
                   "Total amount of time, in nanoseconds spent doing sizes", "nanoseconds"),
-              f.createIntGauge("invalidateSendsInProgress",
+              factory.createIntGauge("invalidateSendsInProgress",
                   "Current number of invalidate sends being executed", "sends"),
-              f.createIntCounter("invalidateSendFailures",
+              factory.createIntCounter("invalidateSendFailures",
                   "Total number of invalidate sends that have failed", "sends"),
-              f.createIntCounter("invalidateSends",
+              factory.createIntCounter("invalidateSends",
                   "Total number of invalidate sends that have failed", "sends"),
-              f.createLongCounter("invalidateSendTime",
+              factory.createLongCounter("invalidateSendTime",
                   "Total amount of time, in nanoseconds spent doing invalidates", "nanoseconds"),
-              f.createIntGauge("registerInterestSendsInProgress",
+              factory.createIntGauge("registerInterestSendsInProgress",
                   "Current number of registerInterest sends being executed", "sends"),
-              f.createIntCounter("registerInterestSends",
+              factory.createIntCounter("registerInterestSends",
                   "Total number of registerInterest sends that have completed successfully",
                   "sends"),
-              f.createIntCounter("registerInterestSendFailures",
+              factory.createIntCounter("registerInterestSendFailures",
                   "Total number of registerInterest sends that have failed", "sends"),
-              f.createLongCounter("registerInterestSendTime",
+              factory.createLongCounter("registerInterestSendTime",
                   "Total amount of time, in nanoseconds spent doing registerInterest sends",
                   "nanoseconds"),
-              f.createIntGauge("unregisterInterestSendsInProgress",
+              factory.createIntGauge("unregisterInterestSendsInProgress",
                   "Current number of unregisterInterest sends being executed", "sends"),
-              f.createIntCounter("unregisterInterestSends",
+              factory.createIntCounter("unregisterInterestSends",
                   "Total number of unregisterInterest sends that have completed successfully",
                   "sends"),
-              f.createIntCounter("unregisterInterestSendFailures",
+              factory.createIntCounter("unregisterInterestSendFailures",
                   "Total number of unregisterInterest sends that have failed", "sends"),
-              f.createLongCounter("unregisterInterestSendTime",
+              factory.createLongCounter("unregisterInterestSendTime",
                   "Total amount of time, in nanoseconds spent doing unregisterInterest sends",
                   "nanoseconds"),
-              f.createIntGauge("querySendsInProgress",
+              factory.createIntGauge("querySendsInProgress",
                   "Current number of query sends being executed", "sends"),
-              f.createIntCounter("querySends",
+              factory.createIntCounter("querySends",
                   "Total number of query sends that have completed successfully", "sends"),
-              f.createIntCounter("querySendFailures",
+              factory.createIntCounter("querySendFailures",
                   "Total number of query sends that have failed", "sends"),
-              f.createLongCounter("querySendTime",
+              factory.createLongCounter("querySendTime",
                   "Total amount of time, in nanoseconds spent doing query sends", "nanoseconds"),
-              f.createIntGauge("createCQSendsInProgress",
+              factory.createIntGauge("createCQSendsInProgress",
                   "Current number of createCQ sends being executed", "sends"),
-              f.createIntCounter("createCQSends",
+              factory.createIntCounter("createCQSends",
                   "Total number of createCQ sends that have completed successfully", "sends"),
-              f.createIntCounter("createCQSendFailures",
+              factory.createIntCounter("createCQSendFailures",
                   "Total number of createCQ sends that have failed", "sends"),
-              f.createLongCounter("createCQSendTime",
+              factory.createLongCounter("createCQSendTime",
                   "Total amount of time, in nanoseconds spent doing createCQ sends", "nanoseconds"),
-              f.createIntGauge("stopCQSendsInProgress",
+              factory.createIntGauge("stopCQSendsInProgress",
                   "Current number of stopCQ sends being executed", "sends"),
-              f.createIntCounter("stopCQSends",
+              factory.createIntCounter("stopCQSends",
                   "Total number of stopCQ sends that have completed successfully", "sends"),
-              f.createIntCounter("stopCQSendFailures",
+              factory.createIntCounter("stopCQSendFailures",
                   "Total number of stopCQ sends that have failed", "sends"),
-              f.createLongCounter("stopCQSendTime",
+              factory.createLongCounter("stopCQSendTime",
                   "Total amount of time, in nanoseconds spent doing stopCQ sends", "nanoseconds"),
-              f.createIntGauge("closeCQSendsInProgress",
+              factory.createIntGauge("closeCQSendsInProgress",
                   "Current number of closeCQ sends being executed", "sends"),
-              f.createIntCounter("closeCQSends",
+              factory.createIntCounter("closeCQSends",
                   "Total number of closeCQ sends that have completed successfully", "sends"),
-              f.createIntCounter("closeCQSendFailures",
+              factory.createIntCounter("closeCQSendFailures",
                   "Total number of closeCQ sends that have failed", "sends"),
-              f.createLongCounter("closeCQSendTime",
+              factory.createLongCounter("closeCQSendTime",
                   "Total amount of time, in nanoseconds spent doing closeCQ sends", "nanoseconds"),
-              f.createIntGauge("gatewayBatchSendsInProgress",
+              factory.createIntGauge("gatewayBatchSendsInProgress",
                   "Current number of gatewayBatch sends being executed", "sends"),
-              f.createIntCounter("gatewayBatchSends",
+              factory.createIntCounter("gatewayBatchSends",
                   "Total number of gatewayBatch sends that have completed successfully", "sends"),
-              f.createIntCounter("gatewayBatchSendFailures",
+              factory.createIntCounter("gatewayBatchSendFailures",
                   "Total number of gatewayBatch sends that have failed", "sends"),
-              f.createLongCounter("gatewayBatchSendTime",
+              factory.createLongCounter("gatewayBatchSendTime",
                   "Total amount of time, in nanoseconds spent doing gatewayBatch sends",
                   "nanoseconds"),
-              f.createIntGauge("getDurableCQsSendsInProgressId",
+              factory.createIntGauge("getDurableCQsSendsInProgressId",
                   "Current number of getDurableCQs sends being executed", "sends"),
-              f.createIntCounter("getDurableCQsSends",
+              factory.createIntCounter("getDurableCQsSends",
                   "Total number of getDurableCQs sends that have completed successfully", "sends"),
-              f.createIntCounter("getDurableCQsSendFailures",
+              factory.createIntCounter("getDurableCQsSendFailures",
                   "Total number of getDurableCQs sends that have failed", "sends"),
-              f.createLongCounter("getDurableCQsSendTime",
+              factory.createLongCounter("getDurableCQsSendTime",
                   "Total amount of time, in nanoseconds spent doing getDurableCQs sends",
                   "nanoseconds"),
-              f.createIntGauge("readyForEventsSendsInProgress",
+              factory.createIntGauge("readyForEventsSendsInProgress",
                   "Current number of readyForEvents sends being executed", "sends"),
-              f.createIntCounter("readyForEventsSends",
+              factory.createIntCounter("readyForEventsSends",
                   "Total number of readyForEvents sends that have completed successfully", "sends"),
-              f.createIntCounter("readyForEventsSendFailures",
+              factory.createIntCounter("readyForEventsSendFailures",
                   "Total number of readyForEvents sends that have failed", "sends"),
-              f.createLongCounter("readyForEventsSendTime",
+              factory.createLongCounter("readyForEventsSendTime",
                   "Total amount of time, in nanoseconds spent doing readyForEvents sends",
                   "nanoseconds"),
-              f.createIntGauge("makePrimarySendsInProgress",
+              factory.createIntGauge("makePrimarySendsInProgress",
                   "Current number of makePrimary sends being executed", "sends"),
-              f.createIntCounter("makePrimarySends",
+              factory.createIntCounter("makePrimarySends",
                   "Total number of makePrimary sends that have completed successfully", "sends"),
-              f.createIntCounter("makePrimarySendFailures",
+              factory.createIntCounter("makePrimarySendFailures",
                   "Total number of makePrimary sends that have failed", "sends"),
-              f.createLongCounter("makePrimarySendTime",
+              factory.createLongCounter("makePrimarySendTime",
                   "Total amount of time, in nanoseconds spent doing makePrimary sends",
                   "nanoseconds"),
-              f.createIntGauge("closeConSendsInProgress",
+              factory.createIntGauge("closeConSendsInProgress",
                   "Current number of closeCon sends being executed", "sends"),
-              f.createIntCounter("closeConSends",
+              factory.createIntCounter("closeConSends",
                   "Total number of closeCon sends that have completed successfully", "sends"),
-              f.createIntCounter("closeConSendFailures",
+              factory.createIntCounter("closeConSendFailures",
                   "Total number of closeCon sends that have failed", "sends"),
-              f.createLongCounter("closeConSendTime",
+              factory.createLongCounter("closeConSendTime",
                   "Total amount of time, in nanoseconds spent doing closeCon sends", "nanoseconds"),
-              f.createIntGauge("primaryAckSendsInProgress",
+              factory.createIntGauge("primaryAckSendsInProgress",
                   "Current number of primaryAck sends being executed", "sends"),
-              f.createIntCounter("primaryAckSends",
+              factory.createIntCounter("primaryAckSends",
                   "Total number of primaryAck sends that have completed successfully", "sends"),
-              f.createIntCounter("primaryAckSendFailures",
+              factory.createIntCounter("primaryAckSendFailures",
                   "Total number of primaryAck sends that have failed", "sends"),
-              f.createLongCounter("primaryAckSendTime",
+              factory.createLongCounter("primaryAckSendTime",
                   "Total amount of time, in nanoseconds spent doing primaryAck sends",
                   "nanoseconds"),
-              f.createIntGauge("pingSendsInProgress", "Current number of ping sends being executed",
+              factory.createIntGauge("pingSendsInProgress", "Current number of ping sends being executed",
                   "sends"),
-              f.createIntCounter("pingSends",
+              factory.createIntCounter("pingSends",
                   "Total number of ping sends that have completed successfully", "sends"),
-              f.createIntCounter("pingSendFailures", "Total number of ping sends that have failed",
+              factory.createIntCounter("pingSendFailures", "Total number of ping sends that have failed",
                   "sends"),
-              f.createLongCounter("pingSendTime",
+              factory.createLongCounter("pingSendTime",
                   "Total amount of time, in nanoseconds spent doing ping sends", "nanoseconds"),
-              f.createIntGauge("registerInstantiatorsSendsInProgress",
+              factory.createIntGauge("registerInstantiatorsSendsInProgress",
                   "Current number of registerInstantiators sends being executed", "sends"),
-              f.createIntCounter("registerInstantiatorsSends",
+              factory.createIntCounter("registerInstantiatorsSends",
                   "Total number of registerInstantiators sends that have completed successfully",
                   "sends"),
-              f.createIntCounter("registerInstantiatorsSendFailures",
+              factory.createIntCounter("registerInstantiatorsSendFailures",
                   "Total number of registerInstantiators sends that have failed", "sends"),
-              f.createLongCounter("registerInstantiatorsSendTime",
+              factory.createLongCounter("registerInstantiatorsSendTime",
                   "Total amount of time, in nanoseconds spent doing registerInstantiators sends",
                   "nanoseconds"),
-              f.createIntGauge("registerDataSerializersSendInProgress",
+              factory.createIntGauge("registerDataSerializersSendInProgress",
                   "Current number of registerDataSerializers sends being executed", "sends"),
-              f.createIntCounter("registerDataSerializersSends",
+              factory.createIntCounter("registerDataSerializersSends",
                   "Total number of registerDataSerializers sends that have completed successfully",
                   "sends"),
-              f.createIntCounter("registerDataSerializersSendFailures",
+              factory.createIntCounter("registerDataSerializersSendFailures",
                   "Total number of registerDataSerializers sends that have failed", "sends"),
-              f.createLongCounter("registerDataSerializersSendTime",
+              factory.createLongCounter("registerDataSerializersSendTime",
                   "Total amount of time, in nanoseconds spent doing registerDataSerializers sends",
                   "nanoseconds"),
-              f.createIntGauge("putAllSendsInProgress",
+              factory.createIntGauge("putAllSendsInProgress",
                   "Current number of putAll sends being executed", "sends"),
-              f.createIntCounter("putAllSends",
+              factory.createIntCounter("putAllSends",
                   "Total number of putAll sends that have completed successfully", "sends"),
-              f.createIntCounter("putAllSendFailures",
+              factory.createIntCounter("putAllSendFailures",
                   "Total number of putAll sends that have failed", "sends"),
-              f.createLongCounter("putAllSendTime",
+              factory.createLongCounter("putAllSendTime",
                   "Total amount of time, in nanoseconds spent doing putAll sends", "nanoseconds"),
-              f.createIntGauge("removeAllSendsInProgress",
+              factory.createIntGauge("removeAllSendsInProgress",
                   "Current number of removeAll sends being executed", "sends"),
-              f.createIntCounter("removeAllSends",
+              factory.createIntCounter("removeAllSends",
                   "Total number of removeAll sends that have completed successfully", "sends"),
-              f.createIntCounter("removeAllSendFailures",
+              factory.createIntCounter("removeAllSendFailures",
                   "Total number of removeAll sends that have failed", "sends"),
-              f.createLongCounter("removeAllSendTime",
+              factory.createLongCounter("removeAllSendTime",
                   "Total amount of time, in nanoseconds spent doing removeAll sends",
                   "nanoseconds"),
-              f.createIntGauge("getAllSendsInProgress",
+              factory.createIntGauge("getAllSendsInProgress",
                   "Current number of getAll sends being executed", "sends"),
-              f.createIntCounter("getAllSends",
+              factory.createIntCounter("getAllSends",
                   "Total number of getAll sends that have completed successfully", "sends"),
-              f.createIntCounter("getAllSendFailures",
+              factory.createIntCounter("getAllSendFailures",
                   "Total number of getAll sends that have failed", "sends"),
-              f.createLongCounter("getAllSendTime",
+              factory.createLongCounter("getAllSendTime",
                   "Total amount of time, in nanoseconds spent doing getAll sends", "nanoseconds"),
-              f.createIntGauge("executeFunctionSendsInProgress",
+              factory.createIntGauge("executeFunctionSendsInProgress",
                   "Current number of Function sends being executed", "sends"),
-              f.createIntCounter("executeFunctionSends",
+              factory.createIntCounter("executeFunctionSends",
                   "Total number of Function sends that have completed successfully", "sends"),
-              f.createIntCounter("executeFunctionSendFailures",
+              factory.createIntCounter("executeFunctionSendFailures",
                   "Total number of Function sends that have failed", "sends"),
-              f.createLongCounter("executeFunctionSendTime",
+              factory.createLongCounter("executeFunctionSendTime",
                   "Total amount of time, in nanoseconds spent doing Function sends", "nanoseconds"),
-              f.createIntGauge("asyncExecuteFunctionSendsInProgress",
+              factory.createIntGauge("asyncExecuteFunctionSendsInProgress",
                   "Current number of Function sends being executed asynchronously", "sends"),
-              f.createIntCounter("asyncExecuteFunctionSends",
+              factory.createIntCounter("asyncExecuteFunctionSends",
                   "Total number of asynchronous Function sends that have completed successfully",
                   "sends"),
-              f.createIntCounter("asyncExecuteFunctionSendFailures",
+              factory.createIntCounter("asyncExecuteFunctionSendFailures",
                   "Total number of asynchronous Function sends that have failed", "sends"),
-              f.createLongCounter("asyncExecuteFunctionSendTime",
+              factory.createLongCounter("asyncExecuteFunctionSendTime",
                   "Total amount of time, in nanoseconds spent doing asynchronous Function sends",
                   "nanoseconds"),
-              f.createIntGauge("getClientPRMetadataSendsInProgress",
+              factory.createIntGauge("getClientPRMetadataSendsInProgress",
                   "Current number of getClientPRMetadata operation's request messages being send from the client to server",
                   "sends"),
-              f.createIntCounter("getClientPRMetadataSendFailures",
+              factory.createIntCounter("getClientPRMetadataSendFailures",
                   "Total number of getClientPRMetadata operation's request messages not sent successfully from the client to server",
                   "sends"),
-              f.createIntCounter("getClientPRMetadataSendsSuccessful",
+              factory.createIntCounter("getClientPRMetadataSendsSuccessful",
                   "Total number of getClientPRMetadata operation's request messages sent successfully from the client to server",
                   "sends"),
-              f.createLongCounter("getClientPRMetadataSendTime",
+              factory.createLongCounter("getClientPRMetadataSendTime",
                   "Total amount of time, in nanoseconds spent sending getClientPRMetadata operation's request messages successfully/unsuccessfully from the client to server",
                   "nanoseconds"),
-              f.createIntGauge("getClientPartitionAttributesSendsInProgress",
+              factory.createIntGauge("getClientPartitionAttributesSendsInProgress",
                   "Current number of getClientPartitionAttributes operation's request messages being send from the client to server",
                   "sends"),
-              f.createIntCounter("getClientPartitionAttributesSendFailures",
+              factory.createIntCounter("getClientPartitionAttributesSendFailures",
                   "Total number of getClientPartitionAttributes operation's request messages not sent successfully from the client to server",
                   "sends"),
-              f.createIntCounter("getClientPartitionAttributesSendsSuccessful",
+              factory.createIntCounter("getClientPartitionAttributesSendsSuccessful",
                   "Total number of getClientPartitionAttributes operation's request messages sent successfully from the client to server",
                   "sends"),
-              f.createLongCounter("getClientPartitionAttributesSendTime",
+              factory.createLongCounter("getClientPartitionAttributesSendTime",
                   "Total amount of time, in nanoseconds spent sending getClientPartitionAttributes operation's request messages successfully/unsuccessfully from the client to server",
                   "nanoseconds"),
-              f.createIntGauge("getPDXTypeByIdSendsInProgress",
+              factory.createIntGauge("getPDXTypeByIdSendsInProgress",
                   "Current number of getPDXTypeById operation's request messages being send from the client to server",
                   "sends"),
-              f.createIntCounter("getPDXTypeByIdSendFailures",
+              factory.createIntCounter("getPDXTypeByIdSendFailures",
                   "Total number of getPDXTypeById operation's request messages not sent successfully from the client to server",
                   "sends"),
-              f.createIntCounter("getPDXTypeByIdSendsSuccessful",
+              factory.createIntCounter("getPDXTypeByIdSendsSuccessful",
                   "Total number of getPDXTypeById operation's request messages sent successfully from the client to server",
                   "sends"),
-              f.createLongCounter("getPDXTypeByIdSendTime",
+              factory.createLongCounter("getPDXTypeByIdSendTime",
                   "Total amount of time, in nanoseconds spent sending getPDXTypeById operation's request messages successfully/unsuccessfully from the client to server",
                   "nanoseconds"),
-              f.createIntGauge("getPDXIdForTypeSendsInProgress",
+              factory.createIntGauge("getPDXIdForTypeSendsInProgress",
                   "Current number of getPDXIdForType operation's request messages being send from the client to server",
                   "sends"),
-              f.createIntCounter("getPDXIdForTypeSendFailures",
+              factory.createIntCounter("getPDXIdForTypeSendFailures",
                   "Total number of getPDXIdForType operation's request messages not sent successfully from the client to server",
                   "sends"),
-              f.createIntCounter("getPDXIdForTypeSendsSuccessful",
+              factory.createIntCounter("getPDXIdForTypeSendsSuccessful",
                   "Total number of getPDXIdForType operation's request messages sent successfully from the client to server",
                   "sends"),
-              f.createLongCounter("getPDXIdForTypeSendTime",
+              factory.createLongCounter("getPDXIdForTypeSendTime",
                   "Total amount of time, in nanoseconds spent sending getPDXIdForType operation's request messages successfully/unsuccessfully from the client to server",
                   "nanoseconds"),
-              f.createIntGauge("addPdxTypeSendsInProgress",
+              factory.createIntGauge("addPdxTypeSendsInProgress",
                   "Current number of addPdxType operation's request messages being send from the client to server",
                   "sends"),
-              f.createIntCounter("addPdxTypeSendFailures",
+              factory.createIntCounter("addPdxTypeSendFailures",
                   "Total number of addPdxType operation's request messages not sent successfully from the client to server",
                   "sends"),
-              f.createIntCounter("addPdxTypeSendsSuccessful",
+              factory.createIntCounter("addPdxTypeSendsSuccessful",
                   "Total number of addPdxType operation's request messages sent successfully from the client to server",
                   "sends"),
-              f.createLongCounter("addPdxTypeSendTime",
+              factory.createLongCounter("addPdxTypeSendTime",
                   "Total amount of time, in nanoseconds spent sending addPdxType operation's request messages successfully/unsuccessfully from the client to server",
                   "nanoseconds"),});
       ///////////////////////////////////////////////////////////////////////
@@ -1713,6 +1701,7 @@ public class ConnectionStats implements MessageStats {
 
   public ConnectionStats(StatisticsFactory factory, String name,
       PoolStats poolStats/* , GatewayStats gatewayStats */) {
+    initializeStats(factory);
     this.stats = factory.createAtomicStatistics(type, "ClientStats-" + name);
     this.sendStats = factory.createAtomicStatistics(sendType, "ClientSendStats-" + name);
     this.poolStats = poolStats;

@@ -385,11 +385,7 @@ public class InternalLocator extends Locator implements ConnectListener {
    * @param startDistributedSystem if true locator will start its own distributed system
    */
   private InternalLocator(int port, File logF, InternalLogWriter logWriter,
-      // LOG: 3 non-null sources: GemFireDistributionLocator, InternalDistributedSystem,
-      // LocatorLauncher
       InternalLogWriter securityLogWriter,
-      // LOG: 1 non-null source: GemFireDistributionLocator(same instance as logWriter),
-      // InternalDistributedSystem
       InetAddress bindAddress, String hostnameForClients, Properties distributedSystemProperties,
       DistributionConfigImpl cfg, boolean startDistributedSystem) {
 
@@ -476,7 +472,7 @@ public class InternalLocator extends Locator implements ConnectListener {
     this.handler = new PrimaryHandler(this, locatorListener);
 
     ThreadGroup group = LoggingThreadGroup.createThreadGroup("Distribution locators", logger);
-    this.stats = new LocatorStats();
+    this.stats = new LocatorStats(this.getDistributedSystem().getStatisticsFactory());
 
     this.server = new TcpServerFactory().makeTcpServer(port, this.bindAddress, null, this.config,
         this.handler, new DelayedPoolStatHelper(), group, this.toString(), this);

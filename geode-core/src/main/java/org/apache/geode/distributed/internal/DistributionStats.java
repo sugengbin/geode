@@ -41,201 +41,201 @@ public class DistributionStats implements DMStats {
 
   ////////////////// Statistic "Id" Fields //////////////////
 
-  private static final StatisticsType type;
-  private static final int sentMessagesId;
-  private static final int sentCommitMessagesId;
-  private static final int commitWaitsId;
-  private static final int sentMessagesTimeId;
-  private static final int sentMessagesMaxTimeId;
-  private static final int broadcastMessagesId;
-  private static final int broadcastMessagesTimeId;
-  private static final int receivedMessagesId;
-  private static final int receivedBytesId;
-  private static final int sentBytesId;
-  private static final int processedMessagesId;
-  private static final int processedMessagesTimeId;
-  private static final int messageProcessingScheduleTimeId;
-  private static final int messageChannelTimeId;
-  private static final int udpDispatchRequestTimeId;
-  private static final int replyMessageTimeId;
-  private static final int distributeMessageTimeId;
-  private static final int nodesId;
-  private static final int overflowQueueSizeId;
-  private static final int processingThreadsId;
-  private static final int serialThreadsId;
-  private static final int waitingThreadsId;
-  private static final int highPriorityThreadsId;
-  private static final int partitionedRegionThreadsId;
-  private static final int functionExecutionThreadsId;
-  private static final int partitionedRegionThreadJobsId;
-  private static final int functionExecutionThreadJobsId;
-  private static final int waitingQueueSizeId;
-  private static final int overflowQueueThrottleTimeId;
-  private static final int overflowQueueThrottleCountId;
-  private static final int highPriorityQueueSizeId;
-  private static final int highPriorityQueueThrottleTimeId;
-  private static final int highPriorityQueueThrottleCountId;
-  private static final int partitionedRegionQueueSizeId;
-  private static final int partitionedRegionQueueThrottleTimeId;
-  private static final int partitionedRegionQueueThrottleCountId;
-  private static final int functionExecutionQueueSizeId;
-  private static final int functionExecutionQueueThrottleCountId;
-  private static final int functionExecutionQueueThrottleTimeId;
-  private static final int serialQueueSizeId;
-  private static final int serialQueueBytesId;
-  private static final int serialPooledThreadId;
-  private static final int serialQueueThrottleTimeId;
-  private static final int serialQueueThrottleCountId;
-  private static final int replyWaitsInProgressId;
-  private static final int replyWaitsCompletedId;
-  private static final int replyWaitTimeId;
-  private static final int replyTimeoutsId;
-  private static final int replyWaitMaxTimeId;
-  private static final int receiverConnectionsId;
-  private static final int failedAcceptsId;
-  private static final int failedConnectsId;
-  private static final int reconnectAttemptsId;
-  private static final int lostConnectionLeaseId;
-  private static final int sharedOrderedSenderConnectionsId;
-  private static final int sharedUnorderedSenderConnectionsId;
-  private static final int threadOrderedSenderConnectionsId;
-  private static final int threadUnorderedSenderConnectionsId;
+  private StatisticsType type;
+  private int sentMessagesId;
+  private int sentCommitMessagesId;
+  private int commitWaitsId;
+  private int sentMessagesTimeId;
+  private int sentMessagesMaxTimeId;
+  private int broadcastMessagesId;
+  private int broadcastMessagesTimeId;
+  private int receivedMessagesId;
+  private int receivedBytesId;
+  private int sentBytesId;
+  private int processedMessagesId;
+  private int processedMessagesTimeId;
+  private int messageProcessingScheduleTimeId;
+  private int messageChannelTimeId;
+  private int udpDispatchRequestTimeId;
+  private int replyMessageTimeId;
+  private int distributeMessageTimeId;
+  private int nodesId;
+  private int overflowQueueSizeId;
+  private int processingThreadsId;
+  private int serialThreadsId;
+  private int waitingThreadsId;
+  private int highPriorityThreadsId;
+  private int partitionedRegionThreadsId;
+  private int functionExecutionThreadsId;
+  private int partitionedRegionThreadJobsId;
+  private int functionExecutionThreadJobsId;
+  private int waitingQueueSizeId;
+  private int overflowQueueThrottleTimeId;
+  private int overflowQueueThrottleCountId;
+  private int highPriorityQueueSizeId;
+  private int highPriorityQueueThrottleTimeId;
+  private int highPriorityQueueThrottleCountId;
+  private int partitionedRegionQueueSizeId;
+  private int partitionedRegionQueueThrottleTimeId;
+  private int partitionedRegionQueueThrottleCountId;
+  private int functionExecutionQueueSizeId;
+  private int functionExecutionQueueThrottleCountId;
+  private int functionExecutionQueueThrottleTimeId;
+  private int serialQueueSizeId;
+  private int serialQueueBytesId;
+  private int serialPooledThreadId;
+  private int serialQueueThrottleTimeId;
+  private int serialQueueThrottleCountId;
+  private int replyWaitsInProgressId;
+  private int replyWaitsCompletedId;
+  private int replyWaitTimeId;
+  private int replyTimeoutsId;
+  private int replyWaitMaxTimeId;
+  private int receiverConnectionsId;
+  private int failedAcceptsId;
+  private int failedConnectsId;
+  private int reconnectAttemptsId;
+  private int lostConnectionLeaseId;
+  private int sharedOrderedSenderConnectionsId;
+  private int sharedUnorderedSenderConnectionsId;
+  private int threadOrderedSenderConnectionsId;
+  private int threadUnorderedSenderConnectionsId;
 
-  private static final int syncSocketWritesInProgressId;
-  private static final int syncSocketWriteTimeId;
-  private static final int syncSocketWritesId;
-  private static final int syncSocketWriteBytesId;
+  private int syncSocketWritesInProgressId;
+  private int syncSocketWriteTimeId;
+  private int syncSocketWritesId;
+  private int syncSocketWriteBytesId;
 
-  private static final int ucastReadsId;
-  private static final int ucastReadBytesId;
-  private static final int ucastWritesId;
-  private static final int ucastWriteBytesId;
-  private static final int ucastRetransmitsId;
+  private int ucastReadsId;
+  private int ucastReadBytesId;
+  private int ucastWritesId;
+  private int ucastWriteBytesId;
+  private int ucastRetransmitsId;
 
-  private static final int mcastReadsId;
-  private static final int mcastReadBytesId;
-  private static final int mcastWritesId;
-  private static final int mcastWriteBytesId;
-  private static final int mcastRetransmitsId;
-  private static final int mcastRetransmitRequestsId;
+  private int mcastReadsId;
+  private int mcastReadBytesId;
+  private int mcastWritesId;
+  private int mcastWriteBytesId;
+  private int mcastRetransmitsId;
+  private int mcastRetransmitRequestsId;
 
-  private static final int serializationTimeId;
-  private static final int serializationsId;
-  private static final int serializedBytesId;
+  private int serializationTimeId;
+  private int serializationsId;
+  private int serializedBytesId;
 
-  private static final int pdxSerializationsId;
-  private static final int pdxSerializedBytesId;
+  private int pdxSerializationsId;
+  private int pdxSerializedBytesId;
 
-  private static final int deserializationTimeId;
-  private static final int deserializationsId;
-  private static final int deserializedBytesId;
-  private static final int pdxDeserializationsId;
-  private static final int pdxDeserializedBytesId;
-  private static final int pdxInstanceDeserializationsId;
-  private static final int pdxInstanceDeserializationTimeId;
-  private static final int pdxInstanceCreationsId;
+  private int deserializationTimeId;
+  private int deserializationsId;
+  private int deserializedBytesId;
+  private int pdxDeserializationsId;
+  private int pdxDeserializedBytesId;
+  private int pdxInstanceDeserializationsId;
+  private int pdxInstanceDeserializationTimeId;
+  private int pdxInstanceCreationsId;
 
-  private static final int msgSerializationTimeId;
-  private static final int msgDeserializationTimeId;
+  private int msgSerializationTimeId;
+  private int msgDeserializationTimeId;
 
-  private static final int udpMsgEncryptionTimeId;
-  private static final int udpMsgDecryptionTimeId;
+  private int udpMsgEncryptionTimeId;
+  private int udpMsgDecryptionTimeId;
 
-  private static final int batchSendTimeId;
-  private static final int batchCopyTimeId;
-  private static final int batchWaitTimeId;
-  private static final int batchFlushTimeId;
+  private int batchSendTimeId;
+  private int batchCopyTimeId;
+  private int batchWaitTimeId;
+  private int batchFlushTimeId;
 
-  private static final int threadOwnedReceiversId;
-  private static final int threadOwnedReceiversId2;
+  private int threadOwnedReceiversId;
+  private int threadOwnedReceiversId2;
 
-  private static final int asyncSocketWritesInProgressId;
-  private static final int asyncSocketWritesId;
-  private static final int asyncSocketWriteRetriesId;
-  private static final int asyncSocketWriteTimeId;
-  private static final int asyncSocketWriteBytesId;
+  private int asyncSocketWritesInProgressId;
+  private int asyncSocketWritesId;
+  private int asyncSocketWriteRetriesId;
+  private int asyncSocketWriteTimeId;
+  private int asyncSocketWriteBytesId;
 
-  private static final int socketLocksInProgressId;
-  private static final int socketLocksId;
-  private static final int socketLockTimeId;
+  private int socketLocksInProgressId;
+  private int socketLocksId;
+  private int socketLockTimeId;
 
-  private static final int bufferAcquiresInProgressId;
-  private static final int bufferAcquiresId;
-  private static final int bufferAcquireTimeId;
+  private int bufferAcquiresInProgressId;
+  private int bufferAcquiresId;
+  private int bufferAcquireTimeId;
 
-  private static final int asyncQueueAddTimeId;
-  private static final int asyncQueueRemoveTimeId;
+  private int asyncQueueAddTimeId;
+  private int asyncQueueRemoveTimeId;
 
-  private static final int asyncQueuesId;
-  private static final int asyncQueueFlushesInProgressId;
-  private static final int asyncQueueFlushesCompletedId;
-  private static final int asyncQueueFlushTimeId;
-  private static final int asyncQueueTimeoutExceededId;
-  private static final int asyncQueueSizeExceededId;
-  private static final int asyncDistributionTimeoutExceededId;
-  private static final int asyncQueueSizeId;
-  private static final int asyncQueuedMsgsId;
-  private static final int asyncDequeuedMsgsId;
-  private static final int asyncConflatedMsgsId;
+  private int asyncQueuesId;
+  private int asyncQueueFlushesInProgressId;
+  private int asyncQueueFlushesCompletedId;
+  private int asyncQueueFlushTimeId;
+  private int asyncQueueTimeoutExceededId;
+  private int asyncQueueSizeExceededId;
+  private int asyncDistributionTimeoutExceededId;
+  private int asyncQueueSizeId;
+  private int asyncQueuedMsgsId;
+  private int asyncDequeuedMsgsId;
+  private int asyncConflatedMsgsId;
 
-  private static final int asyncThreadsId;
-  private static final int asyncThreadInProgressId;
-  private static final int asyncThreadCompletedId;
-  private static final int asyncThreadTimeId;
+  private int asyncThreadsId;
+  private int asyncThreadInProgressId;
+  private int asyncThreadCompletedId;
+  private int asyncThreadTimeId;
 
-  private static final int receiverDirectBufferSizeId;
-  private static final int receiverHeapBufferSizeId;
-  private static final int senderDirectBufferSizeId;
-  private static final int senderHeapBufferSizeId;
+  private int receiverDirectBufferSizeId;
+  private int receiverHeapBufferSizeId;
+  private int senderDirectBufferSizeId;
+  private int senderHeapBufferSizeId;
 
-  private static final int messagesBeingReceivedId;
-  private static final int messageBytesBeingReceivedId;
+  private int messagesBeingReceivedId;
+  private int messageBytesBeingReceivedId;
 
-  private static final int serialThreadStartsId;
-  private static final int viewThreadStartsId;
-  private static final int processingThreadStartsId;
-  private static final int highPriorityThreadStartsId;
-  private static final int waitingThreadStartsId;
-  private static final int partitionedRegionThreadStartsId;
-  private static final int functionExecutionThreadStartsId;
-  private static final int serialPooledThreadStartsId;
-  private static final int TOSentMsgId;
+  private int serialThreadStartsId;
+  private int viewThreadStartsId;
+  private int processingThreadStartsId;
+  private int highPriorityThreadStartsId;
+  private int waitingThreadStartsId;
+  private int partitionedRegionThreadStartsId;
+  private int functionExecutionThreadStartsId;
+  private int serialPooledThreadStartsId;
+  private int TOSentMsgId;
 
-  private static final int replyHandoffTimeId;
+  private int replyHandoffTimeId;
 
-  private static final int viewThreadsId;
-  private static final int serialThreadJobsId;
-  private static final int viewProcessorThreadJobsId;
-  private static final int serialPooledThreadJobsId;
-  private static final int pooledMessageThreadJobsId;
-  private static final int highPriorityThreadJobsId;
-  private static final int waitingPoolThreadJobsId;
+  private int viewThreadsId;
+  private int serialThreadJobsId;
+  private int viewProcessorThreadJobsId;
+  private int serialPooledThreadJobsId;
+  private int pooledMessageThreadJobsId;
+  private int highPriorityThreadJobsId;
+  private int waitingPoolThreadJobsId;
 
-  private static final int eldersId;
-  private static final int initialImageMessagesInFlightId;
-  private static final int initialImageRequestsInProgressId;
+  private int eldersId;
+  private int initialImageMessagesInFlightId;
+  private int initialImageRequestsInProgressId;
 
   // For GMSHealthMonitor
-  private static final int heartbeatRequestsSentId;
-  private static final int heartbeatRequestsReceivedId;
-  private static final int heartbeatsSentId;
-  private static final int heartbeatsReceivedId;
-  private static final int suspectsSentId;
-  private static final int suspectsReceivedId;
-  private static final int finalCheckRequestsSentId;
-  private static final int finalCheckRequestsReceivedId;
-  private static final int finalCheckResponsesSentId;
-  private static final int finalCheckResponsesReceivedId;
-  private static final int tcpFinalCheckRequestsSentId;
-  private static final int tcpFinalCheckRequestsReceivedId;
-  private static final int tcpFinalCheckResponsesSentId;
-  private static final int tcpFinalCheckResponsesReceivedId;
-  private static final int udpFinalCheckRequestsSentId;
-  private static final int udpFinalCheckRequestsReceivedId;
-  private static final int udpFinalCheckResponsesSentId;
-  private static final int udpFinalCheckResponsesReceivedId;
+  private int heartbeatRequestsSentId;
+  private int heartbeatRequestsReceivedId;
+  private int heartbeatsSentId;
+  private int heartbeatsReceivedId;
+  private int suspectsSentId;
+  private int suspectsReceivedId;
+  private int finalCheckRequestsSentId;
+  private int finalCheckRequestsReceivedId;
+  private int finalCheckResponsesSentId;
+  private int finalCheckResponsesReceivedId;
+  private int tcpFinalCheckRequestsSentId;
+  private int tcpFinalCheckRequestsReceivedId;
+  private int tcpFinalCheckResponsesSentId;
+  private int tcpFinalCheckResponsesReceivedId;
+  private int udpFinalCheckRequestsSentId;
+  private int udpFinalCheckRequestsReceivedId;
+  private int udpFinalCheckResponsesSentId;
+  private int udpFinalCheckResponsesReceivedId;
 
-  static {
+  private void initializeStats(StatisticsFactory factory) {
     String statName = "DistributionStats";
     String statDescription = "Statistics on the gemfire distribution layer.";
 
@@ -439,305 +439,303 @@ public class DistributionStats implements DMStats {
     final String udpFinalCheckResponsesReceivedDesc =
         "UDP final check responses that this member has received.";
 
-    StatisticsTypeFactory f = StatisticsTypeFactoryImpl.singleton();
+    type = factory.createType(statName, statDescription, new StatisticDescriptor[] {
+        factory.createLongCounter("sentMessages", sentMessagesDesc, "messages"),
+        factory.createLongCounter("commitMessages", sentCommitMessagesDesc, "messages"),
+        factory.createLongCounter("commitWaits", commitWaitsDesc, "messages"),
+        factory.createLongCounter("sentMessagesTime", sentMessagesTimeDesc, "nanoseconds", false),
+        factory.createLongGauge("sentMessagesMaxTime", sentMessagesMaxTimeDesc, "milliseconds", false),
+        factory.createLongCounter("broadcastMessages", broadcastMessagesDesc, "messages"),
+        factory.createLongCounter("broadcastMessagesTime", broadcastMessagesTimeDesc, "nanoseconds",
+            false),
+        factory.createLongCounter("receivedMessages", receivedMessagesDesc, "messages"),
+        factory.createLongCounter("receivedBytes", receivedBytesDesc, "bytes"),
+        factory.createLongCounter("sentBytes", sentBytesDesc, "bytes"),
+        factory.createLongCounter("processedMessages", processedMessagesDesc, "messages"),
+        factory.createLongCounter("processedMessagesTime", processedMessagesTimeDesc, "nanoseconds",
+            false),
+        factory.createLongCounter("messageProcessingScheduleTime", messageProcessingScheduleTimeDesc,
+            "nanoseconds", false),
+        factory.createIntGauge("overflowQueueSize", overflowQueueSizeDesc, "messages"),
+        factory.createIntGauge("waitingQueueSize", waitingQueueSizeDesc, "messages"),
+        factory.createIntGauge("overflowQueueThrottleCount", overflowQueueThrottleCountDesc, "delays"),
+        factory.createLongCounter("overflowQueueThrottleTime", overflowQueueThrottleTimeDesc,
+            "nanoseconds", false),
+        factory.createIntGauge("highPriorityQueueSize", highPriorityQueueSizeDesc, "messages"),
+        factory.createIntGauge("highPriorityQueueThrottleCount", highPriorityQueueThrottleCountDesc,
+            "delays"),
+        factory.createLongCounter("highPriorityQueueThrottleTime", highPriorityQueueThrottleTimeDesc,
+            "nanoseconds", false),
+        factory.createIntGauge("partitionedRegionQueueSize", highPriorityQueueSizeDesc, "messages"),
+        factory.createIntGauge("partitionedRegionQueueThrottleCount", highPriorityQueueThrottleCountDesc,
+            "delays"),
+        factory.createLongCounter("partitionedRegionQueueThrottleTime", highPriorityQueueThrottleTimeDesc,
+            "nanoseconds", false),
+        factory.createIntGauge("functionExecutionQueueSize", highPriorityQueueSizeDesc, "messages"),
+        factory.createIntGauge("functionExecutionQueueThrottleCount", highPriorityQueueThrottleCountDesc,
+            "delays"),
+        factory.createLongCounter("functionExecutionQueueThrottleTime", highPriorityQueueThrottleTimeDesc,
+            "nanoseconds", false),
+        factory.createIntGauge("serialQueueSize", serialQueueSizeDesc, "messages"),
+        factory.createIntGauge("serialQueueBytes", serialQueueBytesDesc, "bytes"),
+        factory.createIntCounter("serialPooledThread", serialPooledThreadDesc, "threads"),
+        factory.createIntGauge("serialQueueThrottleCount", serialQueueThrottleCountDesc, "delays"),
+        factory.createLongCounter("serialQueueThrottleTime", serialQueueThrottleTimeDesc, "nanoseconds",
+            false),
+        factory.createIntGauge("serialThreads", serialThreadsDesc, "threads"),
+        factory.createIntGauge("processingThreads", processingThreadsDesc, "threads"),
+        factory.createIntGauge("highPriorityThreads", highPriorityThreadsDesc, "threads"),
+        factory.createIntGauge("partitionedRegionThreads", partitionedRegionThreadsDesc, "threads"),
+        factory.createIntGauge("functionExecutionThreads", functionExecutionThreadsDesc, "threads"),
+        factory.createIntGauge("waitingThreads", waitingThreadsDesc, "threads"),
+        factory.createLongCounter("messageChannelTime", messageChannelTimeDesc, "nanoseconds", false),
+        factory.createLongCounter("udpDispatchRequestTime", udpDispatchRequestTimeDesc, "nanoseconds",
+            false),
+        factory.createLongCounter("replyMessageTime", replyMessageTimeDesc, "nanoseconds", false),
+        factory.createLongCounter("distributeMessageTime", distributeMessageTimeDesc, "nanoseconds",
+            false),
+        factory.createIntGauge("nodes", nodesDesc, "nodes"),
+        factory.createIntGauge("replyWaitsInProgress", replyWaitsInProgressDesc, "operations"),
+        factory.createIntCounter("replyWaitsCompleted", replyWaitsCompletedDesc, "operations"),
+        factory.createLongCounter("replyWaitTime", replyWaitTimeDesc, "nanoseconds", false),
+        factory.createLongGauge("replyWaitMaxTime", replyWaitMaxTimeDesc, "milliseconds", false),
+        factory.createLongCounter("replyTimeouts", replyTimeoutsDesc, "timeouts", false),
+        factory.createIntGauge("receivers", receiverConnectionsDesc, "sockets"),
+        factory.createIntGauge("sendersSO", sharedOrderedSenderConnectionsDesc, "sockets"),
+        factory.createIntGauge("sendersSU", sharedUnorderedSenderConnectionsDesc, "sockets"),
+        factory.createIntGauge("sendersTO", threadOrderedSenderConnectionsDesc, "sockets"),
+        factory.createIntGauge("sendersTU", threadUnorderedSenderConnectionsDesc, "sockets"),
+        factory.createIntCounter("failedAccepts", failedAcceptsDesc, "accepts"),
+        factory.createIntCounter("failedConnects", failedConnectsDesc, "connects"),
+        factory.createIntCounter("reconnectAttempts", reconnectAttemptsDesc, "connects"),
+        factory.createIntCounter("senderTimeouts", lostConnectionLeaseDesc, "expirations"),
 
-    type = f.createType(statName, statDescription, new StatisticDescriptor[] {
-        f.createLongCounter("sentMessages", sentMessagesDesc, "messages"),
-        f.createLongCounter("commitMessages", sentCommitMessagesDesc, "messages"),
-        f.createLongCounter("commitWaits", commitWaitsDesc, "messages"),
-        f.createLongCounter("sentMessagesTime", sentMessagesTimeDesc, "nanoseconds", false),
-        f.createLongGauge("sentMessagesMaxTime", sentMessagesMaxTimeDesc, "milliseconds", false),
-        f.createLongCounter("broadcastMessages", broadcastMessagesDesc, "messages"),
-        f.createLongCounter("broadcastMessagesTime", broadcastMessagesTimeDesc, "nanoseconds",
-            false),
-        f.createLongCounter("receivedMessages", receivedMessagesDesc, "messages"),
-        f.createLongCounter("receivedBytes", receivedBytesDesc, "bytes"),
-        f.createLongCounter("sentBytes", sentBytesDesc, "bytes"),
-        f.createLongCounter("processedMessages", processedMessagesDesc, "messages"),
-        f.createLongCounter("processedMessagesTime", processedMessagesTimeDesc, "nanoseconds",
-            false),
-        f.createLongCounter("messageProcessingScheduleTime", messageProcessingScheduleTimeDesc,
-            "nanoseconds", false),
-        f.createIntGauge("overflowQueueSize", overflowQueueSizeDesc, "messages"),
-        f.createIntGauge("waitingQueueSize", waitingQueueSizeDesc, "messages"),
-        f.createIntGauge("overflowQueueThrottleCount", overflowQueueThrottleCountDesc, "delays"),
-        f.createLongCounter("overflowQueueThrottleTime", overflowQueueThrottleTimeDesc,
-            "nanoseconds", false),
-        f.createIntGauge("highPriorityQueueSize", highPriorityQueueSizeDesc, "messages"),
-        f.createIntGauge("highPriorityQueueThrottleCount", highPriorityQueueThrottleCountDesc,
-            "delays"),
-        f.createLongCounter("highPriorityQueueThrottleTime", highPriorityQueueThrottleTimeDesc,
-            "nanoseconds", false),
-        f.createIntGauge("partitionedRegionQueueSize", highPriorityQueueSizeDesc, "messages"),
-        f.createIntGauge("partitionedRegionQueueThrottleCount", highPriorityQueueThrottleCountDesc,
-            "delays"),
-        f.createLongCounter("partitionedRegionQueueThrottleTime", highPriorityQueueThrottleTimeDesc,
-            "nanoseconds", false),
-        f.createIntGauge("functionExecutionQueueSize", highPriorityQueueSizeDesc, "messages"),
-        f.createIntGauge("functionExecutionQueueThrottleCount", highPriorityQueueThrottleCountDesc,
-            "delays"),
-        f.createLongCounter("functionExecutionQueueThrottleTime", highPriorityQueueThrottleTimeDesc,
-            "nanoseconds", false),
-        f.createIntGauge("serialQueueSize", serialQueueSizeDesc, "messages"),
-        f.createIntGauge("serialQueueBytes", serialQueueBytesDesc, "bytes"),
-        f.createIntCounter("serialPooledThread", serialPooledThreadDesc, "threads"),
-        f.createIntGauge("serialQueueThrottleCount", serialQueueThrottleCountDesc, "delays"),
-        f.createLongCounter("serialQueueThrottleTime", serialQueueThrottleTimeDesc, "nanoseconds",
-            false),
-        f.createIntGauge("serialThreads", serialThreadsDesc, "threads"),
-        f.createIntGauge("processingThreads", processingThreadsDesc, "threads"),
-        f.createIntGauge("highPriorityThreads", highPriorityThreadsDesc, "threads"),
-        f.createIntGauge("partitionedRegionThreads", partitionedRegionThreadsDesc, "threads"),
-        f.createIntGauge("functionExecutionThreads", functionExecutionThreadsDesc, "threads"),
-        f.createIntGauge("waitingThreads", waitingThreadsDesc, "threads"),
-        f.createLongCounter("messageChannelTime", messageChannelTimeDesc, "nanoseconds", false),
-        f.createLongCounter("udpDispatchRequestTime", udpDispatchRequestTimeDesc, "nanoseconds",
-            false),
-        f.createLongCounter("replyMessageTime", replyMessageTimeDesc, "nanoseconds", false),
-        f.createLongCounter("distributeMessageTime", distributeMessageTimeDesc, "nanoseconds",
-            false),
-        f.createIntGauge("nodes", nodesDesc, "nodes"),
-        f.createIntGauge("replyWaitsInProgress", replyWaitsInProgressDesc, "operations"),
-        f.createIntCounter("replyWaitsCompleted", replyWaitsCompletedDesc, "operations"),
-        f.createLongCounter("replyWaitTime", replyWaitTimeDesc, "nanoseconds", false),
-        f.createLongGauge("replyWaitMaxTime", replyWaitMaxTimeDesc, "milliseconds", false),
-        f.createLongCounter("replyTimeouts", replyTimeoutsDesc, "timeouts", false),
-        f.createIntGauge("receivers", receiverConnectionsDesc, "sockets"),
-        f.createIntGauge("sendersSO", sharedOrderedSenderConnectionsDesc, "sockets"),
-        f.createIntGauge("sendersSU", sharedUnorderedSenderConnectionsDesc, "sockets"),
-        f.createIntGauge("sendersTO", threadOrderedSenderConnectionsDesc, "sockets"),
-        f.createIntGauge("sendersTU", threadUnorderedSenderConnectionsDesc, "sockets"),
-        f.createIntCounter("failedAccepts", failedAcceptsDesc, "accepts"),
-        f.createIntCounter("failedConnects", failedConnectsDesc, "connects"),
-        f.createIntCounter("reconnectAttempts", reconnectAttemptsDesc, "connects"),
-        f.createIntCounter("senderTimeouts", lostConnectionLeaseDesc, "expirations"),
-
-        f.createIntGauge("syncSocketWritesInProgress",
+        factory.createIntGauge("syncSocketWritesInProgress",
             "Current number of synchronous/blocking socket write calls in progress.", "writes"),
-        f.createLongCounter("syncSocketWriteTime",
+        factory.createLongCounter("syncSocketWriteTime",
             "Total amount of time, in nanoseconds, spent in synchronous/blocking socket write calls.",
             "nanoseconds"),
-        f.createIntCounter("syncSocketWrites",
+        factory.createIntCounter("syncSocketWrites",
             "Total number of completed synchronous/blocking socket write calls.", "writes"),
-        f.createLongCounter("syncSocketWriteBytes",
+        factory.createLongCounter("syncSocketWriteBytes",
             "Total number of bytes sent out in synchronous/blocking mode on sockets.", "bytes"),
 
-        f.createIntCounter("ucastReads", "Total number of unicast datagrams received", "datagrams"),
-        f.createLongCounter("ucastReadBytes", "Total number of bytes received in unicast datagrams",
+        factory.createIntCounter("ucastReads", "Total number of unicast datagrams received", "datagrams"),
+        factory.createLongCounter("ucastReadBytes", "Total number of bytes received in unicast datagrams",
             "bytes"),
-        f.createIntCounter("ucastWrites", "Total number of unicast datagram socket write calls.",
+        factory.createIntCounter("ucastWrites", "Total number of unicast datagram socket write calls.",
             "writes"),
-        f.createLongCounter("ucastWriteBytes",
+        factory.createLongCounter("ucastWriteBytes",
             "Total number of bytes sent out on unicast datagram sockets.", "bytes"),
-        f.createIntCounter("ucastRetransmits",
+        factory.createIntCounter("ucastRetransmits",
             "Total number of unicast datagram socket retransmissions", "writes"),
 
-        f.createIntCounter("mcastReads", "Total number of multicast datagrams received",
+        factory.createIntCounter("mcastReads", "Total number of multicast datagrams received",
             "datagrams"),
-        f.createLongCounter("mcastReadBytes",
+        factory.createLongCounter("mcastReadBytes",
             "Total number of bytes received in multicast datagrams", "bytes"),
-        f.createIntCounter("mcastWrites", "Total number of multicast datagram socket write calls.",
+        factory.createIntCounter("mcastWrites", "Total number of multicast datagram socket write calls.",
             "writes"),
-        f.createLongCounter("mcastWriteBytes",
+        factory.createLongCounter("mcastWriteBytes",
             "Total number of bytes sent out on multicast datagram sockets.", "bytes"),
-        f.createIntCounter("mcastRetransmits",
+        factory.createIntCounter("mcastRetransmits",
             "Total number of multicast datagram socket retransmissions", "writes"),
-        f.createIntCounter("mcastRetransmitRequests",
+        factory.createIntCounter("mcastRetransmitRequests",
             "Total number of multicast datagram socket retransmission requests sent to other processes",
             "requests"),
 
-        f.createLongCounter("serializationTime",
+        factory.createLongCounter("serializationTime",
             "Total amount of time, in nanoseconds, spent serializing objects. This includes pdx serializations.",
             "nanoseconds"),
-        f.createIntCounter("serializations",
+        factory.createIntCounter("serializations",
             "Total number of object serialization calls. This includes pdx serializations.", "ops"),
-        f.createLongCounter("serializedBytes",
+        factory.createLongCounter("serializedBytes",
             "Total number of bytes produced by object serialization. This includes pdx serializations.",
             "bytes"),
-        f.createIntCounter("pdxSerializations", "Total number of pdx serializations.", "ops"),
-        f.createLongCounter("pdxSerializedBytes",
+        factory.createIntCounter("pdxSerializations", "Total number of pdx serializations.", "ops"),
+        factory.createLongCounter("pdxSerializedBytes",
             "Total number of bytes produced by pdx serialization.", "bytes"),
-        f.createLongCounter("deserializationTime",
+        factory.createLongCounter("deserializationTime",
             "Total amount of time, in nanoseconds, spent deserializing objects. This includes deserialization that results in a PdxInstance.",
             "nanoseconds"),
-        f.createIntCounter("deserializations",
+        factory.createIntCounter("deserializations",
             "Total number of object deserialization calls. This includes deserialization that results in a PdxInstance.",
             "ops"),
-        f.createLongCounter("deserializedBytes",
+        factory.createLongCounter("deserializedBytes",
             "Total number of bytes read by object deserialization. This includes deserialization that results in a PdxInstance.",
             "bytes"),
-        f.createIntCounter("pdxDeserializations", "Total number of pdx deserializations.", "ops"),
-        f.createLongCounter("pdxDeserializedBytes",
+        factory.createIntCounter("pdxDeserializations", "Total number of pdx deserializations.", "ops"),
+        factory.createLongCounter("pdxDeserializedBytes",
             "Total number of bytes read by pdx deserialization.", "bytes"),
-        f.createLongCounter("msgSerializationTime",
+        factory.createLongCounter("msgSerializationTime",
             "Total amount of time, in nanoseconds, spent serializing messages.", "nanoseconds"),
-        f.createLongCounter("msgDeserializationTime",
+        factory.createLongCounter("msgDeserializationTime",
             "Total amount of time, in nanoseconds, spent deserializing messages.", "nanoseconds"),
-        f.createLongCounter("udpMsgEncryptionTime",
+        factory.createLongCounter("udpMsgEncryptionTime",
             "Total amount of time, in nanoseconds, spent encrypting udp messages.", "nanoseconds"),
-        f.createLongCounter("udpMsgDecryptionTime",
+        factory.createLongCounter("udpMsgDecryptionTime",
             "Total amount of time, in nanoseconds, spent decrypting udp messages.", "nanoseconds"),
-        f.createIntCounter("pdxInstanceDeserializations",
+        factory.createIntCounter("pdxInstanceDeserializations",
             "Total number of times getObject has been called on a PdxInstance.", "ops"),
-        f.createLongCounter("pdxInstanceDeserializationTime",
+        factory.createLongCounter("pdxInstanceDeserializationTime",
             "Total amount of time, in nanoseconds, spent deserializing PdxInstances by calling getObject.",
             "nanoseconds"),
-        f.createIntCounter("pdxInstanceCreations",
+        factory.createIntCounter("pdxInstanceCreations",
             "Total number of times a deserialization created a PdxInstance.", "ops"),
 
-        f.createLongCounter("batchSendTime",
+        factory.createLongCounter("batchSendTime",
             "Total amount of time, in nanoseconds, spent queueing and flushing message batches",
             "nanoseconds"),
-        f.createLongCounter("batchWaitTime", "Reserved for future use", "nanoseconds"),
-        f.createLongCounter("batchCopyTime",
+        factory.createLongCounter("batchWaitTime", "Reserved for future use", "nanoseconds"),
+        factory.createLongCounter("batchCopyTime",
             "Total amount of time, in nanoseconds, spent copying messages for batched transmission",
             "nanoseconds"),
-        f.createLongCounter("batchFlushTime",
+        factory.createLongCounter("batchFlushTime",
             "Total amount of time, in nanoseconds, spent flushing batched messages to the network",
             "nanoseconds"),
 
-        f.createIntGauge("asyncSocketWritesInProgress",
+        factory.createIntGauge("asyncSocketWritesInProgress",
             "Current number of non-blocking socket write calls in progress.", "writes"),
-        f.createIntCounter("asyncSocketWrites",
+        factory.createIntCounter("asyncSocketWrites",
             "Total number of non-blocking socket write calls completed.", "writes"),
-        f.createIntCounter("asyncSocketWriteRetries",
+        factory.createIntCounter("asyncSocketWriteRetries",
             "Total number of retries needed to write a single block of data using non-blocking socket write calls.",
             "writes"),
-        f.createLongCounter("asyncSocketWriteTime",
+        factory.createLongCounter("asyncSocketWriteTime",
             "Total amount of time, in nanoseconds, spent in non-blocking socket write calls.",
             "nanoseconds"),
-        f.createLongCounter("asyncSocketWriteBytes",
+        factory.createLongCounter("asyncSocketWriteBytes",
             "Total number of bytes sent out on non-blocking sockets.", "bytes"),
 
-        f.createLongCounter("asyncQueueAddTime",
+        factory.createLongCounter("asyncQueueAddTime",
             "Total amount of time, in nanoseconds, spent in adding messages to async queue.",
             "nanoseconds"),
-        f.createLongCounter("asyncQueueRemoveTime",
+        factory.createLongCounter("asyncQueueRemoveTime",
             "Total amount of time, in nanoseconds, spent in removing messages from async queue.",
             "nanoseconds"),
 
-        f.createIntGauge("asyncQueues", asyncQueuesDesc, "queues"),
-        f.createIntGauge("asyncQueueFlushesInProgress", asyncQueueFlushesInProgressDesc,
+        factory.createIntGauge("asyncQueues", asyncQueuesDesc, "queues"),
+        factory.createIntGauge("asyncQueueFlushesInProgress", asyncQueueFlushesInProgressDesc,
             "operations"),
-        f.createIntCounter("asyncQueueFlushesCompleted", asyncQueueFlushesCompletedDesc,
+        factory.createIntCounter("asyncQueueFlushesCompleted", asyncQueueFlushesCompletedDesc,
             "operations"),
-        f.createLongCounter("asyncQueueFlushTime", asyncQueueFlushTimeDesc, "nanoseconds", false),
-        f.createIntCounter("asyncQueueTimeoutExceeded", asyncQueueTimeoutExceededDesc, "timeouts"),
-        f.createIntCounter("asyncQueueSizeExceeded", asyncQueueSizeExceededDesc, "operations"),
-        f.createIntCounter("asyncDistributionTimeoutExceeded", asyncDistributionTimeoutExceededDesc,
+        factory.createLongCounter("asyncQueueFlushTime", asyncQueueFlushTimeDesc, "nanoseconds", false),
+        factory.createIntCounter("asyncQueueTimeoutExceeded", asyncQueueTimeoutExceededDesc, "timeouts"),
+        factory.createIntCounter("asyncQueueSizeExceeded", asyncQueueSizeExceededDesc, "operations"),
+        factory.createIntCounter("asyncDistributionTimeoutExceeded", asyncDistributionTimeoutExceededDesc,
             "operations"),
-        f.createLongGauge("asyncQueueSize", asyncQueueSizeDesc, "bytes"),
-        f.createLongCounter("asyncQueuedMsgs", asyncQueuedMsgsDesc, "msgs"),
-        f.createLongCounter("asyncDequeuedMsgs", asyncDequeuedMsgsDesc, "msgs"),
-        f.createLongCounter("asyncConflatedMsgs", asyncConflatedMsgsDesc, "msgs"),
+        factory.createLongGauge("asyncQueueSize", asyncQueueSizeDesc, "bytes"),
+        factory.createLongCounter("asyncQueuedMsgs", asyncQueuedMsgsDesc, "msgs"),
+        factory.createLongCounter("asyncDequeuedMsgs", asyncDequeuedMsgsDesc, "msgs"),
+        factory.createLongCounter("asyncConflatedMsgs", asyncConflatedMsgsDesc, "msgs"),
 
-        f.createIntGauge("asyncThreads", asyncThreadsDesc, "threads"),
-        f.createIntGauge("asyncThreadInProgress", asyncThreadInProgressDesc, "operations"),
-        f.createIntCounter("asyncThreadCompleted", asyncThreadCompletedDesc, "operations"),
-        f.createLongCounter("asyncThreadTime", asyncThreadTimeDesc, "nanoseconds", false),
+        factory.createIntGauge("asyncThreads", asyncThreadsDesc, "threads"),
+        factory.createIntGauge("asyncThreadInProgress", asyncThreadInProgressDesc, "operations"),
+        factory.createIntCounter("asyncThreadCompleted", asyncThreadCompletedDesc, "operations"),
+        factory.createLongCounter("asyncThreadTime", asyncThreadTimeDesc, "nanoseconds", false),
 
-        f.createLongGauge("receiversTO",
+        factory.createLongGauge("receiversTO",
             "Number of receiver threads owned by non-receiver threads in other members.",
             "threads"),
-        f.createLongGauge("receiversTO2",
+        factory.createLongGauge("receiversTO2",
             "Number of receiver threads owned in turn by receiver threads in other members",
             "threads"),
 
-        f.createLongGauge("receiverDirectBufferSize", receiverDirectBufferSizeDesc, "bytes"),
-        f.createLongGauge("receiverHeapBufferSize", receiverHeapBufferSizeDesc, "bytes"),
-        f.createLongGauge("senderDirectBufferSize", senderDirectBufferSizeDesc, "bytes"),
-        f.createLongGauge("senderHeapBufferSize", senderHeapBufferSizeDesc, "bytes"),
-        f.createIntGauge("socketLocksInProgress",
+        factory.createLongGauge("receiverDirectBufferSize", receiverDirectBufferSizeDesc, "bytes"),
+        factory.createLongGauge("receiverHeapBufferSize", receiverHeapBufferSizeDesc, "bytes"),
+        factory.createLongGauge("senderDirectBufferSize", senderDirectBufferSizeDesc, "bytes"),
+        factory.createLongGauge("senderHeapBufferSize", senderHeapBufferSizeDesc, "bytes"),
+        factory.createIntGauge("socketLocksInProgress",
             "Current number of threads waiting to lock a socket", "threads", false),
-        f.createIntCounter("socketLocks", "Total number of times a socket has been locked.",
+        factory.createIntCounter("socketLocks", "Total number of times a socket has been locked.",
             "locks"),
-        f.createLongCounter("socketLockTime",
+        factory.createLongCounter("socketLockTime",
             "Total amount of time, in nanoseconds, spent locking a socket", "nanoseconds", false),
-        f.createIntGauge("bufferAcquiresInProgress",
+        factory.createIntGauge("bufferAcquiresInProgress",
             "Current number of threads waiting to acquire a buffer", "threads", false),
-        f.createIntCounter("bufferAcquires", "Total number of times a buffer has been acquired.",
+        factory.createIntCounter("bufferAcquires", "Total number of times a buffer has been acquired.",
             "operations"),
-        f.createLongCounter("bufferAcquireTime",
+        factory.createLongCounter("bufferAcquireTime",
             "Total amount of time, in nanoseconds, spent acquiring a socket", "nanoseconds", false),
 
-        f.createIntGauge("messagesBeingReceived",
+        factory.createIntGauge("messagesBeingReceived",
             "Current number of message being received off the network or being processed after reception.",
             "messages"),
-        f.createLongGauge("messageBytesBeingReceived",
+        factory.createLongGauge("messageBytesBeingReceived",
             "Current number of bytes consumed by messages being received or processed.", "bytes"),
 
-        f.createLongCounter("serialThreadStarts",
+        factory.createLongCounter("serialThreadStarts",
             "Total number of times a thread has been created for the serial message executor.",
             "starts", false),
-        f.createLongCounter("viewThreadStarts",
+        factory.createLongCounter("viewThreadStarts",
             "Total number of times a thread has been created for the view message executor.",
             "starts", false),
-        f.createLongCounter("processingThreadStarts",
+        factory.createLongCounter("processingThreadStarts",
             "Total number of times a thread has been created for the pool processing normal messages.",
             "starts", false),
-        f.createLongCounter("highPriorityThreadStarts",
+        factory.createLongCounter("highPriorityThreadStarts",
             "Total number of times a thread has been created for the pool handling high priority messages.",
             "starts", false),
-        f.createLongCounter("waitingThreadStarts",
+        factory.createLongCounter("waitingThreadStarts",
             "Total number of times a thread has been created for the waiting pool.", "starts",
             false),
-        f.createLongCounter("partitionedRegionThreadStarts",
+        factory.createLongCounter("partitionedRegionThreadStarts",
             "Total number of times a thread has been created for the pool handling partitioned region messages.",
             "starts", false),
-        f.createLongCounter("functionExecutionThreadStarts",
+        factory.createLongCounter("functionExecutionThreadStarts",
             "Total number of times a thread has been created for the pool handling function execution messages.",
             "starts", false),
-        f.createLongCounter("serialPooledThreadStarts",
+        factory.createLongCounter("serialPooledThreadStarts",
             "Total number of times a thread has been created for the serial pool(s).", "starts",
             false),
-        f.createLongCounter("TOSentMsgs", "Total number of messages sent on thread owned senders",
+        factory.createLongCounter("TOSentMsgs", "Total number of messages sent on thread owned senders",
             "messages", false),
-        f.createLongCounter("replyHandoffTime", replyHandoffTimeDesc, "nanoseconds"),
+        factory.createLongCounter("replyHandoffTime", replyHandoffTimeDesc, "nanoseconds"),
 
-        f.createIntGauge("partitionedRegionThreadJobs", partitionedRegionThreadJobsDesc,
+        factory.createIntGauge("partitionedRegionThreadJobs", partitionedRegionThreadJobsDesc,
             "messages"),
-        f.createIntGauge("functionExecutionThreadJobs", functionExecutionThreadJobsDesc,
+        factory.createIntGauge("functionExecutionThreadJobs", functionExecutionThreadJobsDesc,
             "messages"),
-        f.createIntGauge("viewThreads", viewThreadsDesc, "threads"),
-        f.createIntGauge("serialThreadJobs", serialThreadJobsDesc, "messages"),
-        f.createIntGauge("viewThreadJobs", viewThreadJobsDesc, "messages"),
-        f.createIntGauge("serialPooledThreadJobs", serialPooledThreadJobsDesc, "messages"),
-        f.createIntGauge("processingThreadJobs", processingThreadJobsDesc, "messages"),
-        f.createIntGauge("highPriorityThreadJobs", highPriorityThreadJobsDesc, "messages"),
-        f.createIntGauge("waitingThreadJobs", waitingThreadJobsDesc, "messages"),
+        factory.createIntGauge("viewThreads", viewThreadsDesc, "threads"),
+        factory.createIntGauge("serialThreadJobs", serialThreadJobsDesc, "messages"),
+        factory.createIntGauge("viewThreadJobs", viewThreadJobsDesc, "messages"),
+        factory.createIntGauge("serialPooledThreadJobs", serialPooledThreadJobsDesc, "messages"),
+        factory.createIntGauge("processingThreadJobs", processingThreadJobsDesc, "messages"),
+        factory.createIntGauge("highPriorityThreadJobs", highPriorityThreadJobsDesc, "messages"),
+        factory.createIntGauge("waitingThreadJobs", waitingThreadJobsDesc, "messages"),
 
-        f.createIntGauge("elders", eldersDesc, "elders"),
-        f.createIntGauge("initialImageMessagesInFlight", initialImageMessagesInFlightDesc,
+        factory.createIntGauge("elders", eldersDesc, "elders"),
+        factory.createIntGauge("initialImageMessagesInFlight", initialImageMessagesInFlightDesc,
             "messages"),
-        f.createIntGauge("initialImageRequestsInProgress", initialImageRequestsInProgressDesc,
+        factory.createIntGauge("initialImageRequestsInProgress", initialImageRequestsInProgressDesc,
             "requests"),
 
         // For GMSHealthMonitor
-        f.createLongCounter("heartbeatRequestsSent", heartbeatRequestsSentDesc, "messages"),
-        f.createLongCounter("heartbeatRequestsReceived", heartbeatRequestsReceivedDesc, "messages"),
-        f.createLongCounter("heartbeatsSent", heartbeatsSentDesc, "messages"),
-        f.createLongCounter("heartbeatsReceived", heartbeatsReceivedDesc, "messages"),
-        f.createLongCounter("suspectsSent", suspectsSentDesc, "messages"),
-        f.createLongCounter("suspectsReceived", suspectsReceivedDesc, "messages"),
-        f.createLongCounter("finalCheckRequestsSent", finalCheckRequestsSentDesc, "messages"),
-        f.createLongCounter("finalCheckRequestsReceived", finalCheckRequestsReceivedDesc,
+        factory.createLongCounter("heartbeatRequestsSent", heartbeatRequestsSentDesc, "messages"),
+        factory.createLongCounter("heartbeatRequestsReceived", heartbeatRequestsReceivedDesc, "messages"),
+        factory.createLongCounter("heartbeatsSent", heartbeatsSentDesc, "messages"),
+        factory.createLongCounter("heartbeatsReceived", heartbeatsReceivedDesc, "messages"),
+        factory.createLongCounter("suspectsSent", suspectsSentDesc, "messages"),
+        factory.createLongCounter("suspectsReceived", suspectsReceivedDesc, "messages"),
+        factory.createLongCounter("finalCheckRequestsSent", finalCheckRequestsSentDesc, "messages"),
+        factory.createLongCounter("finalCheckRequestsReceived", finalCheckRequestsReceivedDesc,
             "messages"),
-        f.createLongCounter("finalCheckResponsesSent", finalCheckResponsesSentDesc, "messages"),
-        f.createLongCounter("finalCheckResponsesReceived", finalCheckResponsesReceivedDesc,
+        factory.createLongCounter("finalCheckResponsesSent", finalCheckResponsesSentDesc, "messages"),
+        factory.createLongCounter("finalCheckResponsesReceived", finalCheckResponsesReceivedDesc,
             "messages"),
-        f.createLongCounter("tcpFinalCheckRequestsSent", tcpFinalCheckRequestsSentDesc, "messages"),
-        f.createLongCounter("tcpFinalCheckRequestsReceived", tcpFinalCheckRequestsReceivedDesc,
+        factory.createLongCounter("tcpFinalCheckRequestsSent", tcpFinalCheckRequestsSentDesc, "messages"),
+        factory.createLongCounter("tcpFinalCheckRequestsReceived", tcpFinalCheckRequestsReceivedDesc,
             "messages"),
-        f.createLongCounter("tcpFinalCheckResponsesSent", tcpFinalCheckResponsesSentDesc,
+        factory.createLongCounter("tcpFinalCheckResponsesSent", tcpFinalCheckResponsesSentDesc,
             "messages"),
-        f.createLongCounter("tcpFinalCheckResponsesReceived", tcpFinalCheckResponsesReceivedDesc,
+        factory.createLongCounter("tcpFinalCheckResponsesReceived", tcpFinalCheckResponsesReceivedDesc,
             "messages"),
-        f.createLongCounter("udpFinalCheckRequestsSent", udpFinalCheckRequestsSentDesc, "messages"),
-        f.createLongCounter("udpFinalCheckRequestsReceived", udpFinalCheckRequestsReceivedDesc,
+        factory.createLongCounter("udpFinalCheckRequestsSent", udpFinalCheckRequestsSentDesc, "messages"),
+        factory.createLongCounter("udpFinalCheckRequestsReceived", udpFinalCheckRequestsReceivedDesc,
             "messages"),
-        f.createLongCounter("udpFinalCheckResponsesSent", udpFinalCheckResponsesSentDesc,
+        factory.createLongCounter("udpFinalCheckResponsesSent", udpFinalCheckResponsesSentDesc,
             "messages"),
-        f.createLongCounter("udpFinalCheckResponsesReceived", udpFinalCheckResponsesReceivedDesc,
+        factory.createLongCounter("udpFinalCheckResponsesReceived", udpFinalCheckResponsesReceivedDesc,
             "messages"),});
 
     // Initialize id fields
@@ -942,24 +940,16 @@ public class DistributionStats implements DMStats {
    * Creates a new <code>DistributionStats</code> and registers itself with the given statistics
    * factory.
    */
-  public DistributionStats(StatisticsFactory f, long statId) {
-    this.stats = f.createAtomicStatistics(type, "distributionStats", statId);
-    // this.replyHandoffHistogram = new HistogramStats("ReplyHandOff", "nanoseconds", f,
+  public DistributionStats(StatisticsFactory factory, long statId) {
+    initializeStats(factory);
+    this.stats = factory.createAtomicStatistics(type, "distributionStats", statId);
+    // this.replyHandoffHistogram = new HistogramStats("ReplyHandOff", "nanoseconds", factory,
     // new long[] {100000, 200000, 300000, 400000, 500000, 600000, 700000, 800000, 900000, 1000000},
     // false);
-    // this.replyWaitHistogram = new HistogramStats("ReplyWait", "nanoseconds", f,
+    // this.replyWaitHistogram = new HistogramStats("ReplyWait", "nanoseconds", factory,
     // new long[] {100000, 200000, 300000, 400000, 500000, 600000, 700000, 800000, 900000, 1000000},
     // false);
     Buffers.initBufferStats(this);
-  }
-
-  /**
-   * Used by tests to create an instance given its already existings stats.
-   */
-  public DistributionStats(Statistics stats) {
-    this.stats = stats;
-    // this.replyHandoffHistogram = null;
-    // this.replyWaitHistogram = null;
   }
 
   /**

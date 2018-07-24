@@ -27,45 +27,43 @@ import org.apache.geode.internal.statistics.StatisticsTypeFactoryImpl;
  */
 public class IndexStats {
 
-  private static final StatisticsType type;
+  private StatisticsType type;
 
-  private static final int numKeysId;
-  private static final int numValuesId;
-  private static final int numUpdatesId;
-  private static final int numUsesId;
-  private static final int updateTimeId;
-  private static final int useTimeId;
-  private static final int updatesInProgressId;
-  private static final int usesInProgressId;
-  private static final int readLockCountId;
-  private static final int numMapIndexKeysId;
-  private static final int numBucketIndexesId;
+  private int numKeysId;
+  private int numValuesId;
+  private int numUpdatesId;
+  private int numUsesId;
+  private int updateTimeId;
+  private int useTimeId;
+  private int updatesInProgressId;
+  private int usesInProgressId;
+  private int readLockCountId;
+  private int numMapIndexKeysId;
+  private int numBucketIndexesId;
 
   /** The Statistics object that we delegate most behavior to */
   private final Statistics stats;
 
-  static {
-    StatisticsTypeFactory f = StatisticsTypeFactoryImpl.singleton();
-
+  private void initializeStats(StatisticsFactory factory) {
     final String numKeysDesc = "Number of keys in this index";
     final String numValuesDesc = "Number of values in this index";
     final String numUpdatesDesc = "Number of updates that have completed on this index";
     final String numUsesDesc = "Number of times this index has been used while executing a query";
     final String updateTimeDesc = "Total time spent updating this index";
 
-    type = f.createType("IndexStats", "Statistics about a query index",
-        new StatisticDescriptor[] {f.createLongGauge("numKeys", numKeysDesc, "keys"),
-            f.createLongGauge("numValues", numValuesDesc, "values"),
-            f.createLongCounter("numUpdates", numUpdatesDesc, "operations"),
-            f.createLongCounter("numUses", numUsesDesc, "operations"),
-            f.createLongCounter("updateTime", updateTimeDesc, "nanoseconds"),
-            f.createLongCounter("useTime", "Total time spent using this index", "nanoseconds"),
-            f.createIntGauge("updatesInProgress", "Current number of updates in progress.",
+    type = factory.createType("IndexStats", "Statistics about a query index",
+        new StatisticDescriptor[] {factory.createLongGauge("numKeys", numKeysDesc, "keys"),
+            factory.createLongGauge("numValues", numValuesDesc, "values"),
+            factory.createLongCounter("numUpdates", numUpdatesDesc, "operations"),
+            factory.createLongCounter("numUses", numUsesDesc, "operations"),
+            factory.createLongCounter("updateTime", updateTimeDesc, "nanoseconds"),
+            factory.createLongCounter("useTime", "Total time spent using this index", "nanoseconds"),
+            factory.createIntGauge("updatesInProgress", "Current number of updates in progress.",
                 "updates"),
-            f.createIntGauge("usesInProgress", "Current number of uses in progress.", "uses"),
-            f.createIntGauge("readLockCount", "Current number of read locks taken.", "uses"),
-            f.createLongGauge("numMapIndexKeys", "Number of keys in this Map index", "keys"),
-            f.createIntGauge("numBucketIndexes",
+            factory.createIntGauge("usesInProgress", "Current number of uses in progress.", "uses"),
+            factory.createIntGauge("readLockCount", "Current number of read locks taken.", "uses"),
+            factory.createLongGauge("numMapIndexKeys", "Number of keys in this Map index", "keys"),
+            factory.createIntGauge("numBucketIndexes",
                 "Number of bucket indexes in the partitioned region", "indexes"),});
 
     // Initialize id fields
@@ -87,6 +85,7 @@ public class IndexStats {
    * factory.
    */
   public IndexStats(StatisticsFactory factory, String indexName) {
+    initializeStats(factory);
     stats = factory.createAtomicStatistics(type, indexName);
   }
 

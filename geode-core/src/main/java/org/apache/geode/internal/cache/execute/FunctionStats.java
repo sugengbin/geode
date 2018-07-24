@@ -28,8 +28,10 @@ import org.apache.geode.internal.statistics.StatisticsTypeFactoryImpl;
 public class FunctionStats {
 
   public static String statName = "FunctionStatistics";
-  /** The <code>StatisticsType</code> of the statistics */
-  private static final StatisticsType _type;
+  /**
+   * The <code>StatisticsType</code> of the statistics
+   */
+  private StatisticsType _type;
 
   private FunctionServiceStats aggregateStats;
   /**
@@ -100,90 +102,97 @@ public class FunctionStats {
   // */
   // private static final String BYTES_SERIALIZED = "bytesSerialized";
 
-  /** Id of the FUNCTION_EXECUTIONS_COMPLETED statistic */
-  private static final int _functionExecutionsCompletedId;
+  /**
+   * Id of the FUNCTION_EXECUTIONS_COMPLETED statistic
+   */
+  private int _functionExecutionsCompletedId;
 
-  /** Id of the FUNCTION_EXECUTIONS_COMPLETED_PROCESSING_TIME statistic */
-  private static final int _functionExecutionsCompletedProcessingTimeId;
+  /**
+   * Id of the FUNCTION_EXECUTIONS_COMPLETED_PROCESSING_TIME statistic
+   */
+  private int _functionExecutionsCompletedProcessingTimeId;
 
-  /** Id of the FUNCTION_EXECUTIONS_RUNNING statistic */
-  private static final int _functionExecutionsRunningId;
+  /**
+   * Id of the FUNCTION_EXECUTIONS_RUNNING statistic
+   */
+  private int _functionExecutionsRunningId;
 
-  /** Id of the RESULTS_SENT_TO_RESULTCOLLECTOR statistic */
-  private static final int _resultsSentToResultCollectorId;
+  /**
+   * Id of the RESULTS_SENT_TO_RESULTCOLLECTOR statistic
+   */
+  private int _resultsSentToResultCollectorId;
 
-  /** Id of the FUNCTION_EXECUTIONS_CALL statistic */
-  private static final int _functionExecutionCallsId;
+  /**
+   * Id of the FUNCTION_EXECUTIONS_CALL statistic
+   */
+  private int _functionExecutionCallsId;
 
-  /** Id of the FUNCTION_EXECUTION_HASRESULT_COMPLETED_TIME statistic */
-  private static final int _functionExecutionsHasResultCompletedProcessingTimeId;
+  /**
+   * Id of the FUNCTION_EXECUTION_HASRESULT_COMPLETED_TIME statistic
+   */
+  private int _functionExecutionsHasResultCompletedProcessingTimeId;
 
-  /** Id of the FUNCTION_EXECUTIONS_HASRESULT_RUNNING statistic */
-  private static final int _functionExecutionsHasResultRunningId;
+  /**
+   * Id of the FUNCTION_EXECUTIONS_HASRESULT_RUNNING statistic
+   */
+  private int _functionExecutionsHasResultRunningId;
 
-  /** Id of the RESULTS_RECEIVED statistic */
-  private static final int _resultsReceived;
+  /**
+   * Id of the RESULTS_RECEIVED statistic
+   */
+  private int _resultsReceived;
 
-  /** Id of the FUNCTION_EXECUTIONS_EXCEPTIONS statistic */
-  private static final int _functionExecutionExceptions;
+  /**
+   * Id of the FUNCTION_EXECUTIONS_EXCEPTIONS statistic
+   */
+  private int _functionExecutionExceptions;
 
   // /** Id of the RESULTS_RECEIVED statistic */
-  // private static final int _bytesReceived;
+  // private int _bytesReceived;
   //
   // /** Id of the FUNCTION_EXECUTIONS_EXCEPTIONS statistic */
-  // private static final int _bytesSerialized;
+  // private int _bytesSerialized;
 
 
   /**
    * Static initializer to create and initialize the <code>StatisticsType</code>
    */
-  static {
+  private void initializeStats(StatisticsFactory factory) {
 
     String statDescription = "This is the stats for the individual Function's Execution";
 
-    StatisticsTypeFactory f = StatisticsTypeFactoryImpl.singleton();
-
-    _type = f.createType(statName, statDescription,
-        new StatisticDescriptor[] {f.createIntCounter(FUNCTION_EXECUTIONS_COMPLETED,
+    _type = factory.createType(statName, statDescription,
+        new StatisticDescriptor[]{factory.createIntCounter(FUNCTION_EXECUTIONS_COMPLETED,
             "Total number of completed function.execute() calls for given function", "operations"),
 
-            f.createLongCounter(FUNCTION_EXECUTIONS_COMPLETED_PROCESSING_TIME,
+            factory.createLongCounter(FUNCTION_EXECUTIONS_COMPLETED_PROCESSING_TIME,
                 "Total time consumed for all completed invocations of the given function",
                 "nanoseconds"),
 
-            f.createIntGauge(FUNCTION_EXECUTIONS_RUNNING,
+            factory.createIntGauge(FUNCTION_EXECUTIONS_RUNNING,
                 "number of currently running invocations of the given function", "operations"),
 
-            f.createIntCounter(RESULTS_SENT_TO_RESULTCOLLECTOR,
+            factory.createIntCounter(RESULTS_SENT_TO_RESULTCOLLECTOR,
                 "Total number of results sent to the ResultCollector", "operations"),
 
-            f.createIntCounter(RESULTS_RECEIVED,
+            factory.createIntCounter(RESULTS_RECEIVED,
                 "Total number of results received and passed to the ResultCollector", "operations"),
 
-            f.createIntCounter(FUNCTION_EXECUTION_CALLS,
+            factory.createIntCounter(FUNCTION_EXECUTION_CALLS,
                 "Total number of FunctionService.execute() calls for given function", "operations"),
 
-            f.createLongCounter(FUNCTION_EXECUTIONS_HASRESULT_COMPLETED_PROCESSING_TIME,
+            factory.createLongCounter(FUNCTION_EXECUTIONS_HASRESULT_COMPLETED_PROCESSING_TIME,
                 "Total time consumed for all completed given function.execute() calls where hasResult() returns true.",
                 "nanoseconds"),
 
-            f.createIntGauge(FUNCTION_EXECUTIONS_HASRESULT_RUNNING,
+            factory.createIntGauge(FUNCTION_EXECUTIONS_HASRESULT_RUNNING,
                 "A gauge indicating the number of currently active execute() calls for functions where hasResult() returns true.",
                 "operations"),
 
-            f.createIntCounter(FUNCTION_EXECUTION_EXCEPTIONS,
+            factory.createIntCounter(FUNCTION_EXECUTION_EXCEPTIONS,
                 "Total number of Exceptions Occurred while executing function", "operations"),
 
-        // f
-        // .createLongCounter(
-        // BYTES_RECEIVED,
-        // "Total number of bytes received before invoking the function",
-        // "Bytes"),
-        // f
-        // .createLongCounter(
-        // BYTES_SERIALIZED,
-        // "Total number of bytes serialized for the result of the function",
-        // "Bytes"),
+
         });
     // Initialize id fields
     _functionExecutionsCompletedId = _type.nameToId(FUNCTION_EXECUTIONS_COMPLETED);
@@ -203,33 +212,23 @@ public class FunctionStats {
 
   // //////////////////// Instance Fields //////////////////////
 
-  /** The <code>Statistics</code> instance to which most behavior is delegated */
+  /**
+   * The <code>Statistics</code> instance to which most behavior is delegated
+   */
   private final Statistics _stats;
-
-  /** This is an instance of the FunctionStats when the statsDisabled = true; */
-  private static final FunctionStats dummy = createDummy();
-
-  // ///////////////////// Constructors ///////////////////////
-
-  private FunctionStats() {
-    this._stats = new DummyStatisticsImpl(this._type, null, 0);
-    this.aggregateStats = FunctionServiceStats.createDummy();
-  }
-
-  static FunctionStats createDummy() {
-    return new FunctionStats();
-  }
 
   /**
    * Constructor.
-   *
    * @param factory The <code>StatisticsFactory</code> which creates the <code>Statistics</code>
-   *        instance
+   * instance
    * @param name The name of the <code>Statistics</code>
    */
   public FunctionStats(StatisticsFactory factory, String name) {
+    initializeStats(factory);
     this._stats = factory.createAtomicStatistics(_type, name);
-    aggregateStats = ((InternalDistributedSystem) factory).getInternalDistributedSystemStats().getFunctionServiceStats();
+    aggregateStats =
+        ((InternalDistributedSystem) factory).getInternalDistributedSystemStats()
+            .getFunctionServiceStats();
   }
 
   /**
@@ -241,7 +240,6 @@ public class FunctionStats {
 
   /**
    * Returns the current value of the "Total number of completed function.execute() calls" stat.
-   *
    * @return the current value of the "function Executions completed" stat
    */
   public int getFunctionExecutionsCompleted() {
@@ -258,7 +256,6 @@ public class FunctionStats {
 
   /**
    * Returns the current value of the "Total time consumed for all completed invocations" stat.
-   *
    * @return the current value of the "functionExecutionCompleteProcessingTime" stat
    */
   public long getFunctionExecutionCompleteProcessingTime() {
@@ -267,7 +264,6 @@ public class FunctionStats {
 
   /**
    * Returns the current value of the "number of currently running invocations" stat.
-   *
    * @return the current value of the "functionExecutionsRunning" stat
    */
   public int getFunctionExecutionsRunning() {
@@ -284,7 +280,6 @@ public class FunctionStats {
 
   /**
    * Returns the current value of the "Total number of results sent to the ResultCollector" stat.
-   *
    * @return the current value of the "resultsReturned" stat
    */
   public int getResultsSentToResultCollector() {
@@ -302,7 +297,6 @@ public class FunctionStats {
   /**
    * Returns the current value of the "Total number of results received and passed to
    * ResultCollector" stat.
-   *
    * @return the current value of the "resultsReturned" stat
    */
   public int getResultsReceived() {
@@ -319,7 +313,6 @@ public class FunctionStats {
 
   /**
    * Returns the current value of the "Total number of FunctionService...execute() calls" stat.
-   *
    * @return the current value of the "functionExecutionsCall" stat
    */
   public int getFunctionExecutionCalls() {
@@ -337,7 +330,6 @@ public class FunctionStats {
   /**
    * Returns the current value of the "Total time consumed for all completed execute() calls where
    * hasResult() returns true" stat.
-   *
    * @return the current value of the "functionExecutionHasResultCompleteProcessingTime" stat
    */
   public int getFunctionExecutionHasResultCompleteProcessingTime() {
@@ -347,7 +339,6 @@ public class FunctionStats {
   /**
    * Returns the current value of the "A gauge indicating the number of currently active execute()
    * calls for functions where hasResult() returns true" stat.
-   *
    * @return the current value of the "functionExecutionHasResultRunning" stat
    */
   public int getFunctionExecutionHasResultRunning() {
@@ -365,7 +356,6 @@ public class FunctionStats {
   /**
    * Returns the current value of the "Total number of Exceptions Occurred while executing function"
    * stat.
-   *
    * @return the current value of the "functionExecutionHasResultRunning" stat
    */
   public int getFunctionExecutionExceptions() {
@@ -382,7 +372,6 @@ public class FunctionStats {
 
   /**
    * Returns the current time (ns).
-   *
    * @return the current time (ns)
    */
   public long startTime() {
@@ -410,11 +399,10 @@ public class FunctionStats {
   /**
    * Increments the "functionExecutionsCompleted" and "functionExecutionCompleteProcessingTime"
    * stats.
-   *
    * @param start The start of the functionExecution (which is decremented from the current time to
-   *        determine the function Execution processing time).
+   * determine the function Execution processing time).
    * @param haveResult haveResult=true then update the _functionExecutionHasResultRunningId and
-   *        _functionExecutionHasResultCompleteProcessingTimeId
+   * _functionExecutionHasResultCompleteProcessingTimeId
    */
   public void endFunctionExecution(long start, boolean haveResult) {
     long ts = DistributionStats.getStatTime();
@@ -442,7 +430,6 @@ public class FunctionStats {
   /**
    * Increments the "_functionExecutionException" and decrements "_functionExecutionsRunningId" and
    * decrement "_functionExecutionHasResultRunningId"
-   *
    */
   public void endFunctionExecutionWithException(boolean haveResult) {
     // Decrement function Executions running.
@@ -460,26 +447,18 @@ public class FunctionStats {
 
   /**
    * Returns the Function Stats for the given function
-   *
    * @param functionID represents the function for which we are returning the function Stats
    * @param distributedSystem represents the Distributed System
    * @return object of the FunctionStats
    */
-  public static FunctionStats getFunctionStats(String functionID, InternalDistributedSystem distributedSystem) {
-    if (isDisabled()) {
-      return dummy;
-    } else {
-      return distributedSystem.getInternalDistributedSystemStats().getFunctionStats(functionID);
-    }
+  public static FunctionStats getFunctionStats(String functionID,
+                                               InternalDistributedSystem distributedSystem) {
+    return distributedSystem.getInternalDistributedSystemStats().getFunctionStats(functionID);
   }
 
   public static FunctionStats getFunctionStats(String functionID) {
-    if (isDisabled()) {
-      return dummy;
-    } else {
-      InternalDistributedSystem distributedSystem = InternalDistributedSystem.getAnyInstance();
-      return distributedSystem.getInternalDistributedSystemStats().getFunctionStats(functionID);
-    }
+    InternalDistributedSystem distributedSystem = InternalDistributedSystem.getAnyInstance();
+    return distributedSystem.getInternalDistributedSystemStats().getFunctionStats(functionID);
   }
 
   private static boolean isDisabled() {

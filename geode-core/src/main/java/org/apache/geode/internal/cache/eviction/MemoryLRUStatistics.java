@@ -22,17 +22,15 @@ import org.apache.geode.statistics.StatisticsTypeFactory;
 import org.apache.geode.internal.statistics.StatisticsTypeFactoryImpl;
 
 public class MemoryLRUStatistics implements EvictionStats {
-  private static final StatisticsType statType;
-  private static final int limitId;
-  private static final int counterId;
-  private static final int evictionsId;
-  private static final int destroysId;
-  private static final int evaluationsId;
-  private static final int greedyReturnsId;
+  private StatisticsType statType;
+  private int limitId;
+  private int counterId;
+  private int evictionsId;
+  private int destroysId;
+  private int evaluationsId;
+  private int greedyReturnsId;
 
-  static {
-    StatisticsTypeFactory f = StatisticsTypeFactoryImpl.singleton();
-
+  private void initializeStats(StatisticsFactory factory) {
     final String bytesAllowedDesc = "Number of total bytes allowed in this region.";
     final String byteCountDesc = "Number of bytes in region.";
     final String lruEvictionsDesc = "Number of total entry evictions triggered by LRU.";
@@ -41,13 +39,13 @@ public class MemoryLRUStatistics implements EvictionStats {
     final String lruEvaluationsDesc = "Number of entries evaluated during LRU operations.";
     final String lruGreedyReturnsDesc = "Number of non-LRU entries evicted during LRU operations";
 
-    statType = f.createType("MemLRUStatistics", "Statistics relates to memory based eviction",
-        new StatisticDescriptor[] {f.createLongGauge("bytesAllowed", bytesAllowedDesc, "bytes"),
-            f.createLongGauge("byteCount", byteCountDesc, "bytes"),
-            f.createLongCounter("lruEvictions", lruEvictionsDesc, "entries"),
-            f.createLongCounter("lruDestroys", lruDestroysDesc, "entries"),
-            f.createLongCounter("lruEvaluations", lruEvaluationsDesc, "entries"),
-            f.createLongCounter("lruGreedyReturns", lruGreedyReturnsDesc, "entries")});
+    statType = factory.createType("MemLRUStatistics", "Statistics relates to memory based eviction",
+        new StatisticDescriptor[] {factory.createLongGauge("bytesAllowed", bytesAllowedDesc, "bytes"),
+            factory.createLongGauge("byteCount", byteCountDesc, "bytes"),
+            factory.createLongCounter("lruEvictions", lruEvictionsDesc, "entries"),
+            factory.createLongCounter("lruDestroys", lruDestroysDesc, "entries"),
+            factory.createLongCounter("lruEvaluations", lruEvaluationsDesc, "entries"),
+            factory.createLongCounter("lruGreedyReturns", lruGreedyReturnsDesc, "entries")});
 
     limitId = statType.nameToId("bytesAllowed");
     counterId = statType.nameToId("byteCount");
@@ -60,6 +58,7 @@ public class MemoryLRUStatistics implements EvictionStats {
   private final Statistics stats;
 
   public MemoryLRUStatistics(StatisticsFactory factory, String name) {
+    initializeStats(factory);
     this.stats = factory.createAtomicStatistics(statType, "MemLRUStatistics-" + name);
   }
 

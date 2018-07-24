@@ -29,29 +29,29 @@ import org.apache.geode.internal.statistics.StatisticsTypeFactoryImpl;
  */
 public class DiskRegionStats {
 
-  private static final StatisticsType type;
+  private StatisticsType type;
 
   //////////////////// Statistic "Id" Fields ////////////////////
 
-  private static final int writesId;
-  private static final int writeTimeId;
-  private static final int bytesWrittenId;
-  private static final int readsId;
-  private static final int readTimeId;
-  private static final int writesInProgressId;
-  private static final int bytesReadId;
-  private static final int removesId;
-  private static final int removeTimeId;
-  private static final int numOverflowOnDiskId;
-  private static final int numEntriesInVMId;
-  private static final int numOverflowBytesOnDiskId;
+  private int writesId;
+  private int writeTimeId;
+  private int bytesWrittenId;
+  private int readsId;
+  private int readTimeId;
+  private int writesInProgressId;
+  private int bytesReadId;
+  private int removesId;
+  private int removeTimeId;
+  private int numOverflowOnDiskId;
+  private int numEntriesInVMId;
+  private int numOverflowBytesOnDiskId;
 
-  private static final int localInitializationsId;
-  private static final int remoteInitializationsId;
+  private int localInitializationsId;
+  private int remoteInitializationsId;
 
 
 
-  static {
+  private void initializeStats(StatisticsFactory factory) {
     String statName = "DiskRegionStatistics";
     String statDescription = "Statistics about a Region's use of the disk";
 
@@ -76,24 +76,22 @@ public class DiskRegionStats {
     final String remoteInitializationsDesc =
         "The number of times that this region has been initialized by doing GII from a peer (0 or 1)";
 
-    StatisticsTypeFactory f = StatisticsTypeFactoryImpl.singleton();
-
-    type = f.createType(statName, statDescription, new StatisticDescriptor[] {
-        f.createLongCounter("writes", writesDesc, "ops"),
-        f.createLongCounter("writeTime", writeTimeDesc, "nanoseconds"),
-        f.createLongCounter("writtenBytes", bytesWrittenDesc, "bytes"),
-        f.createLongCounter("reads", readsDesc, "ops"),
-        f.createLongCounter("readTime", readTimeDesc, "nanoseconds"),
-        f.createLongCounter("readBytes", bytesReadDesc, "bytes"),
-        f.createLongCounter("removes", removesDesc, "ops"),
-        f.createLongCounter("removeTime", removeTimeDesc, "nanoseconds"),
-        f.createLongGauge("entriesOnlyOnDisk", numOverflowOnDiskDesc, "entries"),
-        f.createLongGauge("bytesOnlyOnDisk", numOverflowBytesOnDiskDesc, "bytes"),
-        f.createLongGauge("entriesInVM", numEntriesInVMDesc, "entries"),
-        f.createIntGauge("writesInProgress", "current number of oplog writes that are in progress",
+    type = factory.createType(statName, statDescription, new StatisticDescriptor[] {
+        factory.createLongCounter("writes", writesDesc, "ops"),
+        factory.createLongCounter("writeTime", writeTimeDesc, "nanoseconds"),
+        factory.createLongCounter("writtenBytes", bytesWrittenDesc, "bytes"),
+        factory.createLongCounter("reads", readsDesc, "ops"),
+        factory.createLongCounter("readTime", readTimeDesc, "nanoseconds"),
+        factory.createLongCounter("readBytes", bytesReadDesc, "bytes"),
+        factory.createLongCounter("removes", removesDesc, "ops"),
+        factory.createLongCounter("removeTime", removeTimeDesc, "nanoseconds"),
+        factory.createLongGauge("entriesOnlyOnDisk", numOverflowOnDiskDesc, "entries"),
+        factory.createLongGauge("bytesOnlyOnDisk", numOverflowBytesOnDiskDesc, "bytes"),
+        factory.createLongGauge("entriesInVM", numEntriesInVMDesc, "entries"),
+        factory.createIntGauge("writesInProgress", "current number of oplog writes that are in progress",
             "writes"),
-        f.createIntGauge("localInitializations", localInitializationsDesc, "initializations"),
-        f.createIntGauge("remoteInitializations", remoteInitializationsDesc, "initializations"),});
+        factory.createIntGauge("localInitializations", localInitializationsDesc, "initializations"),
+        factory.createIntGauge("remoteInitializations", remoteInitializationsDesc, "initializations"),});
 
     // Initialize id fields
     writesId = type.nameToId("writes");
@@ -123,8 +121,9 @@ public class DiskRegionStats {
   /**
    * Creates a new <code>DiskRegionStatistics</code> for the given region.
    */
-  public DiskRegionStats(StatisticsFactory f, String name) {
-    this.stats = f.createAtomicStatistics(type, name);
+  public DiskRegionStats(StatisticsFactory factory, String name) {
+    initializeStats(factory);
+    this.stats = factory.createAtomicStatistics(type, name);
   }
 
   ///////////////////// Instance Methods /////////////////////

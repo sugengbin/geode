@@ -1914,7 +1914,7 @@ public class CacheClientNotifier {
     // Initialize the statistics
     StatisticsFactory factory;
     if (isGatewayReceiver) {
-      factory = new DummyStatisticsFactory();
+      factory = new DummyStatisticsFactory(cache.getDistributedSystem().getStatisticsFactory());
     } else {
       factory = this.getCache().getDistributedSystem().getStatisticsFactory();
     }

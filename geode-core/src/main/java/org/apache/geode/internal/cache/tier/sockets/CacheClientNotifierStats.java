@@ -31,7 +31,7 @@ import org.apache.geode.internal.statistics.StatisticsTypeFactoryImpl;
  */
 public class CacheClientNotifierStats {
 
-  private static final StatisticsType _type;
+  private StatisticsType _type;
 
   //////////////////// Statistic "Id" Fields ////////////////////
 
@@ -47,65 +47,63 @@ public class CacheClientNotifierStats {
   private static final String COMPILED_QUERY_COUNT = "compiledQueryCount";
   private static final String COMPILED_QUERY_USED_COUNT = "compiledQueryUsedCount";
 
-  private static final int _eventsId;
-  private static final int _eventProcessingTimeId;
-  private static final int _clientRegistrationsId;
-  private static final int _clientRegistrationTimeId;
+  private int _eventsId;
+  private int _eventProcessingTimeId;
+  private int _clientRegistrationsId;
+  private int _clientRegistrationTimeId;
 
   // Register and Unregister stats.
-  private static final int _clientHealthMonitorRegisterId;
-  private static final int _durableReconnectionCount;
-  private static final int _queueDroppedCount;
-  private static final int _eventEnqueuedWhileClientAwayCount;
-  private static final int _clientHealthMonitorUnRegisterId;
+  private int _clientHealthMonitorRegisterId;
+  private int _durableReconnectionCount;
+  private int _queueDroppedCount;
+  private int _eventEnqueuedWhileClientAwayCount;
+  private int _clientHealthMonitorUnRegisterId;
 
   // CQ process stat.
-  private static final int _cqProcessingTimeId;
+  private int _cqProcessingTimeId;
 
   // Compiled query count.
-  private static final int _compiledQueryCount;
+  private int _compiledQueryCount;
 
-  private static final int _compiledQueryUsedCount;
+  private int _compiledQueryUsedCount;
 
-  static {
+  private void initializeStats(StatisticsFactory factory) {
     String statName = "CacheClientNotifierStatistics";
 
-    StatisticsTypeFactory f = StatisticsTypeFactoryImpl.singleton();
-
-    _type = f.createType(statName, statName, new StatisticDescriptor[] {f.createIntCounter(EVENTS,
+    _type = factory.createType(statName, statName, new StatisticDescriptor[] {factory.createIntCounter(EVENTS,
         "Number of events processed by the cache client notifier.", "operations"),
 
-        f.createLongCounter(EVENT_PROCESSING_TIME,
+        factory.createLongCounter(EVENT_PROCESSING_TIME,
             "Total time spent by the cache client notifier processing events.", "nanoseconds"),
 
-        f.createIntCounter(CLIENT_REGISTRATIONS,
+        factory.createIntCounter(CLIENT_REGISTRATIONS,
             "Number of clients that have registered for updates.", "operations"),
 
-        f.createLongCounter(CLIENT_REGISTRATION_TIME,
+        factory.createLongCounter(CLIENT_REGISTRATION_TIME,
             "Total time spent doing client registrations.", "nanoseconds"),
 
-        f.createIntGauge("clientHealthMonitorRegister", "Number of client Register.", "registered"),
+        factory.createIntGauge("clientHealthMonitorRegister", "Number of client Register.", "registered"),
 
-        f.createIntGauge("clientHealthMonitorUnRegister", "Number of client UnRegister.",
+        factory.createIntGauge("clientHealthMonitorUnRegister", "Number of client UnRegister.",
             "unregistered"),
 
-        f.createIntCounter(DURABLE_RECONNECTION_COUNT,
+        factory.createIntCounter(DURABLE_RECONNECTION_COUNT,
             "Number of times the same durable client connects to the server", "operations"),
 
-        f.createIntCounter(QUEUE_DROPPED_COUNT,
+        factory.createIntCounter(QUEUE_DROPPED_COUNT,
             "Number of times client queue for a particular durable client is dropped",
             "operations"),
 
-        f.createIntCounter(EVENTS_ENQUEUED_WHILE_CLIENT_AWAY_COUNT,
+        factory.createIntCounter(EVENTS_ENQUEUED_WHILE_CLIENT_AWAY_COUNT,
             "Number of events enqueued in queue for a durable client ", "operations"),
 
-        f.createLongCounter(CQ_PROCESSING_TIME,
+        factory.createLongCounter(CQ_PROCESSING_TIME,
             "Total time spent by the cache client notifier processing cqs.", "nanoseconds"),
 
-        f.createLongGauge(COMPILED_QUERY_COUNT, "Number of compiled queries maintained.",
+        factory.createLongGauge(COMPILED_QUERY_COUNT, "Number of compiled queries maintained.",
             "maintained"),
 
-        f.createLongCounter(COMPILED_QUERY_USED_COUNT, "Number of times compiled queries are used.",
+        factory.createLongCounter(COMPILED_QUERY_USED_COUNT, "Number of times compiled queries are used.",
             "used"),
 
     });
@@ -139,8 +137,9 @@ public class CacheClientNotifierStats {
   /**
    * Creates a new <code>CacheClientNotifierStats</code>.
    */
-  public CacheClientNotifierStats(StatisticsFactory f) {
-    this._stats = f.createAtomicStatistics(_type, "cacheClientNotifierStats");
+  public CacheClientNotifierStats(StatisticsFactory factory) {
+    initializeStats(factory);
+    this._stats = factory.createAtomicStatistics(_type, "cacheClientNotifierStats");
   }
 
   ///////////////////// Instance Methods /////////////////////

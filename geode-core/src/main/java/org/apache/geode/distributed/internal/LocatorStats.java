@@ -53,37 +53,36 @@ public class LocatorStats {
   private AtomicLong serverLoadUpdates = new AtomicLong();
 
 
-  private static final int _KNOWN_LOCATORS;
-  private static final int _REQUESTS_TO_LOCATOR;
-  private static final int _RESPONSES_FROM_LOCATOR;
-  private static final int _ENDPOINTS_KNOWN;
-  private static final int _REQUESTS_IN_PROGRESS;
-  private static final int _REQUEST_TIME;
-  private static final int _RESPONSE_TIME;
-  private static final int _SERVER_LOAD_UPDATES;
+  private int _KNOWN_LOCATORS;
+  private int _REQUESTS_TO_LOCATOR;
+  private int _RESPONSES_FROM_LOCATOR;
+  private int _ENDPOINTS_KNOWN;
+  private int _REQUESTS_IN_PROGRESS;
+  private int _REQUEST_TIME;
+  private int _RESPONSE_TIME;
+  private int _SERVER_LOAD_UPDATES;
 
 
   private Statistics _stats = null;
 
-  static {
+  private void initializeStats(StatisticsFactory factory) {
     String statName = "LocatorStats";
     String statDescription = "Statistics on the gemfire locator.";
     String serverThreadsDesc =
         "The number of location requests currently being processed by the thread pool.";
-    StatisticsTypeFactory f = StatisticsTypeFactoryImpl.singleton();
-    type = f.createType(statName, statDescription, new StatisticDescriptor[] {
-        f.createIntGauge(KNOWN_LOCATORS, "Number of locators known to this locator", LOCATORS),
-        f.createLongCounter(REQUESTS_TO_LOCATOR,
+    type = factory.createType(statName, statDescription, new StatisticDescriptor[] {
+        factory.createIntGauge(KNOWN_LOCATORS, "Number of locators known to this locator", LOCATORS),
+        factory.createLongCounter(REQUESTS_TO_LOCATOR,
             "Number of requests this locator has received from clients", "requests"),
-        f.createLongCounter(RESPONSES_FROM_LOCATOR,
+        factory.createLongCounter(RESPONSES_FROM_LOCATOR,
             "Number of responses this locator has sent to clients", "responses"),
-        f.createIntGauge(ENDPOINTS_KNOWN, "Number of servers this locator knows about", "servers"),
-        f.createIntGauge(REQUESTS_IN_PROGRESS, serverThreadsDesc, "requests"),
-        f.createLongCounter(REQUEST_TIME, "Time spent processing server location requests",
+        factory.createIntGauge(ENDPOINTS_KNOWN, "Number of servers this locator knows about", "servers"),
+        factory.createIntGauge(REQUESTS_IN_PROGRESS, serverThreadsDesc, "requests"),
+        factory.createLongCounter(REQUEST_TIME, "Time spent processing server location requests",
             "nanoseconds"),
-        f.createLongCounter(RESPONSE_TIME, "Time spent sending location responses to clients",
+        factory.createLongCounter(RESPONSE_TIME, "Time spent sending location responses to clients",
             "nanoseconds"),
-        f.createLongCounter(SERVER_LOAD_UPDATES,
+        factory.createLongCounter(SERVER_LOAD_UPDATES,
             "Total number of times a server load update has been received.", "updates"),});
 
     _REQUESTS_IN_PROGRESS = type.nameToId(REQUESTS_IN_PROGRESS);
@@ -99,7 +98,9 @@ public class LocatorStats {
   /**
    * Creates a new <code>LocatorStats</code> and registers itself with the given statistics factory.
    */
-  public LocatorStats() {}
+  public LocatorStats(StatisticsFactory factory) {
+    initializeStats(factory);
+  }
 
   /**
    * Called when the DS comes online so we can hookup the stats

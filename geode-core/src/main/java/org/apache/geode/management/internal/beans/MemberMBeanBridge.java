@@ -330,7 +330,7 @@ public class MemberMBeanBridge {
           .getRedundancyZone(cache.getInternalDistributedSystem().getDistributedMember());
     }
 
-    this.sampler = system.getStatSampler();
+    this.sampler = system.getInternalDistributedSystemStats().getStatSampler();
 
     this.config = system.getConfig();
     try {
@@ -433,21 +433,7 @@ public class MemberMBeanBridge {
     }
 
     if (PureJavaMode.osStatsAreAvailable()) {
-      Statistics[] systemStats = null;
-
-      if (HostStatHelper.isSolaris()) {
-        systemStats = internalDistributedSystemStats.findStatisticsByType(SolarisSystemStats.getType());
-      } else if (HostStatHelper.isLinux()) {
-        systemStats = internalDistributedSystemStats.findStatisticsByType(LinuxSystemStats.getType());
-      } else if (HostStatHelper.isOSX()) {
-        systemStats = null;// @TODO once OSX stats are implemented
-      } else if (HostStatHelper.isWindows()) {
-        systemStats = internalDistributedSystemStats.findStatisticsByType(WindowsSystemStats.getType());
-      }
-
-      if (systemStats != null) {
-        systemStat = systemStats[0];
-      }
+      systemStat = system.getInternalDistributedSystemStats().getStatSampler().getSystemStats();
     }
 
     MemoryAllocator allocator = this.cache.getOffHeapStore();
@@ -576,7 +562,7 @@ public class MemberMBeanBridge {
   }
 
   public void addSystemStats() {
-    GemFireStatSampler sampler = system.getStatSampler();
+    GemFireStatSampler sampler = system.getInternalDistributedSystemStats().getStatSampler();
     InternalDistributedSystemStats internalDistributedSystemStats =
         system.getInternalDistributedSystemStats();
 
@@ -592,7 +578,7 @@ public class MemberMBeanBridge {
   }
 
   public void addVMStats() {
-    VMStatsContract vmStatsContract = system.getStatSampler().getVMStats();
+    VMStatsContract vmStatsContract = system.getInternalDistributedSystemStats().getStatSampler().getVMStats();
     InternalDistributedSystemStats internalDistributedSystemStats =
         system.getInternalDistributedSystemStats();
     if (vmStatsContract != null && vmStatsContract instanceof VMStats50) {
@@ -607,7 +593,7 @@ public class MemberMBeanBridge {
         vmStatsMonitor.addStatisticsToMonitor(vmHeapStats);
       }
 
-      StatisticsType gcType = VMStats50.getGCType();
+      StatisticsType gcType = vmStats50.getGCType();
       if (gcType != null) {
         Statistics[] gcStats = internalDistributedSystemStats.findStatisticsByType(gcType);
         if (gcStats != null && gcStats.length > 0) {

@@ -33,7 +33,6 @@ import org.apache.geode.internal.statistics.StatisticsTypeFactoryImpl;
 
 /**
  * Enables off-heap storage by creating a MemoryAllocator.
- *
  * @since Geode 1.0
  */
 public class OffHeapStorage implements OffHeapMemoryStats {
@@ -41,7 +40,7 @@ public class OffHeapStorage implements OffHeapMemoryStats {
       DistributionConfig.GEMFIRE_PREFIX + "offheap.stayConnectedOnOutOfOffHeapMemory";
 
   // statistics type
-  private static final StatisticsType statsType;
+  private StatisticsType statsType;
   private static final String statsTypeName = "OffHeapMemoryStats";
   private static final String statsTypeDescription = "Statistics about off-heap memory storage.";
 
@@ -49,22 +48,19 @@ public class OffHeapStorage implements OffHeapMemoryStats {
   private static final String statsName = "offHeapMemoryStats";
 
   // statistics fields
-  private static final int freeMemoryId;
-  private static final int maxMemoryId;
-  private static final int usedMemoryId;
-  private static final int objectsId;
-  private static final int readsId;
-  private static final int defragmentationId;
-  private static final int fragmentsId;
-  private static final int largestFragmentId;
-  private static final int defragmentationTimeId;
-  private static final int fragmentationId;
-  private static final int defragmentationsInProgressId;
-  // NOTE!!!! When adding new stats make sure and update the initialize method on this class
+  private int freeMemoryId;
+  private int maxMemoryId;
+  private int usedMemoryId;
+  private int objectsId;
+  private int readsId;
+  private int defragmentationId;
+  private int fragmentsId;
+  private int largestFragmentId;
+  private int defragmentationTimeId;
+  private int fragmentationId;
+  private int defragmentationsInProgressId;
 
-  // creates and registers the statistics type
-  static {
-    final StatisticsTypeFactory f = StatisticsTypeFactoryImpl.singleton();
+  private void initializeStats(StatisticsFactory factory) {
 
     final String usedMemoryDesc =
         "The amount of off-heap memory, in bytes, that is being used to store data.";
@@ -73,18 +69,23 @@ public class OffHeapStorage implements OffHeapMemoryStats {
     final String defragmentationsInProgressDesc =
         "Current number of defragment operations currently in progress.";
     final String defragmentationTimeDesc = "The total time spent defragmenting off-heap memory.";
-    final String fragmentationDesc =
+    final String
+        fragmentationDesc =
         "The percentage of off-heap free memory that is fragmented.  Updated every time a defragmentation is performed.";
-    final String fragmentsDesc =
+    final String
+        fragmentsDesc =
         "The number of fragments of free off-heap memory. Updated every time a defragmentation is done.";
     final String freeMemoryDesc =
         "The amount of off-heap memory, in bytes, that is not being used.";
-    final String largestFragmentDesc =
+    final String
+        largestFragmentDesc =
         "The largest fragment of memory found by the last defragmentation of off heap memory. Updated every time a defragmentation is done.";
     final String objectsDesc = "The number of objects stored in off-heap memory.";
-    final String readsDesc =
+    final String
+        readsDesc =
         "The total number of reads of off-heap memory. Only reads of a full object increment this statistic. If only a part of the object is read this statistic is not incremented.";
-    final String maxMemoryDesc =
+    final String
+        maxMemoryDesc =
         "The maximum amount of off-heap memory, in bytes. This is the amount of memory allocated at startup and does not change.";
 
     final String usedMemory = "usedMemory";
@@ -99,19 +100,20 @@ public class OffHeapStorage implements OffHeapMemoryStats {
     final String reads = "reads";
     final String maxMemory = "maxMemory";
 
-    statsType = f.createType(statsTypeName, statsTypeDescription,
-        new StatisticDescriptor[] {f.createLongGauge(usedMemory, usedMemoryDesc, "bytes"),
-            f.createIntCounter(defragmentations, defragmentationDesc, "operations"),
-            f.createIntGauge(defragmentationsInProgress, defragmentationsInProgressDesc,
+    statsType = factory.createType(statsTypeName, statsTypeDescription,
+        new StatisticDescriptor[]{factory.createLongGauge(usedMemory, usedMemoryDesc, "bytes"),
+            factory.createIntCounter(defragmentations, defragmentationDesc, "operations"),
+            factory.createIntGauge(defragmentationsInProgress, defragmentationsInProgressDesc,
                 "operations"),
-            f.createLongCounter(defragmentationTime, defragmentationTimeDesc, "nanoseconds", false),
-            f.createIntGauge(fragmentation, fragmentationDesc, "percentage"),
-            f.createLongGauge(fragments, fragmentsDesc, "fragments"),
-            f.createLongGauge(freeMemory, freeMemoryDesc, "bytes"),
-            f.createIntGauge(largestFragment, largestFragmentDesc, "bytes"),
-            f.createIntGauge(objects, objectsDesc, "objects"),
-            f.createLongCounter(reads, readsDesc, "operations"),
-            f.createLongGauge(maxMemory, maxMemoryDesc, "bytes"),});
+            factory.createLongCounter(defragmentationTime, defragmentationTimeDesc, "nanoseconds",
+                false),
+            factory.createIntGauge(fragmentation, fragmentationDesc, "percentage"),
+            factory.createLongGauge(fragments, fragmentsDesc, "fragments"),
+            factory.createLongGauge(freeMemory, freeMemoryDesc, "bytes"),
+            factory.createIntGauge(largestFragment, largestFragmentDesc, "bytes"),
+            factory.createIntGauge(objects, objectsDesc, "objects"),
+            factory.createLongCounter(reads, readsDesc, "operations"),
+            factory.createLongGauge(maxMemory, maxMemoryDesc, "bytes"),});
 
     usedMemoryId = statsType.nameToId(usedMemory);
     defragmentationId = statsType.nameToId(defragmentations);
@@ -156,8 +158,8 @@ public class OffHeapStorage implements OffHeapMemoryStats {
   }
 
   /**
-   * Validates that the running VM is compatible with off heap storage. Throws a
-   * {@link CacheException} if incompatible.
+   * Validates that the running VM is compatible with off heap storage. Throws a {@link
+   * CacheException} if incompatible.
    */
   @SuppressWarnings("serial")
   private static void validateVmCompatibility() {
@@ -173,21 +175,22 @@ public class OffHeapStorage implements OffHeapMemoryStats {
     } catch (ClassNotFoundException e) {
       throw new CacheException(
           LocalizedStrings.MEMSCALE_JVM_INCOMPATIBLE_WITH_OFF_HEAP.toLocalizedString("product"),
-          e) {};
+          e) {
+      };
     } catch (NoSuchMethodException e) {
       throw new CacheException(
           LocalizedStrings.MEMSCALE_JVM_INCOMPATIBLE_WITH_OFF_HEAP.toLocalizedString("product"),
-          e) {};
+          e) {
+      };
     }
   }
 
   /**
    * Constructs a MemoryAllocator for off-heap storage.
-   *
    * @return MemoryAllocator for off-heap storage
    */
   public static MemoryAllocator createOffHeapStorage(StatisticsFactory sf, long offHeapMemorySize,
-      DistributedSystem system) {
+                                                     DistributedSystem system) {
     if (offHeapMemorySize == 0 || Boolean.getBoolean(InternalLocator.FORCE_LOCATOR_DM_TYPE)) {
       // Checking the FORCE_LOCATOR_DM_TYPE is a quick hack to keep our locator from allocating off
       // heap memory.
@@ -212,7 +215,7 @@ public class OffHeapStorage implements OffHeapMemoryStats {
   }
 
   static MemoryAllocator basicCreateOffHeapStorage(StatisticsFactory sf, long offHeapMemorySize,
-      OutOfOffHeapMemoryListener ooohml) {
+                                                   OutOfOffHeapMemoryListener ooohml) {
     final OffHeapMemoryStats stats = new OffHeapStorage(sf);
 
     // determine off-heap and slab sizes
@@ -264,8 +267,9 @@ public class OffHeapStorage implements OffHeapMemoryStats {
 
   private final Statistics stats;
 
-  private OffHeapStorage(StatisticsFactory f) {
-    this.stats = f.createAtomicStatistics(statsType, statsName);
+  private OffHeapStorage(StatisticsFactory factory) {
+    initializeStats(factory);
+    this.stats = factory.createAtomicStatistics(statsType, statsName);
   }
 
   public void incFreeMemory(long value) {

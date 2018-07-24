@@ -25,25 +25,26 @@ public class DeltaSessionStatistics {
 
   public static final String typeName = "SessionStatistics";
 
-  private static final StatisticsType type;
+  private StatisticsType type;
 
   private static final String SESSIONS_CREATED = "sessionsCreated";
   private static final String SESSIONS_INVALIDATED = "sessionsInvalidated";
   private static final String SESSIONS_EXPIRED = "sessionsExpired";
 
-  private static final int sessionsCreatedId;
-  private static final int sessionsInvalidatedId;
-  private static final int sessionsExpiredId;
+  private int sessionsCreatedId;
+  private int sessionsInvalidatedId;
+  private int sessionsExpiredId;
 
-  static {
+  private void initializeStats(StatisticsFactory factory) {
     // Initialize type
-    StatisticsTypeFactory f = StatisticsTypeFactoryImpl.singleton();
-    type = f.createType(typeName, typeName,
-        new StatisticDescriptor[] {
-            f.createIntCounter(SESSIONS_CREATED, "The number of sessions created", "operations"),
-            f.createIntCounter(SESSIONS_INVALIDATED,
+    type = factory.createType(typeName, typeName,
+        new StatisticDescriptor[]{
+            factory.createIntCounter(SESSIONS_CREATED, "The number of sessions created",
+                "operations"),
+            factory.createIntCounter(SESSIONS_INVALIDATED,
                 "The number of sessions invalidated by invoking invalidate", "operations"),
-            f.createIntCounter(SESSIONS_EXPIRED, "The number of sessions invalidated by timeout",
+            factory.createIntCounter(SESSIONS_EXPIRED,
+                "The number of sessions invalidated by timeout",
                 "operations"),});
 
     // Initialize id fields
@@ -55,6 +56,7 @@ public class DeltaSessionStatistics {
   private final Statistics stats;
 
   public DeltaSessionStatistics(StatisticsFactory factory, String applicationName) {
+    initializeStats(factory);
     this.stats = factory.createAtomicStatistics(type, typeName + "_" + applicationName);
   }
 

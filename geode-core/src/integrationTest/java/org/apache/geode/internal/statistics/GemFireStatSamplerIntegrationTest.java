@@ -533,7 +533,7 @@ public class GemFireStatSamplerIntegrationTest extends StatSamplerTestCase {
   }
 
   private GemFireStatSampler getGemFireStatSampler() {
-    return ((InternalDistributedSystem) this.distributedSystem).getStatSampler();
+    return ((InternalDistributedSystem) this.distributedSystem).getInternalDistributedSystemStats().getStatSampler();
   }
 
   private SampleCollector getSampleCollector() {

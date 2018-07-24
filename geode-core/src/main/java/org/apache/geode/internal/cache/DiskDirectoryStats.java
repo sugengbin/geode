@@ -29,18 +29,18 @@ import org.apache.geode.internal.statistics.StatisticsTypeFactoryImpl;
  */
 public class DiskDirectoryStats {
 
-  private static final StatisticsType type;
+  private StatisticsType type;
 
   //////////////////// Statistic "Id" Fields ////////////////////
 
-  private static final int diskSpaceId;
-  private static final int maxSpaceId;
-  private static final int volumeSizeId;
-  private static final int volumeFreeSpaceId;
-  private static final int volumeFreeSpaceChecksId;
-  private static final int volumeFreeSpaceTimeId;
+  private int diskSpaceId;
+  private int maxSpaceId;
+  private int volumeSizeId;
+  private int volumeFreeSpaceId;
+  private int volumeFreeSpaceChecksId;
+  private int volumeFreeSpaceTimeId;
 
-  static {
+  private void initializeStats(StatisticsFactory factory) {
     String statName = "DiskDirStatistics";
     String statDescription = "Statistics about a single disk directory for a region";
 
@@ -48,17 +48,15 @@ public class DiskDirectoryStats {
         "The total number of bytes currently being used on disk in this directory for oplog files.";
     final String maxSpaceDesc =
         "The configured maximum number of bytes allowed in this directory for oplog files. Note that some product configurations allow this maximum to be exceeded.";
-    StatisticsTypeFactory f = StatisticsTypeFactoryImpl.singleton();
-
-    type = f.createType(statName, statDescription,
-        new StatisticDescriptor[] {f.createLongGauge("diskSpace", diskSpaceDesc, "bytes"),
-            f.createLongGauge("maximumSpace", maxSpaceDesc, "bytes"),
-            f.createLongGauge("volumeSize", "The total size in bytes of the disk volume", "bytes"),
-            f.createLongGauge("volumeFreeSpace", "The total free space in bytes on the disk volume",
+    type = factory.createType(statName, statDescription,
+        new StatisticDescriptor[] {factory.createLongGauge("diskSpace", diskSpaceDesc, "bytes"),
+            factory.createLongGauge("maximumSpace", maxSpaceDesc, "bytes"),
+            factory.createLongGauge("volumeSize", "The total size in bytes of the disk volume", "bytes"),
+            factory.createLongGauge("volumeFreeSpace", "The total free space in bytes on the disk volume",
                 "bytes"),
-            f.createLongCounter("volumeFreeSpaceChecks", "The total number of disk space checks",
+            factory.createLongCounter("volumeFreeSpaceChecks", "The total number of disk space checks",
                 "checks"),
-            f.createLongCounter("volumeFreeSpaceTime", "The total time spent checking disk usage",
+            factory.createLongCounter("volumeFreeSpaceTime", "The total time spent checking disk usage",
                 "nanoseconds")});
 
     // Initialize id fields
@@ -80,8 +78,9 @@ public class DiskDirectoryStats {
   /**
    * Creates a new <code>DiskRegionStatistics</code> for the given region.
    */
-  public DiskDirectoryStats(StatisticsFactory f, String name) {
-    this.stats = f.createStatistics(type, name);
+  public DiskDirectoryStats(StatisticsFactory factory, String name) {
+    initializeStats(factory);
+    this.stats = factory.createStatistics(type, name);
   }
 
   ///////////////////// Instance Methods /////////////////////

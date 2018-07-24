@@ -19,7 +19,6 @@ package org.apache.geode.statistics;
  * Instances of this interface provide methods that create instances of {@link Statistics}. It can
  * also be used to create instances of {@link StatisticDescriptor} and {@link StatisticsType}
  * because it implements {@link StatisticsTypeFactory}.
- * {@link org.apache.geode.distributed.DistributedSystem} is the only instance of this interface.
  *
  * <P>
  *
