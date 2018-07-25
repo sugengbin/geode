@@ -1,5 +1,7 @@
 package org.apache.geode.statistics.micrometer
 
+import io.micrometer.core.instrument.MeterRegistry
+import io.micrometer.core.instrument.simple.SimpleMeterRegistry
 import org.apache.geode.statistics.StatisticDescriptor
 import org.apache.geode.statistics.Statistics
 import org.apache.geode.statistics.StatisticsFactory
@@ -9,9 +11,13 @@ import org.apache.geode.statistics.internal.micrometer.impl.GaugeStatisticMeter
 import org.apache.geode.statistics.internal.micrometer.impl.MicrometerStatisticsManager
 import java.io.Reader
 
-class MicrometerStatisticsFactoryImpl : StatisticsFactory {
-    private val micrometerStatisticsManager = MicrometerStatisticsManager()
+class MicrometerStatisticsFactoryImpl(vararg meterRegistries: MeterRegistry= arrayOf(SimpleMeterRegistry())) : StatisticsFactory {
+
+    private val micrometerStatisticsManager = MicrometerStatisticsManager(meterRegistries = *meterRegistries)
     private val meterGroupMap = hashMapOf<String, StatisticsType>()
+
+    override fun createOsStatistics(type: StatisticsType?, textId: String, numericId: Long, osStatFlags: Int): Statistics =
+            MicrometerStatisticsImpl(0,type as MicrometerStatisticsType,textId,numericId)
 
     override fun createStatistics(type: StatisticsType): Statistics {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
@@ -33,9 +39,8 @@ class MicrometerStatisticsFactoryImpl : StatisticsFactory {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun createAtomicStatistics(type: StatisticsType, textId: String, numericId: Long): Statistics {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    override fun createAtomicStatistics(type: StatisticsType, textId: String, numericId: Long): Statistics =
+            MicrometerStatisticsImpl(0,type as MicrometerStatisticsType,textId,numericId)
 
     override fun findStatisticsByType(type: StatisticsType): Array<Statistics> {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.

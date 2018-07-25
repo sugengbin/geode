@@ -58,4 +58,9 @@ public interface StatisticsType {
    */
   StatisticDescriptor nameToDescriptor(String name);
 
+  int getIntStatCount();
+
+  int getLongStatCount();
+
+  int getDoubleStatCount();
 }

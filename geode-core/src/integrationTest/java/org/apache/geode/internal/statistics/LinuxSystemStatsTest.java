@@ -45,6 +45,8 @@ import org.apache.geode.CancelCriterion;
 import org.apache.geode.statistics.Statistics;
 import org.apache.geode.internal.statistics.platform.LinuxProcFsStatistics;
 import org.apache.geode.internal.statistics.platform.LinuxSystemStats;
+import org.apache.geode.statistics.StatisticsFactory;
+import org.apache.geode.test.junit.categories.IntegrationTest;
 import org.apache.geode.test.junit.categories.StatisticsTest;
 
 /**
@@ -77,7 +79,8 @@ public class LinuxSystemStatsTest extends StatSamplerTestCase {
         + File.separator + SimpleStatSampler.DEFAULT_ARCHIVE_FILE_NAME);
     LinuxProcFsStatistics.init();
     initStats();
-    StatisticsTypeImpl statisticsType = (StatisticsTypeImpl) LinuxSystemStats.getType();
+    StatisticsTypeImpl statisticsType = (StatisticsTypeImpl) new LinuxSystemStats(
+        (StatisticsFactory) new StatisticsTypeFactoryImpl()).getType();
     LocalStatisticsImpl statistics = (LocalStatisticsImpl) getStatisticsManager()
         .createStatistics(statisticsType, statisticsType.getName());
 
@@ -88,7 +91,6 @@ public class LinuxSystemStatsTest extends StatSamplerTestCase {
 
   @After
   public void tearDown() throws Exception {
-    StatisticsTypeFactoryImpl.clear();
     if (this.statisticsFactory != null) {
       this.statisticsFactory.close();
     }

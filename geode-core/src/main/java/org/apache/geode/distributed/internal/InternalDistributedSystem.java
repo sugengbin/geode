@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.net.InetAddress;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -40,6 +41,12 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
+import io.micrometer.core.instrument.Clock;
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.influx.InfluxConfig;
+import io.micrometer.influx.InfluxMeterRegistry;
+import io.micrometer.jmx.JmxConfig;
+import io.micrometer.jmx.JmxMeterRegistry;
 import org.apache.logging.log4j.Logger;
 
 import org.apache.geode.CancelCriterion;
@@ -105,6 +112,7 @@ import org.apache.geode.management.ManagementException;
 import org.apache.geode.security.GemFireSecurityException;
 import org.apache.geode.security.PostProcessor;
 import org.apache.geode.security.SecurityManager;
+import org.apache.geode.statistics.micrometer.MicrometerStatisticsFactoryImpl;
 
 /**
  * The concrete implementation of {@link DistributedSystem} that provides internal-only
@@ -149,7 +157,7 @@ public class InternalDistributedSystem extends DistributedSystem {
   /**
    * The IDS StatiticsManager, StatisticsFactory and OsStatsFactory
    */
-  private final InternalDistributedSystemStats internalDistributedSystemStats;
+  private InternalDistributedSystemStats internalDistributedSystemStats;
 
   /**
    * The distribution manager that is used to communicate with the distributed system.
@@ -520,9 +528,6 @@ public class InternalDistributedSystem extends DistributedSystem {
 
     this.creationStack =
         TEST_CREATION_STACK_GENERATOR.get().generateCreationStack(this.originalConfig);
-
-    this.internalDistributedSystemStats = new InternalDistributedSystemStats(this.statsDisabled,this.getConfig(),
-        this,new StatisticsTypeFactoryImpl());
   }
 
   //////////////////// Instance Methods ////////////////////
@@ -602,6 +607,40 @@ public class InternalDistributedSystem extends DistributedSystem {
       service.init(this);
       services.put(service.getInterface(), service);
     }
+  }
+
+  private void initializeStats() {
+    MeterRegistry influxRegistry = new InfluxMeterRegistry(new InfluxConfig() {
+      @Override
+      public Duration step() {
+        return Duration.ofSeconds(10);
+      }
+
+      @Override
+      public String db() {
+        return "mydb";
+      }
+
+      @Override
+      public String get(String k) {
+        return null; // accept the rest of the defaults
+      }
+    }, Clock.SYSTEM);
+
+    MeterRegistry jmxRegistry = new JmxMeterRegistry(new JmxConfig() {
+      @Override
+      public Duration step() {
+        return Duration.ofSeconds(10);
+      }
+
+      @Override
+      public String get(String k) {
+        return null; // accept the rest of the defaults
+      }
+    }, Clock.SYSTEM);
+    this.internalDistributedSystemStats = InternalDistributedSystemStats.createInstance(this.statsDisabled,this.getConfig(),
+//        this,new StatisticsTypeFactoryImpl());
+        this,new MicrometerStatisticsFactoryImpl(influxRegistry,jmxRegistry));
   }
 
 
@@ -735,14 +774,16 @@ public class InternalDistributedSystem extends DistributedSystem {
         logger.info("Finished locking memory.");
       }
 
+      synchronized (this.isConnectedMutex) {
+        this.isConnected = true;
+      }
+
+      initializeStats();
+
       try {
         startInitLocator();
       } catch (InterruptedException e) {
         throw new SystemConnectException("Startup has been interrupted", e);
-      }
-
-      synchronized (this.isConnectedMutex) {
-        this.isConnected = true;
       }
 
       if (!this.isLoner) {

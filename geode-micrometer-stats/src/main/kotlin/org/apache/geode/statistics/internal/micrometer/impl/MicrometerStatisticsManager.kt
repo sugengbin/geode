@@ -2,6 +2,7 @@ package org.apache.geode.statistics.internal.micrometer.impl
 
 import io.micrometer.core.instrument.Clock
 import io.micrometer.core.instrument.Meter
+import io.micrometer.core.instrument.MeterRegistry
 import io.micrometer.core.instrument.composite.CompositeMeterRegistry
 import io.micrometer.core.instrument.config.MeterFilter
 import io.micrometer.core.instrument.config.MeterFilterReply
@@ -12,13 +13,18 @@ import java.net.InetAddress
 
 class MicrometerStatisticsManager @JvmOverloads constructor(private val enableStats: Boolean = true,
                                                             private val serverName: String = "cacheServer" + InetAddress.getLocalHost().hostAddress,
+                                                            vararg meterRegistries: MeterRegistry,
                                                             private val meterRegistry: CompositeMeterRegistry =
                                                                     CompositeMeterRegistry(Clock.SYSTEM)) : StatisticsManager {
     private val registeredMeterGroups = mutableMapOf<String, MicrometerMeterGroup>()
 
     init {
-        meterRegistry.add(SimpleMeterRegistry())
+        meterRegistries.forEach { meterRegistry.add(it) }
         meterRegistry.config().commonTags("serverName", serverName)
+    }
+
+    override fun registerMeterRegistry(meterRegistry: MeterRegistry) {
+        this.meterRegistry.add(meterRegistry)
     }
 
     override fun registerMeterGroup(groupName: String, meterGroup: StatisticsMeterGroup) {

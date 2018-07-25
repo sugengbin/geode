@@ -53,7 +53,7 @@ public class AtomicStatsJUnitTest {
 
     final String statDesc = "blah blah blah";
 
-    StatisticsTypeFactory f = StatisticsTypeFactoryImpl.singleton();
+    StatisticsTypeFactory f = new StatisticsTypeFactoryImpl();
 
     StatisticsType type = f.createType(statName, statDescription, new StatisticDescriptor[] {
         f.createIntGauge("stat", statDesc, "bottles of beer on the wall"),});

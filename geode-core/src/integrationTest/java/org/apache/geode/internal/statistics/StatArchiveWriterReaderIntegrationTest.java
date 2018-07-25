@@ -91,7 +91,6 @@ public class StatArchiveWriterReaderIntegrationTest {
   public void tearDown() throws Exception {
     this.statisticTypes = null;
     this.allStatistics = null;
-    StatisticsTypeFactoryImpl.clear();
   }
 
   @Test
@@ -1597,6 +1596,21 @@ public class StatArchiveWriterReaderIntegrationTest {
       @Override
       public StatisticDescriptor nameToDescriptor(String name) {
         return null;
+      }
+
+      @Override
+      public int getIntStatCount() {
+        return 0;
+      }
+
+      @Override
+      public int getLongStatCount() {
+        return 0;
+      }
+
+      @Override
+      public int getDoubleStatCount() {
+        return 0;
       }
     };
   }

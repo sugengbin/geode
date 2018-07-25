@@ -129,7 +129,6 @@ public class DiskSpaceLimitIntegrationTest {
 
   @After
   public void tearDown() throws Exception {
-    StatisticsTypeFactoryImpl.clear();
   }
 
   @Test

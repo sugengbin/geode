@@ -101,7 +101,7 @@ public class StatArchiveWithConsecutiveResourceInstGenerator {
 
   @After
   public void tearDown() throws Exception {
-    StatisticsTypeFactoryImpl.clear();
+//    StatisticsTypeFactoryImpl.clear();
   }
 
   @Test

@@ -20,6 +20,7 @@ import org.apache.geode.statistics.Statistics;
 import org.apache.geode.statistics.StatisticsFactory;
 import org.apache.geode.statistics.StatisticsType;
 import org.apache.geode.statistics.StatisticsTypeFactory;
+import org.apache.geode.statistics.micrometer.MicrometerStatisticsFactoryImpl;
 
 public class InternalDistributedSystemStats
     implements StatisticsFactory, StatisticsManager, OsStatisticsFactory {
@@ -35,27 +36,61 @@ public class InternalDistributedSystemStats
 
   // As the function execution stats can be lot in number, its better to put
   // them in a map so that it will be accessible immediately
-  private final ConcurrentHashMap<String, FunctionStats> functionExecutionStatsMap = new ConcurrentHashMap<>();
+  private final ConcurrentHashMap<String, FunctionStats>
+      functionExecutionStatsMap =
+      new ConcurrentHashMap<>();
   private FunctionServiceStats functionServiceStats;
 
-  private final boolean statsDisabled;
+  private boolean statsDisabled;
 
   // StatisticsTypeFactory methods
-  private final StatisticsTypeFactory statisticsTypeFactory;
+  private StatisticsFactory statisticsTypeFactory;
 
-  public InternalDistributedSystemStats(boolean statsDisabled,DistributionConfig distributionConfig,
+  //TODO, sorry another singleton... BLECH!!
+  private static final InternalDistributedSystemStats
+      singleton =
+      new InternalDistributedSystemStats();
+
+  private InternalDistributedSystemStats() {
+  }
+
+  //TODO Udo: We need to fix the bootstrapping to have DS's and DM's created in order to get the statsfactory created
+  public InternalDistributedSystemStats(boolean statsDisabled,
+                                        DistributionConfig distributionConfig,
                                         InternalDistributedSystem internalDistributedSystem,
                                         StatisticsTypeFactory statisticsTypeFactory) {
-    this.statisticsTypeFactory = statisticsTypeFactory;
+    this.statisticsTypeFactory = (StatisticsFactory) statisticsTypeFactory;
     this.statsDisabled = statsDisabled;
     this.functionServiceStats = new FunctionServiceStats(this, "FunctionExecution");
-    if (!statsDisabled) {
-      this.sampler = new GemFireStatSampler(internalDistributedSystem.getId(),distributionConfig,
-          internalDistributedSystem.getCancelCriterion(),this,
+    if (!statsDisabled && !(statisticsTypeFactory instanceof MicrometerStatisticsFactoryImpl)) {
+      this.sampler = new GemFireStatSampler(internalDistributedSystem.getId(), distributionConfig,
+          internalDistributedSystem.getCancelCriterion(), this,
           internalDistributedSystem.getDistributionManager());
       this.sampler.start();
 
     }
+  }
+
+  public static InternalDistributedSystemStats createInstance(boolean statsDisabled,
+                                                              DistributionConfig distributionConfig,
+                                                              InternalDistributedSystem distributedSystem,
+                                                              MicrometerStatisticsFactoryImpl statisticsTypeFactory) {
+
+    singleton.statisticsTypeFactory = statisticsTypeFactory;
+    singleton.statsDisabled = statsDisabled;
+    singleton.functionServiceStats = new FunctionServiceStats(singleton, "FunctionExecution");
+    if (!statsDisabled && !(statisticsTypeFactory instanceof MicrometerStatisticsFactoryImpl)) {
+      singleton.sampler = new GemFireStatSampler(distributedSystem.getId(), distributionConfig,
+          distributedSystem.getCancelCriterion(), singleton,
+          distributedSystem.getDistributionManager());
+      singleton.sampler.start();
+
+    }
+    return singleton;
+  }
+
+  public static InternalDistributedSystemStats getSingleton() {
+    return singleton;
   }
 
   @Override
@@ -123,26 +158,11 @@ public class InternalDistributedSystemStats
   }
 
   public Statistics createStatistics(StatisticsType type, String textId) {
-    return createOsStatistics(type, textId, 0, 0);
+    return statisticsTypeFactory.createOsStatistics(type, textId, 0, 0);
   }
 
   public Statistics createStatistics(StatisticsType type, String textId, long numericId) {
     return createOsStatistics(type, textId, numericId, 0);
-  }
-
-  public Statistics createOsStatistics(StatisticsType type, String textId, long numericId,
-                                       int osStatFlags) {
-    if (this.statsDisabled) {
-      return new DummyStatisticsImpl(type, textId, numericId);
-    }
-    statsListUniqueId.increment();
-    Statistics result =
-        new LocalStatisticsImpl(type, textId, numericId, statsListUniqueId.longValue(), false, osStatFlags, this);
-    synchronized (statsList) {
-      statsList.add(result);
-      statsListModCount++;
-    }
-    return result;
   }
 
   public Statistics[] findStatisticsByType(final StatisticsType type) {
@@ -207,17 +227,7 @@ public class InternalDistributedSystemStats
   }
 
   public Statistics createAtomicStatistics(StatisticsType type, String textId, long numericId) {
-    if (this.statsDisabled) {
-      return new DummyStatisticsImpl(type, textId, numericId);
-    }
-
-    statsListUniqueId.increment();
-    Statistics result = StatisticsImpl.createAtomicNoOS(type, textId, numericId,statsListUniqueId.longValue(), this);
-    synchronized (statsList) {
-      statsList.add(result);
-      statsListModCount++;
-    }
-    return result;
+    return statisticsTypeFactory.createAtomicStatistics(type, textId, numericId);
   }
 
   /**
@@ -236,6 +246,22 @@ public class InternalDistributedSystemStats
   @Override
   public StatisticsType[] createTypesFromXml(Reader reader) throws IOException {
     return statisticsTypeFactory.createTypesFromXml(reader);
+  }
+
+  @Override
+  public Statistics createOsStatistics(StatisticsType type, String textId, long numericId, int osStatFlags) {
+    if (this.statsDisabled) {
+      return new DummyStatisticsImpl(type, textId, numericId);
+    }
+    statsListUniqueId.increment();
+    Statistics result =
+        new LocalStatisticsImpl(type, textId, numericId, statsListUniqueId.longValue(), false,
+            osStatFlags, this);
+    synchronized (statsList) {
+      statsList.add(result);
+      statsListModCount++;
+    }
+    return result;
   }
 
   @Override
@@ -346,7 +372,9 @@ public class InternalDistributedSystemStats
       functionstats.close();
     }
 
-    this.sampler.stop();
+    if (sampler != null) {
+      this.sampler.stop();
+    }
   }
 
   public GemFireStatSampler getStatSampler() {

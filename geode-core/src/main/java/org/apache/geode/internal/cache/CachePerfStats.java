@@ -19,11 +19,9 @@ import org.apache.geode.statistics.StatisticDescriptor;
 import org.apache.geode.statistics.Statistics;
 import org.apache.geode.statistics.StatisticsFactory;
 import org.apache.geode.statistics.StatisticsType;
-import org.apache.geode.statistics.StatisticsTypeFactory;
 import org.apache.geode.distributed.internal.PoolStatHelper;
 import org.apache.geode.distributed.internal.QueueStatHelper;
 import org.apache.geode.internal.NanoTimer;
-import org.apache.geode.internal.statistics.StatisticsTypeFactoryImpl;
 
 /**
  * CachePerfStats tracks statistics about GemFire cache performance.
@@ -332,8 +330,8 @@ public class CachePerfStats {
   private static final String evictByCriteria_evaluationTimeDesc = "Total time taken for evaluation of user expression during eviction";// time taken to evaluate user expression.
 
 
-  private void initializeStats(StatisticsFactory factory) {
-    type = factory.createType("CachePerfStats", "Statistics about GemFire cache performance",
+  private void initializeStats(StatisticsFactory factory, String name) {
+    type = factory.createType("CachePerfStats-"+name, "Statistics about GemFire cache performance",
         new StatisticDescriptor[]{
             factory.createIntGauge("loadsInProgress", loadsInProgressDesc, "operations"),
             factory.createIntCounter("loadsCompleted", loadsCompletedDesc, "operations"),
@@ -633,7 +631,7 @@ public class CachePerfStats {
    * factory.
    */
   public CachePerfStats(StatisticsFactory factory) {
-    initializeStats(factory);
+    initializeStats(factory,"" );
     stats = factory.createAtomicStatistics(type, "cachePerfStats");
   }
 
@@ -642,7 +640,7 @@ public class CachePerfStats {
    * factory.
    */
   public CachePerfStats(StatisticsFactory factory, String name) {
-    initializeStats(factory);
+    initializeStats(factory,name);
     stats = factory.createAtomicStatistics(type, "RegionStats-" + name);
   }
 

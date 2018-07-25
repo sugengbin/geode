@@ -158,4 +158,8 @@ public class AsyncEventQueueStats extends GatewaySenderStats {
     initializeStats(factory);
     this.stats = factory.createAtomicStatistics(type, "asyncEventQueueStats-" + asyncQueueId);
   }
+
+  public StatisticsType getType() {
+    return type;
+  }
 }

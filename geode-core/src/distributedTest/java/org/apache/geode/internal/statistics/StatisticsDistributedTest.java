@@ -568,7 +568,7 @@ public class StatisticsDistributedTest extends JUnit4CacheTestCase {
     private static final String UPDATE_EVENTS = "updateEvents";
 
     private static StatisticsType createType(final StatisticsFactory f) {
-      StatisticsTypeFactory stf = StatisticsTypeFactoryImpl.singleton();
+      StatisticsTypeFactory stf = new StatisticsTypeFactoryImpl();
       StatisticsType type = stf.createType(TYPE_NAME, TYPE_DESCRIPTION, createDescriptors(f));
       return type;
     }

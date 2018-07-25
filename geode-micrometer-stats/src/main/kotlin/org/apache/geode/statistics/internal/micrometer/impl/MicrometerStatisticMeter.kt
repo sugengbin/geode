@@ -58,9 +58,7 @@ abstract class MicrometerStatisticMeter(
         setValue(value.toLong())
     }
 
-    open fun setValue(value: Long) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    abstract fun setValue(value: Long)
 
     abstract fun getValue(): Long
 
@@ -182,13 +180,16 @@ data class CounterStatisticMeter(val meterName: String,
     override fun equals(other: Any?) = super.equals(other)
 
     override fun getValue(): Long = meter.count().toLong()
+
+    override fun setValue(value: Long) {
+        meter.increment(value.toDouble())
+    }
 }
 
 data class TimerStatisticMeter(val meterName: String,
                                val meterDescription: String,
                                val meterTags: Array<String> = emptyArray(),
                                val meterUnit: String = "") : TimedStatisticsMeter, MicrometerStatisticMeter(meterName, meterDescription, meterUnit) {
-
     private lateinit var meter: Timer
 
     override fun register(meterRegistry: MeterRegistry, tags: Iterable<Tag>) {
@@ -209,5 +210,9 @@ data class TimerStatisticMeter(val meterName: String,
 
     override fun getValue(): Long {
         TODO("A timer meter should not be exposing its metrics outside of itself")
+    }
+
+    override fun setValue(value: Long) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 }

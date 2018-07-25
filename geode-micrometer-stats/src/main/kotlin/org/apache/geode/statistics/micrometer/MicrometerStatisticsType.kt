@@ -34,5 +34,9 @@ class MicrometerStatisticsType(private val name: String,
 
     override fun nameToDescriptor(name: String): StatisticDescriptor = statsArray[nameToId(name)]
 
+    override fun getIntStatCount(): Int = 0
+    override fun getLongStatCount(): Int = 0
+    override fun getDoubleStatCount(): Int = 0
+
     fun getStatsForId(id: Int) = statsArray[id] as MicrometerStatisticMeter
 }

@@ -174,13 +174,7 @@ public class LocalManager extends Manager {
                   monitoringRegionAttrs, internalArgs));
           monitoringRegionCreated = true;
 
-        } catch (TimeoutException e) {
-          throw new ManagementException(e);
-        } catch (RegionExistsException e) {
-          throw new ManagementException(e);
-        } catch (IOException e) {
-          throw new ManagementException(e);
-        } catch (ClassNotFoundException e) {
+        } catch (TimeoutException | RegionExistsException | IOException | ClassNotFoundException e) {
           throw new ManagementException(e);
         }
 
@@ -189,13 +183,7 @@ public class LocalManager extends Manager {
               cache.createVMRegion(ManagementConstants.NOTIFICATION_REGION + "_" + appender,
                   notifRegionAttrs, internalArgs));
           notifRegionCreated = true;
-        } catch (TimeoutException e) {
-          throw new ManagementException(e);
-        } catch (RegionExistsException e) {
-          throw new ManagementException(e);
-        } catch (IOException e) {
-          throw new ManagementException(e);
-        } catch (ClassNotFoundException e) {
+        } catch (TimeoutException | ClassNotFoundException | IOException | RegionExistsException e) {
           throw new ManagementException(e);
         } finally {
           if (!notifRegionCreated && monitoringRegionCreated) {

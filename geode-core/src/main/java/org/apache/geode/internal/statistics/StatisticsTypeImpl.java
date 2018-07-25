@@ -187,6 +187,7 @@ public class StatisticsTypeImpl implements StatisticsType {
   /**
    * Gets the number of statistics in this type that are ints.
    */
+  @Override
   public int getIntStatCount() {
     return this.intStatCount;
   }
@@ -194,6 +195,7 @@ public class StatisticsTypeImpl implements StatisticsType {
   /**
    * Gets the number of statistics in this type that are longs.
    */
+  @Override
   public int getLongStatCount() {
     return this.longStatCount;
   }
@@ -201,6 +203,7 @@ public class StatisticsTypeImpl implements StatisticsType {
   /**
    * Gets the number of statistics that are doubles.
    */
+  @Override
   public int getDoubleStatCount() {
     return this.doubleStatCount;
   }

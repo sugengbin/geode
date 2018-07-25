@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.net.ConnectException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.time.Duration;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -33,6 +34,12 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import io.micrometer.core.instrument.Clock;
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.influx.InfluxConfig;
+import io.micrometer.influx.InfluxMeterRegistry;
+import io.micrometer.jmx.JmxConfig;
+import io.micrometer.jmx.JmxMeterRegistry;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.logging.log4j.Logger;
@@ -74,12 +81,14 @@ import org.apache.geode.internal.logging.log4j.LocalizedMessage;
 import org.apache.geode.internal.logging.log4j.LogWriterAppenders;
 import org.apache.geode.internal.net.SocketCreator;
 import org.apache.geode.internal.net.SocketCreatorFactory;
+import org.apache.geode.internal.statistics.InternalDistributedSystemStats;
 import org.apache.geode.management.internal.JmxManagerLocator;
 import org.apache.geode.management.internal.JmxManagerLocatorRequest;
 import org.apache.geode.management.internal.configuration.domain.SharedConfigurationStatus;
 import org.apache.geode.management.internal.configuration.handlers.SharedConfigurationStatusRequestHandler;
 import org.apache.geode.management.internal.configuration.messages.SharedConfigurationStatusRequest;
 import org.apache.geode.management.internal.configuration.messages.SharedConfigurationStatusResponse;
+import org.apache.geode.statistics.micrometer.MicrometerStatisticsFactoryImpl;
 
 /**
  * Provides the implementation of a distribution {@code Locator} as well as internal-only
@@ -94,7 +103,6 @@ import org.apache.geode.management.internal.configuration.messages.SharedConfigu
  * The startLocator() methods provide a way to start all three services in one call. Otherwise, the
  * services can be started independently {@code  locator = createLocator();
  * locator.startPeerLocation(); locator.startDistributeSystem();}
- *
  * @since GemFire 4.0
  */
 public class InternalLocator extends Locator implements ConnectListener {
@@ -241,18 +249,19 @@ public class InternalLocator extends Locator implements ConnectListener {
    * Create a locator that listens on a given port. This locator will not have peer or server
    * location services available until they are started by calling startServerLocation or
    * startPeerLocation on the locator object.
-   *
    * @param port the tcp/ip port to listen on
    * @param logFile the file that log messages should be written to
    * @param logger a log writer that should be used (logFile parameter is ignored)
    * @param securityLogger the logger to be used for security related log messages
    * @param distributedSystemProperties optional properties to configure the distributed system
-   *        (e.g., mcast addr/port, other locators)
+   * (e.g., mcast addr/port, other locators)
    * @param startDistributedSystem if true then this locator will also start its own ds
    */
   public static InternalLocator createLocator(int port, File logFile, InternalLogWriter logger,
-      InternalLogWriter securityLogger, InetAddress bindAddress, String hostnameForClients,
-      Properties distributedSystemProperties, boolean startDistributedSystem) {
+                                              InternalLogWriter securityLogger,
+                                              InetAddress bindAddress, String hostnameForClients,
+                                              Properties distributedSystemProperties,
+                                              boolean startDistributedSystem) {
     synchronized (locatorLock) {
       if (hasLocator()) {
         throw new IllegalStateException(
@@ -280,19 +289,21 @@ public class InternalLocator extends Locator implements ConnectListener {
    * Creates a distribution locator that runs in this VM on the given port and bind address.
    * <p>
    * This is for internal use only as it does not create a distributed system unless told to do so.
-   *
    * @param port the tcp/ip port to listen on
    * @param logFile the file that log messages should be written to
    * @param logger a log writer that should be used (logFile parameter is ignored)
    * @param securityLogger the logger to be used for security related log messages
    * @param startDistributedSystem if true, a distributed system is started
    * @param dsProperties optional properties to configure the distributed system (e.g., mcast
-   *        addr/port, other locators)
+   * addr/port, other locators)
    * @param hostnameForClients the name to give to clients for connecting to this locator
    */
   public static InternalLocator startLocator(int port, File logFile, InternalLogWriter logger,
-      InternalLogWriter securityLogger, InetAddress bindAddress, boolean startDistributedSystem,
-      Properties dsProperties, String hostnameForClients) throws IOException {
+                                             InternalLogWriter securityLogger,
+                                             InetAddress bindAddress,
+                                             boolean startDistributedSystem,
+                                             Properties dsProperties, String hostnameForClients)
+      throws IOException {
 
     System.setProperty(FORCE_LOCATOR_DM_TYPE, "true");
     InternalLocator newLocator = null;
@@ -302,6 +313,8 @@ public class InternalLocator extends Locator implements ConnectListener {
 
       newLocator = createLocator(port, logFile, logger, securityLogger, bindAddress,
           hostnameForClients, dsProperties, startDistributedSystem);
+
+      newLocator.stats = new LocatorStats(initializeStats(newLocator));
 
       try {
         newLocator.startPeerLocation();
@@ -347,6 +360,42 @@ public class InternalLocator extends Locator implements ConnectListener {
     }
   }
 
+  private static InternalDistributedSystemStats initializeStats(InternalLocator newLocator) {
+    MeterRegistry influxRegistry = new InfluxMeterRegistry(new InfluxConfig() {
+      @Override
+      public Duration step() {
+        return Duration.ofSeconds(10);
+      }
+
+      @Override
+      public String db() {
+        return "mydb";
+      }
+
+      @Override
+      public String get(String k) {
+        return null; // accept the rest of the defaults
+      }
+    }, Clock.SYSTEM);
+
+    MeterRegistry jmxRegistry = new JmxMeterRegistry(new JmxConfig() {
+      @Override
+      public Duration step() {
+        return Duration.ofSeconds(10);
+      }
+
+      @Override
+      public String get(String k) {
+        return null; // accept the rest of the defaults
+      }
+    }, Clock.SYSTEM);
+    return InternalDistributedSystemStats
+        .createInstance(newLocator.config.statisticSamplingEnabled, newLocator.getConfig(),
+//        this,new StatisticsTypeFactoryImpl());
+            (InternalDistributedSystem) newLocator.getDistributedSystem(),
+            new MicrometerStatisticsFactoryImpl(influxRegistry, jmxRegistry));
+  }
+
   /***
    * Determines if this VM is a locator which must ignore a shutdown.
    *
@@ -373,21 +422,21 @@ public class InternalLocator extends Locator implements ConnectListener {
 
   /**
    * Creates a new {@code Locator} with the given port, log file, logger, and bind address.
-   *
    * @param port the tcp/ip port to listen on
    * @param logF the file that log messages should be written to
    * @param logWriter a log writer that should be used (logFile parameter is ignored)
    * @param securityLogWriter the log writer to be used for security related log messages
    * @param hostnameForClients the name to give to clients for connecting to this locator
    * @param distributedSystemProperties optional properties to configure the distributed system
-   *        (e.g., mcast addr/port, other locators)
+   * (e.g., mcast addr/port, other locators)
    * @param cfg the config if being called from a distributed system; otherwise null.
    * @param startDistributedSystem if true locator will start its own distributed system
    */
   private InternalLocator(int port, File logF, InternalLogWriter logWriter,
-      InternalLogWriter securityLogWriter,
-      InetAddress bindAddress, String hostnameForClients, Properties distributedSystemProperties,
-      DistributionConfigImpl cfg, boolean startDistributedSystem) {
+                          InternalLogWriter securityLogWriter,
+                          InetAddress bindAddress, String hostnameForClients,
+                          Properties distributedSystemProperties,
+                          DistributionConfigImpl cfg, boolean startDistributedSystem) {
 
     // TODO: the following three assignments are already done in superclass
     this.logFile = logF;
@@ -472,7 +521,7 @@ public class InternalLocator extends Locator implements ConnectListener {
     this.handler = new PrimaryHandler(this, locatorListener);
 
     ThreadGroup group = LoggingThreadGroup.createThreadGroup("Distribution locators", logger);
-    this.stats = new LocatorStats(this.getDistributedSystem().getStatisticsFactory());
+//    this.stats = new LocatorStats(this.getDistributedSystem().getStatisticsFactory());
 
     this.server = new TcpServerFactory().makeTcpServer(port, this.bindAddress, null, this.config,
         this.handler, new DelayedPoolStatHelper(), group, this.toString(), this);
@@ -501,7 +550,6 @@ public class InternalLocator extends Locator implements ConnectListener {
   /**
    * Start peer location in this locator. If you plan on starting a distributed system later, this
    * method should be called first so that the distributed system can use this locator.
-   *
    * @return returns the port that the locator to which the locator is bound
    * @since GemFire 5.7
    */
@@ -557,13 +605,14 @@ public class InternalLocator extends Locator implements ConnectListener {
    * For backward-compatibility we retain this method
    * <p>
    * TODO: parameters peerLocator and serverLocator and b1 are never used
-   *
    * @deprecated use a form of the method that does not have peerLocator/serverLocator parameters
    */
   @Deprecated
   public static InternalLocator startLocator(int locatorPort, File logFile,
-      InternalLogWriter logger, InternalLogWriter logger1, InetAddress addr,
-      Properties dsProperties, boolean peerLocator, boolean serverLocator, String s, boolean b1)
+                                             InternalLogWriter logger, InternalLogWriter logger1,
+                                             InetAddress addr,
+                                             Properties dsProperties, boolean peerLocator,
+                                             boolean serverLocator, String s, boolean b1)
       throws IOException {
     return startLocator(locatorPort, logFile, logger, logger1, addr, true, dsProperties, s);
   }
@@ -572,7 +621,6 @@ public class InternalLocator extends Locator implements ConnectListener {
    * Start a distributed system whose life cycle is managed by this locator. When the locator is
    * stopped, this distributed system will be disconnected. If a distributed system already exists,
    * this method will have no affect.
-   *
    * @since GemFire 5.7
    */
   private void startDistributedSystem() throws UnknownHostException {
@@ -592,7 +640,6 @@ public class InternalLocator extends Locator implements ConnectListener {
       }
       sb.append('[').append(getPort()).append(']');
       String thisLocator = sb.toString();
-
 
       if (this.peerLocator) {
         // append this locator to the locators list from the config properties
@@ -669,9 +716,7 @@ public class InternalLocator extends Locator implements ConnectListener {
   /**
    * End the initialization of the locator. This method should be called once the location services
    * and distributed system are started.
-   *
    * @param distributedSystem The distributed system to use for the statistics.
-   *
    * @since GemFire 5.7
    */
   void endStartLocator(InternalDistributedSystem distributedSystem) {
@@ -695,10 +740,8 @@ public class InternalLocator extends Locator implements ConnectListener {
   /**
    * Start server location services in this locator. Server location can only be started once there
    * is a running distributed system.
-   *
    * @param distributedSystem The distributed system which the server location services should use.
-   *        If null, the method will try to find an already connected distributed system.
-   *
+   * If null, the method will try to find an already connected distributed system.
    * @since GemFire 5.7
    */
   void startServerLocation(InternalDistributedSystem distributedSystem) throws IOException {
@@ -747,7 +790,6 @@ public class InternalLocator extends Locator implements ConnectListener {
 
   /**
    * Stop this locator
-   *
    * @param stopForReconnect - stopping for distributed system reconnect
    * @param waitForDisconnect - wait up to 60 seconds for the locator to completely stop
    */
@@ -880,7 +922,6 @@ public class InternalLocator extends Locator implements ConnectListener {
 
   /**
    * Waits for a locator to be told to stop.
-   *
    * @throws InterruptedException thrown if the thread is interrupted
    */
   public void waitToStop() throws InterruptedException {
@@ -953,7 +994,6 @@ public class InternalLocator extends Locator implements ConnectListener {
    * succeeds. It will then wait for the system to finish reconnecting before returning. If quorum
    * checks are not being done this merely waits for the distributed system to reconnect and then
    * starts location services.
-   *
    * @return true if able to reconnect the locator to the new distributed system
    */
   private boolean attemptReconnect() throws InterruptedException, IOException {
@@ -1090,7 +1130,6 @@ public class InternalLocator extends Locator implements ConnectListener {
   /**
    * Return the port on which the locator is actually listening. If called before the locator has
    * actually started, this method will return null.
-   *
    * @return the port the locator is listening on or null if it has not yet been started
    */
   @Override
@@ -1167,7 +1206,7 @@ public class InternalLocator extends Locator implements ConnectListener {
 
     @Override
     public void restarting(DistributedSystem ds, GemFireCache cache,
-        InternalConfigurationPersistenceService sharedConfig) {
+                           InternalConfigurationPersistenceService sharedConfig) {
       if (ds != null) {
         for (TcpHandler handler : this.allHandlers) {
           handler.restarting(ds, cache, sharedConfig);
@@ -1273,7 +1312,6 @@ public class InternalLocator extends Locator implements ConnectListener {
   /**
    * Returns collection of locator strings representing every locator instance hosted by this
    * member.
-   *
    * @see #getLocators()
    */
   public static Collection<String> getLocatorStrings() {

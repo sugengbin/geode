@@ -57,7 +57,7 @@ public class AsyncEventQueueStatsJUnitTest extends MBeanStatsTestCase {
 
   @Test
   public void testStatDescriptors() {
-    StatisticDescriptor[] sds = asyncEventQueueStats.type.getStatistics();
+    StatisticDescriptor[] sds = asyncEventQueueStats.getType().getStatistics();
     int notQueueEvents = 0;
     int notQueueToPrimary = 0;
     int eventsProcessedByPQRM = 0;

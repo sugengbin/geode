@@ -865,7 +865,7 @@ public class GemFireCacheImpl implements InternalCache, InternalClientCache, Has
         this.securityService = SecurityServiceFactory.create();
       }
 
-      if (!this.isClient && PoolManager.getAll().isEmpty()) {
+      if (!this.isClient && PoolManager.getAll().isEmpty() && this.getSystem().getConfig().getJmxManager()) {
         // We only support management on members of a distributed system
         // Should do this: if (!getSystem().isLoner()) {
         // but it causes quickstart.CqClientTest to hang

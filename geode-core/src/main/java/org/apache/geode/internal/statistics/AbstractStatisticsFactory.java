@@ -133,8 +133,8 @@ public abstract class AbstractStatisticsFactory implements StatisticsFactory, St
     return createOsStatistics(type, textId, 0, 0);
   }
 
-  protected Statistics createOsStatistics(StatisticsType type, String textId, long numericId,
-                                          int osStatFlags) {
+  public Statistics createOsStatistics(StatisticsType type, String textId, long numericId,
+                                       int osStatFlags) {
     long myUniqueId;
     synchronized (statsListUniqueIdLock) {
       myUniqueId = statsListUniqueId++; // fix for bug 30597

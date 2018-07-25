@@ -53,7 +53,7 @@ public abstract class StatisticsImpl implements Statistics {
   static Logger logger = LogService.getLogger();
 
   /** The type of this statistics instance */
-  private final StatisticsTypeImpl type;
+  private final StatisticsType type;
 
   /** The display name of this statistics instance */
   private final String textId;
@@ -113,7 +113,7 @@ public abstract class StatisticsImpl implements Statistics {
    */
   public StatisticsImpl(StatisticsType type, String textId, long numericId, long uniqueId,
       int osStatFlags) {
-    this.type = (StatisticsTypeImpl) type;
+    this.type = type;
     this.textId = textId;
     this.numericId = numericId;
     this.uniqueId = uniqueId;

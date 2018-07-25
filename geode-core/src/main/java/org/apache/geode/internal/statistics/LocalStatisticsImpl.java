@@ -79,7 +79,7 @@ public class LocalStatisticsImpl extends StatisticsImpl {
 
     this.dSystem = system;
 
-    StatisticsTypeImpl realType = (StatisticsTypeImpl) type;
+    StatisticsType realType = type;
     int intCount = realType.getIntStatCount();
     int longCount = realType.getLongStatCount();
     int doubleCount = realType.getDoubleStatCount();
