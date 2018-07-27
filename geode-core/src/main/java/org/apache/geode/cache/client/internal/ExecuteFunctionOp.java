@@ -30,7 +30,6 @@ import org.apache.geode.distributed.DistributedMember;
 import org.apache.geode.distributed.internal.ServerLocation;
 import org.apache.geode.internal.Version;
 import org.apache.geode.internal.cache.execute.AbstractExecution;
-import org.apache.geode.internal.cache.execute.FunctionStats;
 import org.apache.geode.internal.cache.execute.InternalFunctionException;
 import org.apache.geode.internal.cache.execute.InternalFunctionInvocationTargetException;
 import org.apache.geode.internal.cache.execute.MemberMappedArgument;
@@ -41,6 +40,8 @@ import org.apache.geode.internal.cache.tier.sockets.Message;
 import org.apache.geode.internal.cache.tier.sockets.Part;
 import org.apache.geode.internal.i18n.LocalizedStrings;
 import org.apache.geode.internal.logging.LogService;
+import org.apache.geode.statistics.client.connection.ConnectionStats;
+import org.apache.geode.statistics.function.FunctionStats;
 
 /**
  * Executes the function on server (possibly without region/cache).<br>
@@ -449,8 +450,7 @@ public class ExecuteFunctionOp {
         boolean isFnSerializationReqd, boolean isHA, boolean optimizeForWrite, byte isReexecute,
         String[] groups, boolean allMembers, boolean ignoreFailedMembers) {
       super(MessageType.EXECUTE_FUNCTION, MSG_PARTS);
-      byte fnState = AbstractExecution.getFunctionState(isHA, hasResult == (byte) 1 ? true : false,
-          optimizeForWrite);
+      byte fnState = AbstractExecution.getFunctionState(isHA, hasResult == (byte) 1, optimizeForWrite);
 
       addBytes(isReexecute, fnState);
       getMessage().addStringOrObjPart(functionId);
@@ -617,7 +617,7 @@ public class ExecuteFunctionOp {
             throw new ServerOperationException(errorMessage);
           default:
             throw new InternalGemFireError(LocalizedStrings.Op_UNKNOWN_MESSAGE_TYPE_0
-                .toLocalizedString(Integer.valueOf(executeFunctionResponseMsg.getMessageType())));
+                .toLocalizedString(executeFunctionResponseMsg.getMessageType()));
         }
       } finally {
         executeFunctionResponseMsg.clear();
@@ -655,5 +655,5 @@ public class ExecuteFunctionOp {
   }
 
   public static final int MAX_FE_THREADS = Integer.getInteger("DistributionManager.MAX_FE_THREADS",
-      Math.max(Runtime.getRuntime().availableProcessors() * 4, 16)).intValue();
+      Math.max(Runtime.getRuntime().availableProcessors() * 4, 16));
 }

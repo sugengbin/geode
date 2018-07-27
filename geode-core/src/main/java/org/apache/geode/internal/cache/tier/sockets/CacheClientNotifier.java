@@ -48,7 +48,6 @@ import org.apache.geode.CancelException;
 import org.apache.geode.DataSerializer;
 import org.apache.geode.Instantiator;
 import org.apache.geode.InternalGemFireError;
-import org.apache.geode.statistics.StatisticsFactory;
 import org.apache.geode.cache.CacheEvent;
 import org.apache.geode.cache.CacheException;
 import org.apache.geode.cache.InterestRegistrationEvent;
@@ -1918,7 +1917,7 @@ public class CacheClientNotifier {
     } else {
       factory = this.getCache().getDistributedSystem().getStatisticsFactory();
     }
-    this.statistics = new CacheClientNotifierStats(factory);
+    this.statistics = new CacheClientNotifierStats();
 
     try {
       this.logFrequency = Long.valueOf(System.getProperty(MAX_QUEUE_LOG_FREQUENCY));

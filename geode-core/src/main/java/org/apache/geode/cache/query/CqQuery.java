@@ -48,13 +48,6 @@ public interface CqQuery {
   String getName();
 
   /**
-   * Get statistics information for this CQ.
-   *
-   * @return CqStatistics CQ statistics object.
-   */
-  CqStatistics getStatistics();
-
-  /**
    * Get CqAttributes for this CQ.
    *
    * @see CqAttributes

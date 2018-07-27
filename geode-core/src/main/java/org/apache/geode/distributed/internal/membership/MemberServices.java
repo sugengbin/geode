@@ -22,6 +22,8 @@ import org.apache.geode.distributed.internal.LocatorStats;
 import org.apache.geode.distributed.internal.membership.gms.NetLocator;
 import org.apache.geode.internal.admin.remote.RemoteTransportConfig;
 import org.apache.geode.internal.security.SecurityService;
+import org.apache.geode.statistics.distributed.DMStats;
+import org.apache.geode.statistics.locator.LocatorStats;
 
 /**
  * This is the SPI for a provider of membership services.
@@ -84,6 +86,6 @@ public interface MemberServices {
    * location TcpHandler
    */
   NetLocator newLocatorHandler(InetAddress bindAddress, String locatorString,
-      boolean usePreferredCoordinators, boolean networkPartitionDetectionEnabled,
-      LocatorStats stats, String securityUDPDHAlgo);
+                               boolean usePreferredCoordinators, boolean networkPartitionDetectionEnabled,
+                               LocatorStats stats, String securityUDPDHAlgo);
 }

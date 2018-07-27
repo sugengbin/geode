@@ -17,7 +17,7 @@ package org.apache.geode.internal.cache;
 import java.io.File;
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.apache.geode.statistics.StatisticsFactory;
+import org.apache.geode.statistics.disk.DiskDirectoryStats;
 
 /**
  * A holder for a disk Directory. Used for maintaining the available space and updating disk
@@ -44,11 +44,11 @@ public class DirectoryHolder {
   /** For testing purposes we can set the disk directory size in bytes **/
   static boolean SET_DIRECTORY_SIZE_IN_BYTES_FOR_TESTING_PURPOSES = false;
 
-  DirectoryHolder(StatisticsFactory factory, File dir, long space, int index) {
-    this(dir.getPath(), factory, dir, space, index);
+  DirectoryHolder(File dir, long space, int index) {
+    this(dir.getPath(), dir, space, index);
   }
 
-  DirectoryHolder(String ownersName, StatisticsFactory factory, File dir, long space, int index) {
+  DirectoryHolder(String ownersName, File dir, long space, int index) {
     this.dir = dir;
     if (SET_DIRECTORY_SIZE_IN_BYTES_FOR_TESTING_PURPOSES) {
       this.capacity = space;
@@ -57,7 +57,7 @@ public class DirectoryHolder {
       this.capacity = space * 1024 * 1024;
     }
     this.index = index;
-    this.dirStats = new DiskDirectoryStats(factory, ownersName);
+    this.dirStats = new DiskDirectoryStats(ownersName);
     this.dirStats.setMaxSpace(this.capacity);
   }
 
@@ -97,15 +97,6 @@ public class DirectoryHolder {
 
   public long getCapacity() {
     return capacity;
-  }
-
-  public void close() {
-    this.dirStats.close();
-  }
-
-  // Added for the stats checking test in OplogJUnitTest
-  public long getDirStatsDiskSpaceUsage() {
-    return this.dirStats.getDiskSpace();
   }
 
   public DiskDirectoryStats getDiskDirectoryStats() {

@@ -72,7 +72,6 @@ import org.apache.logging.log4j.Logger;
 
 import org.apache.geode.CancelCriterion;
 import org.apache.geode.CancelException;
-import org.apache.geode.statistics.StatisticsFactory;
 import org.apache.geode.SystemFailure;
 import org.apache.geode.cache.Cache;
 import org.apache.geode.cache.CacheClosedException;
@@ -122,6 +121,7 @@ import org.apache.geode.pdx.internal.EnumInfo;
 import org.apache.geode.pdx.internal.PdxField;
 import org.apache.geode.pdx.internal.PdxType;
 import org.apache.geode.pdx.internal.PeerTypeRegistration;
+import org.apache.geode.statistics.disk.DiskStoreStats;
 
 /**
  * Represents a (disk-based) persistent store for region data. Used for both persistent recoverable
@@ -418,8 +418,7 @@ public class DiskStoreImpl implements DiskStore {
     this.criticalPercent = props.getDiskUsageCriticalPercentage();
 
     this.cache = cache;
-    StatisticsFactory factory = cache.getDistributedSystem().getStatisticsFactory();
-    this.stats = new DiskStoreStats(factory, getName());
+    this.stats = new DiskStoreStats(getName());
 
     // start simple init
 
@@ -454,7 +453,7 @@ public class DiskStoreImpl implements DiskStore {
     long tempMaxDirSize = 0;
     for (int i = 0; i < length; i++) {
       directories[i] =
-          new DirectoryHolder(getName() + "_DIR#" + i, factory, dirs[i], dirSizes[i], i);
+          new DirectoryHolder(getName() + "_DIR#" + i, dirs[i], dirSizes[i], i);
 
       if (tempMaxDirSize < dirSizes[i]) {
         tempMaxDirSize = dirSizes[i];
@@ -2053,20 +2052,6 @@ public class DiskStoreImpl implements DiskStore {
     }
   }
 
-  /**
-   * The diskStats are at PR level.Hence if the region is a bucket region, the stats should not be
-   * closed, but the figures of entriesInVM and overflowToDisk contributed by that bucket need to be
-   * removed from the stats .
-   */
-  private void statsClose() {
-    getStats().close();
-    if (this.directories != null) {
-      for (final DirectoryHolder directory : this.directories) {
-        directory.close();
-      }
-    }
-  }
-
   void initializeIfNeeded() {
     if (!getPersistentOplogs().alreadyRecoveredOnce.get()) {
       recoverRegionsThatAreReady();
@@ -2369,14 +2354,6 @@ public class DiskStoreImpl implements DiskStore {
 
         getDiskInitFile().close();
       }
-      try {
-        statsClose();
-      } catch (RuntimeException e) {
-        if (rte != null) {
-          rte = e;
-        }
-      }
-
       closeLockFile();
       if (rte != null) {
         throw rte;
@@ -4587,9 +4564,4 @@ public class DiskStoreImpl implements DiskStore {
   public boolean isDirectoryUsageNormal(DirectoryHolder dir) {
     return getCache().getDiskStoreMonitor().isNormal(this, dir);
   }
-
-  public StatisticsFactory getStatisticsFactory() {
-    return this.cache.getDistributedSystem().getStatisticsFactory();
-  }
-
 }

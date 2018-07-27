@@ -20,6 +20,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.apache.geode.distributed.DistributedMember;
 import org.apache.geode.distributed.DistributedSystem;
 import org.apache.geode.distributed.internal.ServerLocation;
+import org.apache.geode.statistics.client.connection.ConnectionStats;
 
 /**
  * Represents a server. Keeps track of information about the specific server
@@ -38,7 +39,7 @@ public class Endpoint {
   private volatile boolean closed;
 
   Endpoint(EndpointManagerImpl endpointManager, DistributedSystem ds, ServerLocation location,
-      ConnectionStats stats, DistributedMember memberId) {
+           ConnectionStats stats, DistributedMember memberId) {
     this.manager = endpointManager;
     this.location = location;
     this.stats = stats;

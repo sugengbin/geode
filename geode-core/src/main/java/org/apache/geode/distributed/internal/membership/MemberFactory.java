@@ -16,13 +16,13 @@ package org.apache.geode.distributed.internal.membership;
 
 import java.net.InetAddress;
 
-import org.apache.geode.distributed.internal.DMStats;
 import org.apache.geode.distributed.internal.DistributionConfig;
-import org.apache.geode.distributed.internal.LocatorStats;
 import org.apache.geode.distributed.internal.membership.gms.GMSMemberFactory;
 import org.apache.geode.distributed.internal.membership.gms.NetLocator;
 import org.apache.geode.internal.admin.remote.RemoteTransportConfig;
 import org.apache.geode.internal.security.SecurityService;
+import org.apache.geode.statistics.distributed.DMStats;
+import org.apache.geode.statistics.locator.LocatorStats;
 
 /**
  * Create a new Member based on the given inputs. TODO: need to implement a real factory
@@ -95,8 +95,8 @@ public class MemberFactory {
    * location TcpHandler
    */
   public static NetLocator newLocatorHandler(InetAddress bindAddress, String locatorString,
-      boolean usePreferredCoordinators, boolean networkPartitionDetectionEnabled,
-      LocatorStats stats, String securityUDPDHAlgo) {
+                                             boolean usePreferredCoordinators, boolean networkPartitionDetectionEnabled,
+                                             LocatorStats stats, String securityUDPDHAlgo) {
     return services.newLocatorHandler(bindAddress, locatorString, usePreferredCoordinators,
         networkPartitionDetectionEnabled, stats, securityUDPDHAlgo);
   }

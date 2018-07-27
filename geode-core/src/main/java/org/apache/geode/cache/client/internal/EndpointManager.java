@@ -18,6 +18,7 @@ import java.util.Map;
 
 import org.apache.geode.distributed.DistributedMember;
 import org.apache.geode.distributed.internal.ServerLocation;
+import org.apache.geode.statistics.client.connection.ConnectionStats;
 
 /**
  * The endpoint manager keeps track of which servers we are connected to. Other parts of the client

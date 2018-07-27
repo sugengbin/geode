@@ -82,6 +82,7 @@ import org.apache.geode.internal.concurrent.ConcurrentHashSet;
 import org.apache.geode.internal.i18n.LocalizedStrings;
 import org.apache.geode.internal.logging.LogService;
 import org.apache.geode.internal.logging.log4j.LogMarker;
+import org.apache.geode.statistics.disk.DiskRegionStats;
 
 /**
  * Does all the IF file work for a DiskStoreImpl.
@@ -867,10 +868,10 @@ public class DiskInitFile implements DiskInitFileInterpreter {
   }
 
   DiskRegion createDiskRegion(DiskStoreImpl dsi, String name, boolean isBucket,
-      boolean isPersistBackup, boolean overflowEnabled, boolean isSynchronous,
-      DiskRegionStats stats, CancelCriterion cancel, DiskExceptionHandler exceptionHandler,
-      RegionAttributes ra, EnumSet<DiskRegionFlag> flags, String partitionName,
-      int startingBucketId, Compressor compressor, boolean offHeap) {
+                              boolean isPersistBackup, boolean overflowEnabled, boolean isSynchronous,
+                              DiskRegionStats stats, CancelCriterion cancel, DiskExceptionHandler exceptionHandler,
+                              RegionAttributes ra, EnumSet<DiskRegionFlag> flags, String partitionName,
+                              int startingBucketId, Compressor compressor, boolean offHeap) {
     lock(true);
     try {
       // need to call the constructor and addDiskRegion while synced

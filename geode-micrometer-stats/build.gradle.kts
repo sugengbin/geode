@@ -15,7 +15,6 @@ repositories {
 dependencies {
     compile(kotlin("stdlib-jdk8"))
     compile(group = "io.micrometer", name = "micrometer-core", version = "1.0.5")
-    compileOnly( project(":geode-common"))
 }
 
 tasks.withType<KotlinCompile> {

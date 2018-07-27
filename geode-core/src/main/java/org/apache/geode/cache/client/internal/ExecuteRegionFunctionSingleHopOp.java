@@ -37,7 +37,6 @@ import org.apache.geode.internal.cache.InternalCache;
 import org.apache.geode.internal.cache.LocalRegion;
 import org.apache.geode.internal.cache.execute.AbstractExecution;
 import org.apache.geode.internal.cache.execute.BucketMovedException;
-import org.apache.geode.internal.cache.execute.FunctionStats;
 import org.apache.geode.internal.cache.execute.InternalFunctionException;
 import org.apache.geode.internal.cache.execute.InternalFunctionInvocationTargetException;
 import org.apache.geode.internal.cache.execute.MemberMappedArgument;
@@ -47,6 +46,8 @@ import org.apache.geode.internal.cache.tier.sockets.ChunkedMessage;
 import org.apache.geode.internal.cache.tier.sockets.Message;
 import org.apache.geode.internal.cache.tier.sockets.Part;
 import org.apache.geode.internal.logging.LogService;
+import org.apache.geode.statistics.client.connection.ConnectionStats;
+import org.apache.geode.statistics.function.FunctionStats;
 
 /**
  * @since GemFire 6.5
@@ -341,9 +342,7 @@ public class ExecuteRegionFunctionSingleHopOp {
                   Throwable cause = ex.getCause();
                   DistributedMember memberID = (DistributedMember) ((List) resultResponse).get(1);
                   this.resultCollector.addResult(memberID, cause);
-                  FunctionStats
-                      .getFunctionStats(this.functionId, this.executor.getRegion().getSystem())
-                      .incResultsReceived();
+                  FunctionStats.getFunctionStats(this.functionId).incResultsReceived();
                   continue;
                 } else if (((FunctionException) result)
                     .getCause() instanceof InternalFunctionInvocationTargetException) {
@@ -373,9 +372,7 @@ public class ExecuteRegionFunctionSingleHopOp {
               } else {
                 DistributedMember memberID = (DistributedMember) ((List) resultResponse).get(1);
                 this.resultCollector.addResult(memberID, result);
-                FunctionStats
-                    .getFunctionStats(this.functionId, this.executor.getRegion().getSystem())
-                    .incResultsReceived();
+                FunctionStats.getFunctionStats(this.functionId).incResultsReceived();
               }
             } while (!executeFunctionResponseMsg.isLastChunk());
 

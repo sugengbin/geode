@@ -39,44 +39,6 @@ public class CqServiceStatisticsImpl implements CqServiceStatistics {
   /**
    * Returns the number of CQs currently executing
    */
-  @Override
-  public long numCqsActive() {
-    return this.cqService.getCqServiceVsdStats().getNumCqsActive();
-  }
-
-  /**
-   * Returns number of CQs created.
-   *
-   * @return long number of cqs created.
-   */
-  @Override
-  public long numCqsCreated() {
-    return this.cqService.getCqServiceVsdStats().getNumCqsCreated();
-  }
-
-  /**
-   * Returns number of Cqs that are closed.
-   */
-  @Override
-  public long numCqsClosed() {
-    return this.cqService.getCqServiceVsdStats().getNumCqsClosed();
-  }
-
-  /**
-   * Returns number of Cqs that are stopped.
-   */
-  @Override
-  public long numCqsStopped() {
-    return this.cqService.getCqServiceVsdStats().getNumCqsStopped();
-  }
-
-  /**
-   * Returns number of CQs created from the client.
-   */
-  @Override
-  public long numCqsOnClient() {
-    return this.cqService.getCqServiceVsdStats().getNumCqsOnClient();
-  }
 
   /**
    * Returns the number of CQs (active + suspended) on the given region.

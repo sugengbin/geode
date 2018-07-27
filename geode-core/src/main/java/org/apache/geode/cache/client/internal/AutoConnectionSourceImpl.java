@@ -29,6 +29,7 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.atomic.LongAdder;
 
 import org.apache.logging.log4j.Logger;
 
@@ -68,23 +69,21 @@ public class AutoConnectionSourceImpl implements ConnectionSource {
 
   protected static final LocatorListRequest LOCATOR_LIST_REQUEST = new LocatorListRequest();
   private static final Comparator<HostAddress> SOCKET_ADDRESS_COMPARATOR =
-      new Comparator<HostAddress>() {
-        public int compare(HostAddress address, HostAddress otherAddress) {
-          InetSocketAddress inetSocketAddress = address.getSocketInetAddress();
-          InetSocketAddress otherInetSocketAddress = otherAddress.getSocketInetAddress();
-          // shouldn't happen, but if it does we'll say they're the same.
-          if (inetSocketAddress.getAddress() == null
-              || otherInetSocketAddress.getAddress() == null) {
-            return 0;
-          }
+      (address, otherAddress) -> {
+        InetSocketAddress inetSocketAddress = address.getSocketInetAddress();
+        InetSocketAddress otherInetSocketAddress = otherAddress.getSocketInetAddress();
+        // shouldn't happen, but if it does we'll say they're the same.
+        if (inetSocketAddress.getAddress() == null
+            || otherInetSocketAddress.getAddress() == null) {
+          return 0;
+        }
 
-          int result = inetSocketAddress.getAddress().getCanonicalHostName()
-              .compareTo(otherInetSocketAddress.getAddress().getCanonicalHostName());
-          if (result != 0) {
-            return result;
-          } else {
-            return inetSocketAddress.getPort() - otherInetSocketAddress.getPort();
-          }
+        int result = inetSocketAddress.getAddress().getCanonicalHostName()
+            .compareTo(otherInetSocketAddress.getAddress().getCanonicalHostName());
+        if (result != 0) {
+          return result;
+        } else {
+          return inetSocketAddress.getPort() - otherInetSocketAddress.getPort();
         }
       };
   protected final List<HostAddress> initialLocators;
@@ -173,8 +172,7 @@ public class AutoConnectionSourceImpl implements ConnectionSource {
       throw new NoAvailableLocatorsException(
           "Unable to connect to any locators in the list " + locators);
     }
-    List result = response.getServers();
-    return result;
+    return response.getServers();
   }
 
   @Override
@@ -290,8 +288,7 @@ public class AutoConnectionSourceImpl implements ConnectionSource {
     List<HostAddress> newOnlineLocators = new ArrayList<>(locatorResponse.size());
 
     Set<HostAddress> badLocators = new HashSet<>(initialLocators);
-    for (Iterator<ServerLocation> itr = locatorResponse.iterator(); itr.hasNext();) {
-      ServerLocation locator = itr.next();
+    for (ServerLocation locator : locatorResponse) {
       InetSocketAddress address = new InetSocketAddress(locator.getHostName(), locator.getPort());
       HostAddress hostAddress = new HostAddress(address, locator.getHostName());
       newLocatorAddresses.add(hostAddress);
@@ -410,10 +407,10 @@ public class AutoConnectionSourceImpl implements ConnectionSource {
    */
   private static class LocatorList {
     protected final List<HostAddress> locators;
-    protected AtomicInteger currentLocatorIndex = new AtomicInteger();
+    protected LongAdder currentLocatorIndex = new LongAdder();
 
     public LocatorList(List<HostAddress> locators) {
-      Collections.sort(locators, SOCKET_ADDRESS_COMPARATOR);
+      locators.sort(SOCKET_ADDRESS_COMPARATOR);
       this.locators = Collections.unmodifiableList(locators);
     }
 
@@ -449,7 +446,7 @@ public class AutoConnectionSourceImpl implements ConnectionSource {
      *
      */
     protected class LocatorIterator implements Iterator<HostAddress> {
-      private int startLocator = currentLocatorIndex.get();
+      private int startLocator = currentLocatorIndex.intValue();
       private int locatorNum = 0;
 
       public boolean hasNext() {
@@ -462,7 +459,7 @@ public class AutoConnectionSourceImpl implements ConnectionSource {
         } else {
           int index = (locatorNum + startLocator) % locators.size();
           HostAddress nextLocator = locators.get(index);
-          currentLocatorIndex.set(index);
+          currentLocatorIndex.add(index);
           locatorNum++;
           return nextLocator;
         }

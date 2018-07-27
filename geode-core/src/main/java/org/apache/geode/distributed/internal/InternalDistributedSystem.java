@@ -55,9 +55,6 @@ import org.apache.geode.ForcedDisconnectException;
 import org.apache.geode.GemFireConfigException;
 import org.apache.geode.GemFireIOException;
 import org.apache.geode.LogWriter;
-import org.apache.geode.internal.statistics.InternalDistributedSystemStats;
-import org.apache.geode.statistics.Statistics;
-import org.apache.geode.statistics.StatisticsFactory;
 import org.apache.geode.SystemConnectException;
 import org.apache.geode.SystemFailure;
 import org.apache.geode.admin.AlertLevel;
@@ -104,14 +101,15 @@ import org.apache.geode.internal.offheap.MemoryAllocator;
 import org.apache.geode.internal.offheap.OffHeapStorage;
 import org.apache.geode.internal.security.SecurityService;
 import org.apache.geode.internal.security.SecurityServiceFactory;
-import org.apache.geode.internal.statistics.GemFireStatSampler;
-import org.apache.geode.internal.statistics.StatisticsTypeFactoryImpl;
 import org.apache.geode.internal.statistics.platform.LinuxProcFsStatistics;
 import org.apache.geode.internal.tcp.ConnectionTable;
 import org.apache.geode.management.ManagementException;
 import org.apache.geode.security.GemFireSecurityException;
 import org.apache.geode.security.PostProcessor;
 import org.apache.geode.security.SecurityManager;
+import org.apache.geode.statistics.InternalDistributedSystemStats;
+import org.apache.geode.statistics.Statistics;
+import org.apache.geode.statistics.distributed.DMStats;
 import org.apache.geode.statistics.micrometer.MicrometerStatisticsFactoryImpl;
 
 /**
@@ -638,9 +636,7 @@ public class InternalDistributedSystem extends DistributedSystem {
         return null; // accept the rest of the defaults
       }
     }, Clock.SYSTEM);
-    this.internalDistributedSystemStats = InternalDistributedSystemStats.createInstance(this.statsDisabled,this.getConfig(),
-//        this,new StatisticsTypeFactoryImpl());
-        this,new MicrometerStatisticsFactoryImpl(influxRegistry,jmxRegistry));
+    this.internalDistributedSystemStats = InternalDistributedSystemStats();
   }
 
 
@@ -1462,8 +1458,6 @@ public class InternalDistributedSystem extends DistributedSystem {
       if (!isShutdownHook) {
         doShutdownListeners(shutdownListeners);
       }
-
-      this.getInternalDistributedSystemStats().closeStats();
 
       (new FunctionServiceManager()).unregisterAllFunctions();
 
@@ -2783,11 +2777,6 @@ public class InternalDistributedSystem extends DistributedSystem {
   @Override
   public DistributedSystem getReconnectedSystem() {
     return this.reconnectDS;
-  }
-
-  @Override
-  public StatisticsFactory getStatisticsFactory() {
-    return getInternalDistributedSystemStats();
   }
 
   @Override

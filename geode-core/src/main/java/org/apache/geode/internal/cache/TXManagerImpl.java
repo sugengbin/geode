@@ -69,6 +69,7 @@ import org.apache.geode.internal.logging.log4j.LocalizedMessage;
 import org.apache.geode.internal.util.concurrent.CustomEntryConcurrentHashMap;
 import org.apache.geode.internal.util.concurrent.CustomEntryConcurrentHashMap.HashEntry;
 import org.apache.geode.internal.util.concurrent.CustomEntryConcurrentHashMap.MapCallback;
+import org.apache.geode.statistics.cache.CachePerfStats;
 
 /**
  * The internal implementation of the {@link CacheTransactionManager} interface returned by
@@ -406,7 +407,7 @@ public class TXManagerImpl implements CacheTransactionManager, MembershipListene
         LocalizedStrings.TXManagerImpl_CAN_NOT_COMMIT_THIS_TRANSACTION_BECAUSE_IT_IS_ENLISTED_WITH_A_JTA_TRANSACTION_USE_THE_JTA_MANAGER_TO_PERFORM_THE_COMMIT
             .toLocalizedString());
 
-    final long opStart = CachePerfStats.getStatTime();
+    final long opStart = System.nanoTime();
     final long lifeTime = opStart - tx.getBeginTime();
     try {
       setTXState(null);
@@ -435,7 +436,7 @@ public class TXManagerImpl implements CacheTransactionManager, MembershipListene
   }
 
   void noteCommitFailure(long opStart, long lifeTime, TXStateInterface tx) {
-    long opEnd = CachePerfStats.getStatTime();
+    long opEnd = System.nanoTime();
     this.cachePerfStats.txFailure(opEnd - opStart, lifeTime, tx.getChanges());
     TransactionListener[] listeners = getListeners();
     if (tx.isFireCallbacks() && listeners.length > 0) {
@@ -467,7 +468,7 @@ public class TXManagerImpl implements CacheTransactionManager, MembershipListene
   }
 
   void noteCommitSuccess(long opStart, long lifeTime, TXStateInterface tx) {
-    long opEnd = CachePerfStats.getStatTime();
+    long opEnd = System.nanoTime();
     this.cachePerfStats.txSuccess(opEnd - opStart, lifeTime, tx.getChanges());
     TransactionListener[] listeners = getListeners();
     if (tx.isFireCallbacks() && listeners.length > 0) {
@@ -526,7 +527,7 @@ public class TXManagerImpl implements CacheTransactionManager, MembershipListene
         LocalizedStrings.TXManagerImpl_CAN_NOT_ROLLBACK_THIS_TRANSACTION_IS_ENLISTED_WITH_A_JTA_TRANSACTION_USE_THE_JTA_MANAGER_TO_PERFORM_THE_ROLLBACK
             .toLocalizedString());
 
-    final long opStart = CachePerfStats.getStatTime();
+    final long opStart = System.nanoTime();
     final long lifeTime = opStart - tx.getBeginTime();
     setTXState(null);
     tx.rollback();
@@ -536,7 +537,7 @@ public class TXManagerImpl implements CacheTransactionManager, MembershipListene
   }
 
   void noteRollbackSuccess(long opStart, long lifeTime, TXStateInterface tx) {
-    long opEnd = CachePerfStats.getStatTime();
+    long opEnd = System.nanoTime();
     this.cachePerfStats.txRollback(opEnd - opStart, lifeTime, tx.getChanges());
     TransactionListener[] listeners = getListeners();
     if (tx.isFireCallbacks() && listeners.length > 0) {

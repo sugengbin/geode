@@ -126,6 +126,7 @@ import org.apache.geode.internal.offheap.annotations.Released;
 import org.apache.geode.internal.offheap.annotations.Retained;
 import org.apache.geode.internal.sequencelog.RegionLogger;
 import org.apache.geode.internal.util.concurrent.StoppableCountDownLatch;
+import org.apache.geode.statistics.disk.DiskRegionStats;
 
 @SuppressWarnings("deprecation")
 public class DistributedRegion extends LocalRegion implements InternalDistributedRegion {

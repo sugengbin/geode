@@ -34,6 +34,7 @@ import org.apache.geode.internal.cache.tier.sockets.Part;
 import org.apache.geode.internal.cache.tier.sockets.ServerConnection;
 import org.apache.geode.internal.logging.LogService;
 import org.apache.geode.internal.logging.log4j.LogMarker;
+import org.apache.geode.statistics.client.connection.ConnectionStats;
 
 /**
  * Represents an operation that can be performed in a client by sending a message to a server.
@@ -112,7 +113,7 @@ public abstract class AbstractOp implements Op {
     if (cnx.getServer().getRequiresCredentials()) {
       // Security is enabled on client as well as on server
       getMessage().setMessageHasSecurePartFlag();
-      long userId = -1;
+      long userId;
 
       if (UserAttributes.userAttributes.get() == null) { // single user mode
         userId = cnx.getServer().getUserId();
@@ -125,13 +126,10 @@ public abstract class AbstractOp implements Op {
         }
         userId = (Long) id;
       }
-      HeapDataOutputStream hdos = new HeapDataOutputStream(Version.CURRENT);
-      try {
+      try (HeapDataOutputStream hdos = new HeapDataOutputStream(Version.CURRENT)) {
         hdos.writeLong(cnx.getConnectionID());
         hdos.writeLong(userId);
         getMessage().setSecurePart(((ConnectionImpl) cnx).encryptBytes(hdos.toByteArray()));
-      } finally {
-        hdos.close();
       }
     }
     getMessage().send(false);
@@ -249,9 +247,7 @@ public abstract class AbstractOp implements Op {
    */
   protected void processAck(Message msg, String opName) throws Exception {
     final int msgType = msg.getMessageType();
-    if (msgType == MessageType.REPLY) {
-      return;
-    } else {
+    if (msgType != MessageType.REPLY) {
       Part part = msg.getPart(0);
       if (msgType == MessageType.EXCEPTION) {
         String s = ": While performing a remote " + opName;

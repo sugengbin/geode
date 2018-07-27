@@ -20,18 +20,15 @@ import java.util.Set;
 
 import org.apache.logging.log4j.Logger;
 
-import org.apache.geode.statistics.StatisticsFactory;
 import org.apache.geode.cache.query.CqClosedException;
 import org.apache.geode.cache.query.CqEvent;
 import org.apache.geode.cache.query.CqException;
 import org.apache.geode.cache.query.CqState;
-import org.apache.geode.cache.query.CqStatistics;
 import org.apache.geode.cache.query.Query;
 import org.apache.geode.cache.query.internal.CompiledIteratorDef;
 import org.apache.geode.cache.query.internal.CompiledRegion;
 import org.apache.geode.cache.query.internal.CompiledSelect;
 import org.apache.geode.cache.query.internal.CompiledValue;
-import org.apache.geode.cache.query.internal.CqQueryVsdStats;
 import org.apache.geode.cache.query.internal.CqStateImpl;
 import org.apache.geode.cache.query.internal.DefaultQuery;
 import org.apache.geode.cache.query.internal.ExecutionContext;
@@ -42,10 +39,10 @@ import org.apache.geode.internal.cache.LocalRegion;
 import org.apache.geode.internal.i18n.LocalizedStrings;
 import org.apache.geode.internal.logging.InternalLogWriter;
 import org.apache.geode.internal.logging.LogService;
+import org.apache.geode.statistics.query.CqQueryVsdStats;
 
 /**
  * Represents the CqQuery object. Implements CqQuery API and CqAttributeMutator.
- *
  * @since GemFire 5.5
  */
 @SuppressWarnings("deprecation")
@@ -70,9 +67,6 @@ public abstract class CqQueryImpl implements InternalCqQuery {
 
   protected boolean isDurable = false;
 
-  /** Stats counters */
-  private CqStatisticsImpl cqStats;
-
   protected CqQueryVsdStats stats;
 
   protected final CqStateImpl cqState = new CqStateImpl();
@@ -84,10 +78,11 @@ public abstract class CqQueryImpl implements InternalCqQuery {
   /**
    * Constructor.
    */
-  public CqQueryImpl() {}
+  public CqQueryImpl() {
+  }
 
   public CqQueryImpl(CqServiceImpl cqService, String cqName, String queryString,
-      boolean isDurable) {
+                     boolean isDurable) {
     this.cqName = cqName;
     this.queryString = queryString;
     this.securityLogWriter = (InternalLogWriter) cqService.getCache().getSecurityLoggerI18n();
@@ -123,9 +118,7 @@ public abstract class CqQueryImpl implements InternalCqQuery {
 
   void updateCqCreateStats() {
     // Initialize the VSD statistics
-    StatisticsFactory factory = cqService.getCache().getDistributedSystem().getStatisticsFactory();
-    this.stats = new CqQueryVsdStats(factory, getServerCqName());
-    this.cqStats = new CqStatisticsImpl(this);
+    this.stats = new CqQueryVsdStats(getServerCqName());
 
     // Update statistics with CQ creation.
     this.cqService.stats().incCqsStopped();
@@ -228,7 +221,7 @@ public abstract class CqQueryImpl implements InternalCqQuery {
     } catch (Exception ex) {
       StringId errMsg =
           LocalizedStrings.CqQueryImpl_FAILED_TO_REMOVE_CONTINUOUS_QUERY_FROM_THE_REPOSITORY_CQNAME_0_ERROR_1;
-      Object[] errMsgArgs = new Object[] {cqName, ex.getLocalizedMessage()};
+      Object[] errMsgArgs = new Object[]{cqName, ex.getLocalizedMessage()};
       String msg = errMsg.toLocalizedString(errMsgArgs);
       logger.error(msg);
       throw new CqException(msg, ex);
@@ -248,17 +241,11 @@ public abstract class CqQueryImpl implements InternalCqQuery {
 
   /**
    * Return the query after replacing region names with parameters
-   *
    * @return the Query for the query string
    */
   @Override
   public Query getQuery() {
     return query;
-  }
-
-  @Override
-  public CqStatistics getStatistics() {
-    return cqStats;
   }
 
   @Override
@@ -281,7 +268,6 @@ public abstract class CqQueryImpl implements InternalCqQuery {
 
   /**
    * Return the state of this query. Should not modify this state without first locking it.
-   *
    * @return STOPPED RUNNING or CLOSED
    */
   @Override
@@ -313,16 +299,25 @@ public abstract class CqQueryImpl implements InternalCqQuery {
 
   /**
    * Update CQ stats
-   *
    * @param cqEvent object
    */
   void updateStats(CqEvent cqEvent) {
-    this.stats.updateStats(cqEvent); // Stats for VSD
+    if (cqEvent.getQueryOperation() == null) {
+      return;
+    }
+    if (cqEvent.getQueryOperation().isCreate()) {
+      this.stats.incNumInserts();
+    }
+    if (cqEvent.getQueryOperation().isUpdate()) {
+      this.stats.incNumUpdates();
+    }
+    if (cqEvent.getQueryOperation().isDestroy()) {
+      this.stats.incNumDeletes();
+    }
   }
 
   /**
    * Return true if the CQ is in running state
-   *
    * @return true if running, false otherwise
    */
   @Override
@@ -332,7 +327,6 @@ public abstract class CqQueryImpl implements InternalCqQuery {
 
   /**
    * Return true if the CQ is in stopped state
-   *
    * @return true if stopped, false otherwise
    */
   @Override
@@ -342,7 +336,6 @@ public abstract class CqQueryImpl implements InternalCqQuery {
 
   /**
    * Return true if the CQ is closed
-   *
    * @return true if closed, false otherwise
    */
   @Override
@@ -352,7 +345,6 @@ public abstract class CqQueryImpl implements InternalCqQuery {
 
   /**
    * Return true if the CQ is in closing state.
-   *
    * @return true if close in progress, false otherwise
    */
   public boolean isClosing() {
@@ -361,7 +353,6 @@ public abstract class CqQueryImpl implements InternalCqQuery {
 
   /**
    * Return true if the CQ is durable
-   *
    * @return true if durable, false otherwise
    */
   @Override
@@ -371,7 +362,6 @@ public abstract class CqQueryImpl implements InternalCqQuery {
 
   /**
    * Returns a reference to VSD stats of the CQ
-   *
    * @return VSD stats of the CQ
    */
   @Override
@@ -387,7 +377,9 @@ public abstract class CqQueryImpl implements InternalCqQuery {
     this.queryExecutionContext = queryExecutionContext;
   }
 
-  /** Test Hook */
+  /**
+   * Test Hook
+   */
   public interface TestHook {
     void pauseUntilReady();
 

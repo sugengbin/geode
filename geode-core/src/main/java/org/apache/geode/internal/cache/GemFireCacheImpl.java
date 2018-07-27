@@ -245,6 +245,7 @@ import org.apache.geode.pdx.internal.PdxInstanceFactoryImpl;
 import org.apache.geode.pdx.internal.PdxInstanceImpl;
 import org.apache.geode.pdx.internal.TypeRegistry;
 import org.apache.geode.redis.GeodeRedisServer;
+import org.apache.geode.statistics.cache.CachePerfStats;
 
 // TODO: somebody Come up with more reasonable values for {@link #DEFAULT_LOCK_TIMEOUT}, etc.
 /**
@@ -892,8 +893,7 @@ public class GemFireCacheImpl implements InternalCache, InternalClientCache, Has
       this.cqService = CqServiceProvider.create(this);
 
       // Create the CacheStatistics
-      this.cachePerfStats = new CachePerfStats(system.getStatisticsFactory());
-      CachePerfStats.enableClockStats = this.system.getConfig().getEnableTimeStatistics();
+      this.cachePerfStats = new CachePerfStats();
 
       this.transactionManager = new TXManagerImpl(this.cachePerfStats, this);
       this.dm.addMembershipListener(this.transactionManager);
@@ -2385,7 +2385,6 @@ public class GemFireCacheImpl implements InternalCache, InternalClientCache, Has
               LocalizedStrings.GemFireCache_FAILED_TO_GET_THE_CQSERVICE_TO_CLOSE_DURING_CACHE_CLOSE_2));
         }
 
-        this.cachePerfStats.close();
         TXLockService.destroyServices();
         getEventTrackerTask().cancel();
 

@@ -106,7 +106,6 @@ import org.apache.geode.i18n.LogWriterI18n;
 import org.apache.geode.internal.Assert;
 import org.apache.geode.internal.SystemTimer;
 import org.apache.geode.internal.cache.CacheConfig;
-import org.apache.geode.internal.cache.CachePerfStats;
 import org.apache.geode.internal.cache.CacheServerImpl;
 import org.apache.geode.internal.cache.CacheService;
 import org.apache.geode.internal.cache.DiskStoreAttributes;
@@ -157,6 +156,7 @@ import org.apache.geode.pdx.PdxInstance;
 import org.apache.geode.pdx.PdxInstanceFactory;
 import org.apache.geode.pdx.PdxSerializer;
 import org.apache.geode.pdx.internal.TypeRegistry;
+import org.apache.geode.statistics.cache.CachePerfStats;
 
 /**
  * Represents a {@link Cache} that is created declaratively. Notice that it implements the

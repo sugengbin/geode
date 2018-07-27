@@ -35,6 +35,7 @@ import org.apache.geode.distributed.internal.membership.MembershipManager;
 import org.apache.geode.internal.Version;
 import org.apache.geode.internal.cache.InternalCache;
 import org.apache.geode.internal.monitoring.ThreadsMonitoring;
+import org.apache.geode.statistics.distributed.DMStats;
 
 /**
  * This interface defines the services provided by any class that is a distribution manager.
@@ -56,7 +57,6 @@ public interface DistributionManager extends ReplySender {
 
   /**
    * Get a set of all other members (both admin ones and normal).
-   *
    * @since GemFire 5.7
    */
   Set getAllOtherMembers();
@@ -70,20 +70,18 @@ public interface DistributionManager extends ReplySender {
   /**
    * removes members that have older versions from the given collection, typically a Set from a
    * distribution advisor
-   *
    * @since GemFire 8.0
    */
   void retainMembersWithSameOrNewerVersion(Collection<InternalDistributedMember> members,
-      Version version);
+                                           Version version);
 
   /**
    * removes members that have the given version or later from the given collection, typically a Set
    * from a distribution advisor
-   *
    * @since GemFire 8.0
    */
   void removeMembersWithSameOrNewerVersion(Collection<InternalDistributedMember> members,
-      Version version);
+                                           Version version);
 
   /**
    * Returns an unmodifiable set containing the identities of all of the known distribution
@@ -100,7 +98,6 @@ public interface DistributionManager extends ReplySender {
   /**
    * Returns an unmodifiable set containing the identities of all of the known distribution managers
    * including admin members.
-   *
    * @since GemFire 5.7
    */
   Set getDistributionManagerIdsIncludingAdmin();
@@ -123,7 +120,6 @@ public interface DistributionManager extends ReplySender {
   /**
    * Add a membership listener for all members and return other DistribtionManagerIds as an atomic
    * operation
-   *
    * @since GemFire 5.7
    */
   Set addAllMembershipListenerAndGetAllIds(MembershipListener l);
@@ -135,7 +131,6 @@ public interface DistributionManager extends ReplySender {
 
   /**
    * Return true if no other distribution manager was in this group when he joined.
-   *
    * @since GemFire 4.0
    */
   boolean isAdam();
@@ -144,7 +139,6 @@ public interface DistributionManager extends ReplySender {
    * Returns the identity of the oldest DM in this group.
    *
    * Note that this method may return null (no valid elders exist).
-   *
    * @return the elder member, possibly null
    * @since GemFire 4.0
    */
@@ -152,7 +146,6 @@ public interface DistributionManager extends ReplySender {
 
   /**
    * Return true if this is the oldest DM in this group.
-   *
    * @since GemFire 5.0
    */
   boolean isElder();
@@ -167,7 +160,6 @@ public interface DistributionManager extends ReplySender {
    * <p>
    * If useTryLock is true, then it will attempt to get a try-lock and throw IllegalStateException
    * if another thread already holds the try-lock.
-   *
    * @param force if true then this DM must become the elder.
    * @param useTryLock if true then a try-lock will be used
    * @throws IllegalStateException if elder try lock fails
@@ -177,14 +169,12 @@ public interface DistributionManager extends ReplySender {
 
   /**
    * Returns the membership port of the underlying distribution manager used for communication.
-   *
    * @since GemFire 3.0
    */
   long getMembershipPort();
 
   /**
    * Sends a message
-   *
    * @return recipients who did not receive the message
    */
   Set putOutgoing(DistributionMessage msg);
@@ -201,23 +191,22 @@ public interface DistributionManager extends ReplySender {
 
   /**
    * Removes a <code>MembershipListener</code> from this distribution manager.
-   *
-   * @throws IllegalArgumentException <code>l</code> was not registered on this distribution manager
+   * @throws IllegalArgumentException <code>l</code> was not registered on this distribution
+   * manager
    */
   void removeMembershipListener(MembershipListener l);
 
   /**
    * Removes a <code>MembershipListener</code> listening for all members from this distribution
    * manager.
-   *
-   * @throws IllegalArgumentException <code>l</code> was not registered on this distribution manager
+   * @throws IllegalArgumentException <code>l</code> was not registered on this distribution
+   * manager
    * @since GemFire 5.7
    */
   void removeAllMembershipListener(MembershipListener l);
 
   /**
    * Makes note of a new administration console (admin-only member).
-   *
    * @deprecated admin members are deprecated
    */
   void addAdminConsole(InternalDistributedMember id);
@@ -227,16 +216,13 @@ public interface DistributionManager extends ReplySender {
   /**
    * Used to get the DistributionConfig so that Connection can figure out if it is configured for
    * async comms.
-   *
    * @since GemFire 4.2.1
    */
   DistributionConfig getConfig();
 
   /**
    * Makes note of a distribution manager that has shut down. Invokes the appropriate listeners.
-   *
    * @param theId The id of the distribution manager starting up
-   *
    * @see ShutdownMessage#process
    */
   void handleManagerDeparture(InternalDistributedMember theId, boolean crashed, String reason);
@@ -283,10 +269,9 @@ public interface DistributionManager extends ReplySender {
   /**
    * Returns the oldest member in the given set of distribution managers. The current implementation
    * may use n*n/2 comparisons, so use this judiciously
-   *
    * @return the oldest member of the given collection
    * @throws NoSuchElementException when none of the given members is actually a member of the
-   *         distributed system.
+   * distributed system.
    */
   DistributedMember getOldestMember(Collection members) throws NoSuchElementException;
 
@@ -295,27 +280,33 @@ public interface DistributionManager extends ReplySender {
    */
   Set<InternalDistributedMember> getAdminMemberSet();
 
-  /** Throws ShutdownException if closeInProgress returns true. */
+  /**
+   * Throws ShutdownException if closeInProgress returns true.
+   */
   void throwIfDistributionStopped();
 
-  /** Returns count of members filling the specified role */
+  /**
+   * Returns count of members filling the specified role
+   */
   int getRoleCount(Role role);
 
-  /** Returns true if at least one member is filling the specified role */
+  /**
+   * Returns true if at least one member is filling the specified role
+   */
   boolean isRolePresent(Role role);
 
-  /** Returns a set of all roles currently in the distributed system. */
+  /**
+   * Returns a set of all roles currently in the distributed system.
+   */
   Set getAllRoles();
 
   /**
    * Returns true if id is a current member of the distributed system
-   *
    */
   boolean isCurrentMember(DistributedMember id);
 
   /**
    * Remove given member from list of members who are pending a startup reply
-   *
    * @param m the member
    * @param departed true if we're removing them due to membership
    */
@@ -325,35 +316,30 @@ public interface DistributionManager extends ReplySender {
 
   /**
    * Return the CancelCriterion for this DM.
-   *
    * @return CancelCriterion for this DM
    */
   CancelCriterion getCancelCriterion();
 
   /**
    * Return the membership manager for this DM
-   *
    * @return the membership manager
    */
   MembershipManager getMembershipManager();
 
   /**
    * Set the root cause for DM failure
-   *
    * @param t the underlying failure
    */
   void setRootCause(Throwable t);
 
   /**
    * Return the underlying root cause for DM failure, possibly null
-   *
    * @return the underlying root cause
    */
   Throwable getRootCause();
 
   /**
    * Return all members that are on the the this host
-   *
    * @return set of {@link InternalDistributedMember} including this VM
    * @since GemFire 5.9
    */
@@ -380,7 +366,6 @@ public interface DistributionManager extends ReplySender {
   /**
    * Returns true is the two members are on the same equivalent host machine based on overlapping IP
    * addresses collected for all NICs on each member's machine.
-   *
    * @param member1 First member
    * @param member2 Second member
    */
@@ -396,14 +381,12 @@ public interface DistributionManager extends ReplySender {
    * bind-addr[port].
    * <p>
    * This currently only tracks stand-alone/dedicated locators, not embedded locators.
-   *
    * @param isSharedConfigurationEnabled flag to determine if the locator has enabled shared
-   *        configuration
-   *
+   * configuration
    * @since GemFire 6.6.3
    */
   void addHostedLocators(InternalDistributedMember member, Collection<String> locators,
-      boolean isSharedConfigurationEnabled);
+                         boolean isSharedConfigurationEnabled);
 
 
   /**
@@ -412,7 +395,6 @@ public interface DistributionManager extends ReplySender {
    * bind-addr[port].
    * <p>
    * This currently only tracks stand-alone/dedicated locators, not embedded locators.
-   *
    * @since GemFire 6.6.3
    */
   Collection<String> getHostedLocators(InternalDistributedMember member);
@@ -425,7 +407,6 @@ public interface DistributionManager extends ReplySender {
    *
    * <p>
    * This currently only tracks stand-alone/dedicated locators, not embedded locators.
-   *
    * @since GemFire 6.6.3
    */
   Map<InternalDistributedMember, Collection<String>> getAllHostedLocators();
@@ -436,7 +417,6 @@ public interface DistributionManager extends ReplySender {
    * then the form is bind-addr[port].
    * <p>
    * This currently only tracks stand-alone/dedicated locators, not embedded locators.
-   *
    * @since GemFire 8.0
    */
   Map<InternalDistributedMember, Collection<String>> getAllHostedLocatorsWithSharedConfiguration();
@@ -456,7 +436,6 @@ public interface DistributionManager extends ReplySender {
 
   /**
    * returns the type of node
-   *
    * @see ClusterDistributionManager#NORMAL_DM_TYPE
    * @see ClusterDistributionManager#LONER_DM_TYPE
    * @see ClusterDistributionManager#LOCATOR_DM_TYPE
@@ -475,9 +454,8 @@ public interface DistributionManager extends ReplySender {
    * Returns an existing non-closed cache associated with this DM. Callers of
    * CacheFactory.getAnyInstance(), CacheFactory.getInstance(DistributedSystem) or
    * GemFireCacheImpl.getExisting() should try to use this method.
-   *
    * @throws CacheClosedException if a cache has not yet been associated with this DM or it has been
-   *         {@link Cache#isClosed closed}.
+   * {@link Cache#isClosed closed}.
    */
   InternalCache getExistingCache();
 
@@ -498,6 +476,8 @@ public interface DistributionManager extends ReplySender {
    */
   DistributedMember getMemberWithName(String name);
 
-  /** returns the Threads Monitoring instance */
+  /**
+   * returns the Threads Monitoring instance
+   */
   public ThreadsMonitoring getThreadMonitoring();
 }

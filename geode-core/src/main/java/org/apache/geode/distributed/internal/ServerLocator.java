@@ -59,9 +59,9 @@ import org.apache.geode.internal.cache.GridAdvisor.GridProfile;
 import org.apache.geode.internal.i18n.LocalizedStrings;
 import org.apache.geode.internal.logging.LogService;
 import org.apache.geode.internal.net.SocketCreator;
+import org.apache.geode.statistics.locator.LocatorStats;
 
 /**
- *
  * @since GemFire 5.7
  */
 public class ServerLocator implements TcpHandler, DistributionAdvisee {
@@ -74,15 +74,14 @@ public class ServerLocator implements TcpHandler, DistributionAdvisee {
   private final int serialNumber = createSerialNumber();
   private final LocatorStats stats;
   private LocatorLoadSnapshot loadSnapshot = new LocatorLoadSnapshot();
-  private Map<ServerLocation, DistributedMember> ownerMap =
-      new HashMap<ServerLocation, DistributedMember>();
+  private Map<ServerLocation, DistributedMember> ownerMap = new HashMap<ServerLocation, DistributedMember>();
   private volatile List<ServerLocation> cachedLocators;
   private final Object cachedLocatorsLock = new Object();
 
   private static final AtomicInteger profileSN = new AtomicInteger();
 
   private static final long SERVER_LOAD_LOG_INTERVAL = (60 * 60 * 1000); // log server load once an
-                                                                         // hour
+  // hour
 
   private final String logFile;
   private final String hostName;
@@ -108,8 +107,9 @@ public class ServerLocator implements TcpHandler, DistributionAdvisee {
   }
 
   public ServerLocator(int port, InetAddress bindAddress, String hostNameForClients, File logFile,
-      ProductUseLog productUseLogWriter, String memberName, InternalDistributedSystem ds,
-      LocatorStats stats) throws IOException {
+                       ProductUseLog productUseLogWriter, String memberName,
+                       InternalDistributedSystem distributedSystem,
+                       LocatorStats stats) throws IOException {
     this.port = port;
 
     if (bindAddress == null) {
@@ -128,9 +128,9 @@ public class ServerLocator implements TcpHandler, DistributionAdvisee {
     this.memberName = memberName;
     this.productUseLog = productUseLogWriter;
 
-    this.ds = ds;
+    this.ds = distributedSystem;
     this.advisor = ControllerAdvisor.createControllerAdvisor(this); // escapes constructor but
-                                                                    // allows field to be final
+    // allows field to be final
     this.stats = stats;
   }
 
@@ -279,12 +279,12 @@ public class ServerLocator implements TcpHandler, DistributionAdvisee {
   }
 
   public void restarting(DistributedSystem ds, GemFireCache cache,
-      InternalConfigurationPersistenceService sharedConfig) {
+                         InternalConfigurationPersistenceService sharedConfig) {
     if (ds != null) {
       this.loadSnapshot = new LocatorLoadSnapshot();
       this.ds = (InternalDistributedSystem) ds;
       this.advisor = ControllerAdvisor.createControllerAdvisor(this); // escapes constructor but
-                                                                      // allows field to be final
+      // allows field to be final
       if (ds.isConnected()) {
         this.advisor.handshake(); // GEODE-1393: need to get server information during restart
       }
@@ -357,7 +357,6 @@ public class ServerLocator implements TcpHandler, DistributionAdvisee {
   public void endResponse(Object request, long startTime) {
     stats.endLocatorResponse(startTime);
   }
-
 
 
   private List<ServerLocation> getLocators() {

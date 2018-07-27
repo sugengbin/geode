@@ -31,7 +31,6 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.geode.CancelCriterion;
 import org.apache.geode.LogWriter;
-import org.apache.geode.statistics.StatisticsFactory;
 import org.apache.geode.cache.Cache;
 import org.apache.geode.cache.CacheFactory;
 import org.apache.geode.cache.client.ClientCache;
@@ -750,7 +749,4 @@ public abstract class DistributedSystem{
    * Returns the new DistributedSystem if there was an auto-reconnect
    */
   public abstract DistributedSystem getReconnectedSystem();
-
-  public abstract StatisticsFactory getStatisticsFactory();
-
 }

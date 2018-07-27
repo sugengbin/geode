@@ -35,7 +35,6 @@ import org.apache.logging.log4j.Logger;
 
 import org.apache.geode.CancelCriterion;
 import org.apache.geode.CancelException;
-import org.apache.geode.statistics.StatisticsFactory;
 import org.apache.geode.SystemFailure;
 import org.apache.geode.cache.CacheClosedException;
 import org.apache.geode.cache.NoSubscriptionServersAvailableException;
@@ -60,14 +59,13 @@ import org.apache.geode.internal.cache.EventID;
 import org.apache.geode.internal.cache.InternalCache;
 import org.apache.geode.internal.cache.PoolFactoryImpl;
 import org.apache.geode.internal.cache.PoolManagerImpl;
-import org.apache.geode.internal.cache.PoolStats;
 import org.apache.geode.internal.cache.tier.sockets.ClientProxyMembershipID;
 import org.apache.geode.internal.i18n.LocalizedStrings;
 import org.apache.geode.internal.logging.InternalLogWriter;
 import org.apache.geode.internal.logging.LogService;
 import org.apache.geode.internal.logging.log4j.LocalizedMessage;
 import org.apache.geode.internal.monitoring.ThreadsMonitoring;
-import org.apache.geode.internal.statistics.DummyStatisticsFactory;
+import org.apache.geode.statistics.client.connection.PoolStats;
 
 /**
  * Manages the client side of client to server connections and client queues.
@@ -241,14 +239,9 @@ public class PoolImpl implements InternalPool {
     } else {
       this.proxyId = ClientProxyMembershipID.getNewProxyMembership(this.internalDistributedSystem);
     }
-    StatisticsFactory statFactory = null;
-    if (this.gatewaySender != null) {
-      statFactory = new DummyStatisticsFactory(this.internalDistributedSystem.getStatisticsFactory());
-    } else {
-      statFactory = this.internalDistributedSystem.getInternalDistributedSystemStats();
-    }
+
     this.stats = this.startDisabled ? null
-        : new PoolStats(statFactory, getName() + "->"
+        : new PoolStats(getName() + "->"
             + (isEmpty(serverGroup) ? "[any servers]" : "[" + getServerGroup() + "]"));
 
     source = getSourceImpl(((PoolFactoryImpl.PoolAttributes) attributes).locatorCallback);
@@ -637,15 +630,6 @@ public class PoolImpl implements InternalPool {
       } catch (RuntimeException e) {
         logger.error(LocalizedMessage.create(
             LocalizedStrings.PoolImpl_ERROR_ENCOUNTERED_WHILE_STOPPING_ENDPOINT_MANAGER), e);
-      }
-
-      try {
-        if (this.stats != null) {
-          this.stats.close();
-        }
-      } catch (RuntimeException e) {
-        logger.error(
-            LocalizedMessage.create(LocalizedStrings.PoolImpl_ERROR_WHILE_CLOSING_STATISTICS), e);
       }
     }
   }

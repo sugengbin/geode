@@ -23,43 +23,6 @@ package org.apache.geode.cache.query;
 public interface CqServiceStatistics {
 
   /**
-   * Get the number of CQs currently active. Active CQs are those which are executing (in running
-   * state).
-   *
-   * @return long number of CQs
-   */
-  long numCqsActive();
-
-  /**
-   * Get the total number of CQs created. This is a cumulative number.
-   *
-   * @return long number of CQs created.
-   */
-  long numCqsCreated();
-
-  /**
-   * Get the total number of closed CQs. This is a cumulative number.
-   *
-   * @return long number of CQs closed.
-   */
-  long numCqsClosed();
-
-  /**
-   * Get the number of stopped CQs currently.
-   *
-   * @return number of CQs stopped.
-   */
-  long numCqsStopped();
-
-  /**
-   * Get number of CQs that are currently active or stopped. The CQs included in this number are
-   * either running or stopped (suspended). Closed CQs are not included.
-   *
-   * @return long number of CQs on client.
-   */
-  long numCqsOnClient();
-
-  /**
    * Get number of CQs on the given region. Active CQs and stopped CQs on this region are included
    * and closed CQs are not included.
    *

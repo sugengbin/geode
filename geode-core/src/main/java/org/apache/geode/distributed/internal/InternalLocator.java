@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.net.ConnectException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.time.Duration;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -34,12 +33,6 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import io.micrometer.core.instrument.Clock;
-import io.micrometer.core.instrument.MeterRegistry;
-import io.micrometer.influx.InfluxConfig;
-import io.micrometer.influx.InfluxMeterRegistry;
-import io.micrometer.jmx.JmxConfig;
-import io.micrometer.jmx.JmxMeterRegistry;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.logging.log4j.Logger;
@@ -81,14 +74,13 @@ import org.apache.geode.internal.logging.log4j.LocalizedMessage;
 import org.apache.geode.internal.logging.log4j.LogWriterAppenders;
 import org.apache.geode.internal.net.SocketCreator;
 import org.apache.geode.internal.net.SocketCreatorFactory;
-import org.apache.geode.internal.statistics.InternalDistributedSystemStats;
 import org.apache.geode.management.internal.JmxManagerLocator;
 import org.apache.geode.management.internal.JmxManagerLocatorRequest;
 import org.apache.geode.management.internal.configuration.domain.SharedConfigurationStatus;
 import org.apache.geode.management.internal.configuration.handlers.SharedConfigurationStatusRequestHandler;
 import org.apache.geode.management.internal.configuration.messages.SharedConfigurationStatusRequest;
 import org.apache.geode.management.internal.configuration.messages.SharedConfigurationStatusResponse;
-import org.apache.geode.statistics.micrometer.MicrometerStatisticsFactoryImpl;
+import org.apache.geode.statistics.locator.LocatorStats;
 
 /**
  * Provides the implementation of a distribution {@code Locator} as well as internal-only
@@ -314,7 +306,7 @@ public class InternalLocator extends Locator implements ConnectListener {
       newLocator = createLocator(port, logFile, logger, securityLogger, bindAddress,
           hostnameForClients, dsProperties, startDistributedSystem);
 
-      newLocator.stats = new LocatorStats(initializeStats(newLocator));
+//      newLocator.stats = new LocatorStats(initializeStats(newLocator));
 
       try {
         newLocator.startPeerLocation();
@@ -358,42 +350,6 @@ public class InternalLocator extends Locator implements ConnectListener {
         removeLocator(newLocator);
       }
     }
-  }
-
-  private static InternalDistributedSystemStats initializeStats(InternalLocator newLocator) {
-    MeterRegistry influxRegistry = new InfluxMeterRegistry(new InfluxConfig() {
-      @Override
-      public Duration step() {
-        return Duration.ofSeconds(10);
-      }
-
-      @Override
-      public String db() {
-        return "mydb";
-      }
-
-      @Override
-      public String get(String k) {
-        return null; // accept the rest of the defaults
-      }
-    }, Clock.SYSTEM);
-
-    MeterRegistry jmxRegistry = new JmxMeterRegistry(new JmxConfig() {
-      @Override
-      public Duration step() {
-        return Duration.ofSeconds(10);
-      }
-
-      @Override
-      public String get(String k) {
-        return null; // accept the rest of the defaults
-      }
-    }, Clock.SYSTEM);
-    return InternalDistributedSystemStats
-        .createInstance(newLocator.config.statisticSamplingEnabled, newLocator.getConfig(),
-//        this,new StatisticsTypeFactoryImpl());
-            (InternalDistributedSystem) newLocator.getDistributedSystem(),
-            new MicrometerStatisticsFactoryImpl(influxRegistry, jmxRegistry));
   }
 
   /***
@@ -521,7 +477,6 @@ public class InternalLocator extends Locator implements ConnectListener {
     this.handler = new PrimaryHandler(this, locatorListener);
 
     ThreadGroup group = LoggingThreadGroup.createThreadGroup("Distribution locators", logger);
-//    this.stats = new LocatorStats(this.getDistributedSystem().getStatisticsFactory());
 
     this.server = new TcpServerFactory().makeTcpServer(port, this.bindAddress, null, this.config,
         this.handler, new DelayedPoolStatHelper(), group, this.toString(), this);
@@ -900,10 +855,6 @@ public class InternalLocator extends Locator implements ConnectListener {
       } catch (RuntimeException ex) {
         logger.info("Could not close locator's cache because: {}", ex.getMessage(), ex);
       }
-    }
-
-    if (this.stats != null) {
-      this.stats.close();
     }
 
     if (this.locatorListener != null) {
@@ -1302,8 +1253,7 @@ public class InternalLocator extends Locator implements ConnectListener {
   @Override
   public void onConnect(InternalDistributedSystem sys) {
     try {
-      this.stats.hookupStats(sys.getStatisticsFactory(),
-          SocketCreator.getLocalHost().getCanonicalHostName() + '-' + this.server.getBindAddress());
+      this.stats = new LocatorStats(SocketCreator.getLocalHost().getCanonicalHostName() + '-' + this.server.getBindAddress());
     } catch (UnknownHostException e) {
       logger.warn(e);
     }

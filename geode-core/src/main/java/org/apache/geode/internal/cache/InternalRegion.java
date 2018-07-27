@@ -21,7 +21,6 @@ import java.util.Set;
 import java.util.concurrent.locks.Lock;
 
 import org.apache.geode.CancelCriterion;
-import org.apache.geode.statistics.Statistics;
 import org.apache.geode.cache.CacheWriter;
 import org.apache.geode.cache.CacheWriterException;
 import org.apache.geode.cache.EntryNotFoundException;
@@ -47,6 +46,7 @@ import org.apache.geode.internal.cache.versions.RegionVersionVector;
 import org.apache.geode.internal.cache.versions.VersionSource;
 import org.apache.geode.internal.cache.versions.VersionTag;
 import org.apache.geode.internal.util.concurrent.StoppableCountDownLatch;
+import org.apache.geode.statistics.cache.CachePerfStats;
 
 /**
  * Interface to be used instead of type-casting to LocalRegion.

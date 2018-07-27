@@ -49,7 +49,6 @@ import org.apache.geode.cache.query.internal.cq.InternalCqQuery;
 import org.apache.geode.distributed.internal.DistributionConfig;
 import org.apache.geode.internal.NanoTimer;
 import org.apache.geode.internal.cache.BucketRegion;
-import org.apache.geode.internal.cache.CachePerfStats;
 import org.apache.geode.internal.cache.InternalCache;
 import org.apache.geode.internal.cache.LocalDataSet;
 import org.apache.geode.internal.cache.PRQueryProcessor;
@@ -329,7 +328,7 @@ public class DefaultQuery implements Query {
   }
 
   private Object executeOnServer(Object[] parameters) {
-    long startTime = CachePerfStats.getStatTime();
+    long startTime = System.nanoTime();
     Object result = null;
     try {
       if (this.proxyCache != null) {
@@ -341,7 +340,7 @@ public class DefaultQuery implements Query {
       result = this.serverProxy.query(this.queryString, parameters);
     } finally {
       UserAttributes.userAttributes.set(null);
-      long endTime = CachePerfStats.getStatTime();
+      long endTime = System.nanoTime();
       updateStatistics(endTime - startTime);
     }
     return result;
@@ -423,7 +422,7 @@ public class DefaultQuery implements Query {
       TypeMismatchException, NameResolutionException, QueryInvocationTargetException {
     QueryObserver observer = QueryObserverHolder.getInstance();
 
-    long startTime = CachePerfStats.getStatTime();
+    long startTime = System.nanoTime();
     TXStateProxy tx = ((TXManagerImpl) this.cache.getCacheTransactionManager()).pauseTransaction();
     try {
       observer.startQuery(this);
@@ -457,7 +456,7 @@ public class DefaultQuery implements Query {
       return results;
     } finally {
       observer.endQuery();
-      long endTime = CachePerfStats.getStatTime();
+      long endTime = System.nanoTime();
       updateStatistics(endTime - startTime);
       pdxClassToFieldsMap.remove();
       pdxClassToMethodsMap.remove();

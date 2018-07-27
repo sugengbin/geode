@@ -14,6 +14,8 @@
  */
 package org.apache.geode.internal.cache;
 
+import org.apache.geode.statistics.cache.CachePerfStats;
+
 public interface HasCachePerfStats {
 
   CachePerfStats getCachePerfStats();

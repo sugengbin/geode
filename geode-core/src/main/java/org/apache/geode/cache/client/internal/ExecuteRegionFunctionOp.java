@@ -34,7 +34,6 @@ import org.apache.geode.distributed.DistributedMember;
 import org.apache.geode.internal.Version;
 import org.apache.geode.internal.cache.execute.AbstractExecution;
 import org.apache.geode.internal.cache.execute.BucketMovedException;
-import org.apache.geode.internal.cache.execute.FunctionStats;
 import org.apache.geode.internal.cache.execute.InternalFunctionException;
 import org.apache.geode.internal.cache.execute.InternalFunctionInvocationTargetException;
 import org.apache.geode.internal.cache.execute.MemberMappedArgument;
@@ -44,6 +43,8 @@ import org.apache.geode.internal.cache.tier.sockets.ChunkedMessage;
 import org.apache.geode.internal.cache.tier.sockets.Message;
 import org.apache.geode.internal.cache.tier.sockets.Part;
 import org.apache.geode.internal.logging.LogService;
+import org.apache.geode.statistics.client.connection.ConnectionStats;
+import org.apache.geode.statistics.function.FunctionStats;
 
 /**
  * Does a Execution of function on server region.<br>
@@ -388,7 +389,7 @@ public class ExecuteRegionFunctionOp {
       byte functionState = hasResult;
       if (calculateFnState) {
         functionState = AbstractExecution.getFunctionState(isHA,
-            hasResult == (byte) 1 ? true : false, optimizeForWrite);
+            hasResult == (byte) 1, optimizeForWrite);
       }
       Object args = serverRegionExecutor.getArguments();
       MemberMappedArgument memberMappedArg = serverRegionExecutor.getMemberMappedArgument();
@@ -519,9 +520,8 @@ public class ExecuteRegionFunctionOp {
                       (DistributedMember) ((ArrayList) resultResponse).get(1);
                   this.resultCollector.addResult(memberID, cause);
                   FunctionStats
-                      .getFunctionStats(this.functionId, this.executor.getRegion().getSystem())
+                      .getFunctionStats(this.functionId)
                       .incResultsReceived();
-                  continue;
                 } else if (((FunctionException) result)
                     .getCause() instanceof InternalFunctionInvocationTargetException) {
                   InternalFunctionInvocationTargetException ifite =
@@ -573,9 +573,7 @@ public class ExecuteRegionFunctionOp {
                 DistributedMember memberID =
                     (DistributedMember) ((ArrayList) resultResponse).get(1);
                 this.resultCollector.addResult(memberID, result);
-                FunctionStats
-                    .getFunctionStats(this.functionId, this.executor.getRegion().getSystem())
-                    .incResultsReceived();
+                FunctionStats.getFunctionStats(this.functionId).incResultsReceived();
               }
             } while (!executeFunctionResponseMsg.isLastChunk());
             if (isDebugEnabled) {

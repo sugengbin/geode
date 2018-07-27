@@ -14,7 +14,6 @@
  */
 package org.apache.geode.internal.cache;
 
-import org.apache.geode.statistics.StatisticsFactory;
 import org.apache.geode.cache.EvictionAttributes;
 import org.apache.geode.internal.cache.eviction.EvictionController;
 
@@ -29,8 +28,6 @@ public interface EvictableRegion extends RegionMapOwner {
    * from the partitioned region that owns this bucket. Otherwise returns null.
    */
   EvictionController getExistingController(InternalRegionArguments internalArgs);
-
-  StatisticsFactory getStatisticsFactory();
 
   String getNameForStats();
 

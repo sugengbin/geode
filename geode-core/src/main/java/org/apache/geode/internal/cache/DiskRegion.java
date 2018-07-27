@@ -37,6 +37,7 @@ import org.apache.geode.internal.cache.persistence.DiskStoreID;
 import org.apache.geode.internal.cache.versions.RegionVersionVector;
 import org.apache.geode.internal.cache.versions.VersionStamp;
 import org.apache.geode.internal.util.concurrent.StoppableReentrantReadWriteLock;
+import org.apache.geode.statistics.disk.DiskRegionStats;
 
 /**
  * Represents a (disk-based) persistent store for region data. Used for both persistent recoverable
@@ -476,9 +477,6 @@ public class DiskRegion extends AbstractDiskRegion {
       // + " inVm=" + owner.getNumEntriesInVM()
       // + " onDisk=" + owner.getNumOverflowOnDisk());
       statsClear(region);
-    } else {
-      // region.getGemFireCache().getLogger().info("DEBUG statsClose r=" + region.getFullPath());
-      this.stats.close();
     }
   }
 
