@@ -107,10 +107,11 @@ import org.apache.geode.internal.logging.InternalLogWriter;
 import org.apache.geode.internal.logging.LogService;
 import org.apache.geode.internal.logging.log4j.LocalizedMessage;
 import org.apache.geode.internal.net.SocketCloser;
-import org.apache.geode.internal.statistics.DummyStatisticsFactory;
 import org.apache.geode.security.AccessControl;
 import org.apache.geode.security.AuthenticationFailedException;
 import org.apache.geode.security.AuthenticationRequiredException;
+import org.apache.geode.statistics.cache.CacheClientNotifierStats;
+import org.apache.geode.statistics.cache.CacheServerStats;
 
 /**
  * Class <code>CacheClientNotifier</code> works on the server and manages client socket connections
@@ -1496,9 +1497,6 @@ public class CacheClientNotifier {
       // cancel the ping task
       this.clientPingTask.cancel();
 
-      // Close the statistics
-      this.statistics.close();
-
       this.socketCloser.close();
     }
   }
@@ -1911,13 +1909,7 @@ public class CacheClientNotifier {
     this.messageTimeToLive = messageTimeToLive;
 
     // Initialize the statistics
-    StatisticsFactory factory;
-    if (isGatewayReceiver) {
-      factory = new DummyStatisticsFactory(cache.getDistributedSystem().getStatisticsFactory());
-    } else {
-      factory = this.getCache().getDistributedSystem().getStatisticsFactory();
-    }
-    this.statistics = new CacheClientNotifierStats();
+    this.statistics = new CacheClientNotifierStats("");
 
     try {
       this.logFrequency = Long.valueOf(System.getProperty(MAX_QUEUE_LOG_FREQUENCY));
@@ -1957,11 +1949,6 @@ public class CacheClientNotifier {
     if (this.compiledQueries.putIfAbsent(query.getQueryString(), query) == null) {
       // Added successfully.
       this.statistics.incCompiledQueryCount(1);
-      if (logger.isDebugEnabled()) {
-        logger.debug(
-            "Added compiled query into ccn.compliedQueries list. Query: {}. Total compiled queries: {}",
-            query.getQueryString(), this.statistics.getCompiledQueryCount());
-      }
       // Start the clearIdleCompiledQueries thread.
       startCompiledQueryCleanupThread();
     }
@@ -1975,11 +1962,6 @@ public class CacheClientNotifier {
     if (this.compiledQueries.size() > 0) {
       this.statistics.incCompiledQueryCount(-(this.compiledQueries.size()));
       this.compiledQueries.clear();
-      if (logger.isDebugEnabled()) {
-        logger.debug(
-            "Removed all compiled queries from ccn.compliedQueries list. Total compiled queries: {}",
-            this.statistics.getCompiledQueryCount());
-      }
     }
   }
 
@@ -2007,11 +1989,6 @@ public class CacheClientNotifier {
             if (compiledQueries.remove(e.getKey()) != null) {
               // If successfully removed decrement the counter.
               statistics.incCompiledQueryCount(-1);
-              if (isDebugEnabled) {
-                logger.debug("Removed compiled query from ccn.compliedQueries list. Query: "
-                    + q.getQueryString() + ". Total compiled queries are : "
-                    + statistics.getCompiledQueryCount());
-              }
             }
           }
         }

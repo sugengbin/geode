@@ -83,7 +83,6 @@ import org.apache.geode.ToDataException;
 import org.apache.geode.cache.CacheClosedException;
 import org.apache.geode.cache.execute.Function;
 import org.apache.geode.distributed.internal.ClusterDistributionManager;
-import org.apache.geode.distributed.internal.DMStats;
 import org.apache.geode.distributed.internal.DistributedSystemService;
 import org.apache.geode.distributed.internal.DistributionConfig;
 import org.apache.geode.distributed.internal.InternalDistributedSystem;
@@ -122,6 +121,7 @@ import org.apache.geode.pdx.internal.PdxReaderImpl;
 import org.apache.geode.pdx.internal.PdxType;
 import org.apache.geode.pdx.internal.PdxWriterImpl;
 import org.apache.geode.pdx.internal.TypeRegistry;
+import org.apache.geode.statistics.distributed.DMStats;
 
 /**
  * Contains static methods for data serializing instances of internal GemFire classes. It also
@@ -3233,9 +3233,6 @@ public abstract class InternalDataSerializer extends DataSerializer {
       return internalCache.getDistributionManager().getStats();
     } else {
       DMStats result = InternalDistributedSystem.getDMStats();
-      if (result == null) {
-        result = new LonerDistributionManager.DummyDMStats();
-      }
       return result;
     }
   }

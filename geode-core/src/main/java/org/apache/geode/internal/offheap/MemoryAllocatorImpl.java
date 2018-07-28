@@ -38,6 +38,7 @@ import org.apache.geode.internal.cache.RegionEntry;
 import org.apache.geode.internal.logging.LogService;
 import org.apache.geode.internal.offheap.annotations.OffHeapIdentifier;
 import org.apache.geode.internal.offheap.annotations.Unretained;
+import org.apache.geode.statistics.offheap.OffHeapMemoryStats;
 
 /**
  * This allocator is somewhat like an Arena allocator. We start out with an array of multiple large
@@ -86,12 +87,7 @@ public class MemoryAllocatorImpl implements MemoryAllocator {
   public static MemoryAllocator create(OutOfOffHeapMemoryListener ooohml, OffHeapMemoryStats stats,
       int slabCount, long offHeapMemorySize, long maxSlabSize) {
     return create(ooohml, stats, slabCount, offHeapMemorySize, maxSlabSize, null,
-        new SlabFactory() {
-          @Override
-          public Slab create(int size) {
-            return new SlabImpl(size);
-          }
-        });
+        size -> new SlabImpl(size));
   }
 
   private static MemoryAllocatorImpl create(OutOfOffHeapMemoryListener ooohml,
@@ -147,9 +143,6 @@ public class MemoryAllocatorImpl implements MemoryAllocator {
       }
     } finally {
       if (!created) {
-        if (stats != null) {
-          stats.close();
-        }
         if (ooohml != null) {
           ooohml.close();
         }
@@ -200,8 +193,6 @@ public class MemoryAllocatorImpl implements MemoryAllocator {
           "attempted to reuse existing off-heap memory even though new off-heap memory was allocated");
     }
     this.ooohml = oooml;
-    newStats.initialize(this.stats);
-    this.stats = newStats;
   }
 
   private MemoryAllocatorImpl(final OutOfOffHeapMemoryListener oooml,
@@ -229,7 +220,7 @@ public class MemoryAllocatorImpl implements MemoryAllocator {
     Set<OffHeapStoredObject> liveChunksSet = new HashSet<>(liveChunks);
     Set<OffHeapStoredObject> regionChunksSet = new HashSet<>(regionChunks);
     liveChunksSet.removeAll(regionChunksSet);
-    return new ArrayList<OffHeapStoredObject>(liveChunksSet);
+    return new ArrayList<>(liveChunksSet);
   }
 
   /**
@@ -386,7 +377,6 @@ public class MemoryAllocatorImpl implements MemoryAllocator {
     // Removing this memory immediately can lead to a SEGV. See 47885.
     if (setClosed()) {
       this.freeList.freeSlabs();
-      this.stats.close();
       singleton = null;
     }
   }
@@ -461,8 +451,8 @@ public class MemoryAllocatorImpl implements MemoryAllocator {
     }
 
     final long bytesUsed = getUsedMemory();
-    for (int i = 0; i < savedListeners.length; i++) {
-      savedListeners[i].updateMemoryUsed(bytesUsed);
+    for (MemoryUsageListener savedListener : savedListeners) {
+      savedListener.updateMemoryUsed(bytesUsed);
     }
   }
 
@@ -508,12 +498,7 @@ public class MemoryAllocatorImpl implements MemoryAllocator {
     for (OffHeapStoredObject chunk : liveChunks) {
       orphans.add(new MemoryBlockNode(this, chunk));
     }
-    Collections.sort(orphans, new Comparator<MemoryBlock>() {
-      @Override
-      public int compare(MemoryBlock o1, MemoryBlock o2) {
-        return Long.valueOf(o1.getAddress()).compareTo(o2.getAddress());
-      }
-    });
+    Collections.sort(orphans, (o1, o2) -> Long.valueOf(o1.getAddress()).compareTo(o2.getAddress()));
     // this.memoryBlocks = new WeakReference<List<MemoryBlock>>(orphans);
     return orphans;
   }

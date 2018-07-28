@@ -6,7 +6,7 @@ import org.apache.geode.statistics.internal.micrometer.MicrometerMeterGroup
 import org.apache.geode.statistics.internal.micrometer.TimerStatisticMeter
 
 class ConnectionStats : MicrometerMeterGroup, MessageStats {
-    override fun decMessagesBeingReceived(bytes: Int) {
+    override fun decMessagesBytesBeingReceived(bytes: Int) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
@@ -445,7 +445,7 @@ class ConnectionStats : MicrometerMeterGroup, MessageStats {
         this.clientStats.sentBytesMeter.increment(value.toDouble())
     }
 
-    override fun incMessagesBeingReceived(bytes: Int) {
+    override fun incMessagesBytesBeingReceived(bytes: Int) {
         clientStats.messagesReceivedMeter.increment()
         if (bytes > 0) {
             clientStats.messagesReceivedBytesMeter.increment(bytes.toDouble())

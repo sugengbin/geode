@@ -251,6 +251,7 @@ import org.apache.geode.internal.sequencelog.RegionLogger;
 import org.apache.geode.internal.size.Sizeable;
 import org.apache.geode.internal.util.TransformUtils;
 import org.apache.geode.internal.util.concurrent.StoppableCountDownLatch;
+import org.apache.geode.statistics.disk.DiskRegionStats;
 
 /**
  * A Region whose total storage is split into chunks of data (partitions) which are copied up to a

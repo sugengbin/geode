@@ -41,6 +41,7 @@ import org.apache.geode.internal.logging.log4j.LocalizedMessage;
 import org.apache.geode.internal.offheap.StoredObject;
 import org.apache.geode.internal.offheap.annotations.Unretained;
 import org.apache.geode.internal.util.BlobHelper;
+import org.apache.geode.statistics.cache.CacheServerStats;
 
 /**
  * This class encapsulates the wire protocol. It provides accessors to encode and decode a message
@@ -483,7 +484,7 @@ public class Message {
     }
     if (this.readHeader) {
       if (this.messageStats != null) {
-        this.messageStats.decMessagesBeingReceived(len);
+        this.messageStats.decMessagesBytesBeingReceived(len);
       }
     }
     ByteBuffer buffer = getCommBuffer();
@@ -752,7 +753,7 @@ public class Message {
       }
     }
     if (this.messageStats != null) {
-      this.messageStats.incMessagesBeingReceived(len);
+      this.messageStats.incMessagesBytesBeingReceived(len);
       this.payloadLength = len; // makes sure payloadLength gets set now so we will dec on clear
     }
 

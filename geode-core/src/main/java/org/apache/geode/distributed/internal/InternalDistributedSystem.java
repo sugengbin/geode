@@ -108,9 +108,7 @@ import org.apache.geode.security.GemFireSecurityException;
 import org.apache.geode.security.PostProcessor;
 import org.apache.geode.security.SecurityManager;
 import org.apache.geode.statistics.InternalDistributedSystemStats;
-import org.apache.geode.statistics.Statistics;
 import org.apache.geode.statistics.distributed.DMStats;
-import org.apache.geode.statistics.micrometer.MicrometerStatisticsFactoryImpl;
 
 /**
  * The concrete implementation of {@link DistributedSystem} that provides internal-only

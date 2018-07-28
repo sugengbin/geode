@@ -13,19 +13,14 @@
  * the License.
  */
 
-package org.apache.geode.internal.cache.tier.sockets;
+package org.apache.geode.internal.cache.tier.sockets
 
-/**
- * Statistics supported by cache/server Message.
- *
- * @since GemFire 5.0.2
- */
-public interface MessageStats {
-  void incReceivedBytes(long v);
+interface MessageStats {
+    fun incReceivedBytes(bytes: Long)
 
-  void incSentBytes(long v);
+    fun incSentBytes(bytes: Long)
 
-  void incMessagesBeingReceived(int bytes);
+    fun incMessagesBytesBeingReceived(bytes: Int)
 
-  void decMessagesBeingReceived(int bytes);
+    fun decMessagesBytesBeingReceived(bytes: Int)
 }

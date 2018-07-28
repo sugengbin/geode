@@ -50,7 +50,6 @@ import org.apache.geode.CancelCriterion;
 import org.apache.geode.CancelException;
 import org.apache.geode.InternalGemFireError;
 import org.apache.geode.InternalGemFireException;
-import org.apache.geode.statistics.StatisticsFactory;
 import org.apache.geode.SystemFailure;
 import org.apache.geode.cache.AttributesFactory;
 import org.apache.geode.cache.CacheException;
@@ -66,7 +65,6 @@ import org.apache.geode.cache.Region;
 import org.apache.geode.cache.RegionAttributes;
 import org.apache.geode.cache.RegionDestroyedException;
 import org.apache.geode.cache.TimeoutException;
-import org.apache.geode.cache.query.internal.CqQueryVsdStats;
 import org.apache.geode.cache.query.internal.cq.CqService;
 import org.apache.geode.cache.query.internal.cq.InternalCqQuery;
 import org.apache.geode.cache.server.CacheServer;
@@ -103,6 +101,8 @@ import org.apache.geode.internal.util.concurrent.StoppableCondition;
 import org.apache.geode.internal.util.concurrent.StoppableReentrantLock;
 import org.apache.geode.internal.util.concurrent.StoppableReentrantReadWriteLock;
 import org.apache.geode.internal.util.concurrent.StoppableReentrantReadWriteLock.StoppableWriteLock;
+import org.apache.geode.statistics.query.CqQueryVsdStats;
+import org.apache.geode.statistics.region.HARegionQueueStats;
 
 /**
  * An implementation of Queue using Gemfire Region as the underlying datastructure. The key will be
@@ -369,11 +369,10 @@ public class HARegionQueue implements RegionQueue {
     String processedRegionName = createRegionName(regionName);
 
     // Initialize the statistics
-    StatisticsFactory factory = cache.getDistributedSystem().getStatisticsFactory();
     createHARegion(processedRegionName, cache);
 
     initializeHARegionQueue(processedRegionName, this.region, haContainer, clientProxyId,
-        clientConflation, isPrimary, new HARegionQueueStats(factory, processedRegionName),
+        clientConflation, isPrimary, new HARegionQueueStats(processedRegionName),
         new StoppableReentrantReadWriteLock(cache.getCancelCriterion()),
         new StoppableReentrantReadWriteLock(region.getCancelCriterion()),
         this.region.getCancelCriterion(), true);
@@ -3418,7 +3417,6 @@ public class HARegionQueue implements RegionQueue {
       }
       ((HAContainerWrapper) haContainer).removeProxy(regionName);
     } finally {
-      this.stats.close();
     }
   }
 
