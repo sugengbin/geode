@@ -98,6 +98,7 @@ import org.apache.geode.internal.security.SecurableCommunicationChannel;
 import org.apache.geode.internal.security.SecurityService;
 import org.apache.geode.internal.tcp.ConnectionTable;
 import org.apache.geode.internal.util.ArrayUtils;
+import org.apache.geode.statistics.cache.CacheServerStats;
 
 /**
  * Implements the acceptor thread on the bridge server. Accepts connections from the edge and starts

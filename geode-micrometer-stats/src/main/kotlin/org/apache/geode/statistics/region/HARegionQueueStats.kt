@@ -77,4 +77,29 @@ class HARegionQueueStats(queueName: String) : MicrometerMeterGroup("ClientSubscr
     fun incNumSequenceViolated() {
         haRegionQueueEventsViolationMeter.increment()
     }
+
+    @Deprecated(message = "This was just done as an interim solution until GEODE does not depend on stats for internal state")
+    fun getEventsConflated(): Long = haRegionQueueEventsConflatedMeter.getValue()
+
+    @Deprecated(message = "This was just done as an interim solution until GEODE does not depend on stats for internal state")
+    fun getEventsEnqued(): Long = haRegionQueueEventsQueuedMeter.getValue()
+
+    @Deprecated(message = "This was just done as an interim solution until GEODE does not depend on stats for internal state")
+    fun getEventsExpired(): Long = haRegionQueueEventsExpiredMeter.getValue()
+
+    @Deprecated(message = "This was just done as an interim solution until GEODE does not depend on stats for internal state")
+    fun getEventsRemoved(): Long = haRegionQueueEventsRemovedMeter.getValue()
+
+    @Deprecated(message = "This was just done as an interim solution until GEODE does not depend on stats for internal state")
+    fun getEventsRemovedByQrm(): Long = haRegionQueueEventsTakenQRMMeter.getValue()
+
+    @Deprecated(message = "This was just done as an interim solution until GEODE does not depend on stats for internal state")
+    fun getEventsTaken(): Long = haRegionQueueEventsTakenQRMMeter.getValue()
+
+    @Deprecated(message = "This was just done as an interim solution until GEODE does not depend on stats for internal state")
+    fun getMarkerEventsConflated(): Long = haRegionQueueMarkerEventsConflatedMeter.getValue()
+
+    @Deprecated(message = "This was just done as an interim solution until GEODE does not depend on stats for internal state")
+    fun getNumVoidRemovals(): Long = haRegionQueueEventsVoidRemovalMeter.getValue()
+
 }

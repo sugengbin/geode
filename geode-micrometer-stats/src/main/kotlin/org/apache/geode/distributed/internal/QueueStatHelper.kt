@@ -13,24 +13,29 @@
  * the License.
  */
 
-package org.apache.geode.distributed.internal;
+package org.apache.geode.distributed.internal
 
 /**
- * Used to implement statistics on a pool. The implementation will call these methods at to proper
+ * Used to implement statistics on a queue. The implementation will call these methods at to proper
  * time.
  *
  *
  * @since GemFire 3.5
  */
-public interface PoolStatHelper {
+interface QueueStatHelper {
 
-  /**
-   * Called each time the pool starts working on a job.
-   */
-  void startJob();
+    /**
+     * Called when an item is added to the queue.
+     */
+    fun add()
 
-  /**
-   * Called each time the pool finishes a job it started.
-   */
-  void endJob();
+    /**
+     * Called when an item is removed from the queue.
+     */
+    fun remove()
+
+    /**
+     * Called when count items are removed from the queue.
+     */
+    fun remove(count: Int)
 }

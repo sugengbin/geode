@@ -634,7 +634,7 @@ public class InternalDistributedSystem extends DistributedSystem {
         return null; // accept the rest of the defaults
       }
     }, Clock.SYSTEM);
-    this.internalDistributedSystemStats = InternalDistributedSystemStats();
+    this.internalDistributedSystemStats = new InternalDistributedSystemStats();
   }
 
 
@@ -742,8 +742,7 @@ public class InternalDistributedSystem extends DistributedSystem {
 
       this.offHeapStore =
           OffHeapStorage
-              .createOffHeapStorage(this.getInternalDistributedSystemStats(), offHeapMemorySize,
-                  this);
+              .createOffHeapStorage(offHeapMemorySize,this);
 
       // Note: this can only happen on a linux system
       if (getConfig().getLockMemory()) {
@@ -957,10 +956,6 @@ public class InternalDistributedSystem extends DistributedSystem {
       return false;
     }
     return this.isConnected;
-  }
-
-  public void visitStatistics(StatisticsVisitor statisticsVisitor) {
-    this.getInternalDistributedSystemStats().visitStatistics(statisticsVisitor);
   }
 
   /**
@@ -1762,15 +1757,6 @@ public class InternalDistributedSystem extends DistributedSystem {
     }
 
     return sb.toString().trim();
-  }
-
-  /**
-   * Used to "visit" each instance of Statistics registered with
-   * @see #visitStatistics
-   */
-  public interface StatisticsVisitor {
-
-    void visit(Statistics stat);
   }
 
   public long getStartTime() {

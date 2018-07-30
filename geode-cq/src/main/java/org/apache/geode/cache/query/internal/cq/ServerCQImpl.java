@@ -207,7 +207,7 @@ public class ServerCQImpl extends CqQueryImpl implements DataSerializable, Serve
     // Can be null by the time we are here
     if (clientProxy != null) {
       clientProxy.incCqCount();
-      if (clientProxy.hasOneCq()) {
+      if (!clientProxy.hasNoCq()) {
         cqService.stats().incClientsWithCqs();
       }
       if (isDebugEnabled) {

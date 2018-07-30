@@ -633,4 +633,7 @@ class ConnectionStats : MicrometerMeterGroup, MessageStats {
                 clientStats.operationTxSynchronizationFailureCountMeter, clientStats.operationTxSynchronizationCountMeter,
                 clientStats.operationTxSynchronizationTimer, clientStats.operationTxSynchronizationTimeoutCountMeter)
     }
+
+    @Deprecated("The method is deprecated to be removed, but here until a better stats mechanism is found")
+    fun getGetDurableCqs(): Long = clientStats.operationGetDurableCQsCountMeter.getValue()
 }

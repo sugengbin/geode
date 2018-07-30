@@ -2,7 +2,7 @@
  * Licensed to the Apache Software Foundation (ASF) under one or more contributor license
  * agreements. See the NOTICE file distributed with this work for additional information regarding
  * copyright ownership. The ASF licenses this file to You under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance with the License. You may obtain a
+ * "License", arrayOf("regionName",name)); you may not use this file except in compliance with the License. You may obtain a
  * copy of the License at
  *
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -18,11 +18,14 @@ package org.apache.geode.statistics.region
 import org.apache.geode.statistics.internal.micrometer.CounterStatisticMeter
 import org.apache.geode.statistics.internal.micrometer.GaugeStatisticMeter
 import org.apache.geode.statistics.internal.micrometer.MicrometerMeterGroup
+import org.apache.geode.statistics.internal.micrometer.TimerStatisticMeter
+import org.apache.geode.statistics.util.NOW_NANOS
 
 
-class PartitionedRegionStats(name: String) : MicrometerMeterGroup("PartitionRegionStats-$name") {
+class PartitionedRegionStats(private val regionName: String) : MicrometerMeterGroup("PartitionRegionStats-$regionName") {
+
     /**
-     * Utility map for temporarily holding stat start times.
+     * Utility map for partitionRegionTemporarily holding stat start times.
      *
      *
      * This was originally added to avoid having to add a long volunteeringStarted variable to every
@@ -31,524 +34,488 @@ class PartitionedRegionStats(name: String) : MicrometerMeterGroup("PartitionRegi
      * lot of unused longs. Volunteering is a rare event and thus the performance implications of a
      * HashMap lookup is small and preferrable to so many longs. Key: BucketAdvisor, Value: Long
      */
-    private val startTimeMap: MutableMap<*, *>
+    private val startTimeMap: MutableMap<Any, Long> = mutableMapOf()
+
+    private val partitionRegionBucketCountMeter = GaugeStatisticMeter("region.partition.bucket.count", "Number of buckets in this node.")
+    private val partitionRegionPreferLocalReadMeter = CounterStatisticMeter("region.partition.read.prefer.local.count", "Number of reads satisfied from local store")
+    private val partitionRegionPreferRemoteReadMeter = CounterStatisticMeter("region.partition.read.prefer.remote.count", "Number of reads satisfied from remote store")
+    private val partitionRegionDataStoreEntryMeter = GaugeStatisticMeter("region.partition.datastore.entry.count", "The number of entries stored in this Cache for the named Partitioned Region. This does not include entries which are tombstones. See CachePerfStats.tombstoneCount.")
+    private val partitionRegionDataStoreBytesMeter = GaugeStatisticMeter("region.partition.datastore.bytes", "The current number of bytes stored in this Cache for the named Partitioned Region", unit = "bytes")
+    private val partitionRegionPRMetadataSentMeter = CounterStatisticMeter("region.partition.metadata.sent.count", "total number of times meta data refreshed sent on client's request.")
+    private val partitionRegionLocalMaxMemoryBytesMeter = GaugeStatisticMeter("region.partition.local.memory.max.bytes", "local max memory in bytes for this region on this member", unit = "bytes")
+
+    private val partitionRegionPutCompletedMeter = CounterStatisticMeter("region.partition.operation.completed.count", "Number of puts completed.", arrayOf("operation", "put"))
+    private val partitionRegionPutFailureRetryMeter = CounterStatisticMeter("region.partition.operation.ops.retried.count", "Number of put operations which had to be retried due to failures.", arrayOf("operation", "put"))
+    private val partitionRegionPutRetryMeter = CounterStatisticMeter("region.partition.operation.retries.count", "Total number of times put operations had to be retried.", arrayOf("operation", "put"))
+    private val partitionRegionPutTimer = TimerStatisticMeter("region.partition.operation.time", "Total time spent doing puts.", arrayOf("operation", "put"), unit = "nanoseconds")
+
+    private val partitionRegionCreateCompletedMeter = CounterStatisticMeter("region.partition.operation.completed.count", "Number of creates completed.", arrayOf("operation", "create"))
+    private val partitionRegionCreateFailureRetryMeter = CounterStatisticMeter("region.partition.operation.ops.retried.count", "Number of create operations which had to be retried due to failures.", arrayOf("operation", "create"))
+    private val partitionRegionCreateRetryMeter = CounterStatisticMeter("region.partition.operation.retries.count", "Total number of times put operations had to be retried.", arrayOf("operation", "create"))
+    private val partitionRegionCreateTimer = TimerStatisticMeter("region.partition.operation.time", "Total time spent doing create operations.", arrayOf("operation", "create"), unit = "nanoseconds")
+
+    private val partitionRegionPutAllCompletedMeter = CounterStatisticMeter("region.partition.operation.completed.count", "Number of putAlls completed.", arrayOf("operation", "putAll"))
+    private val partitionRegionPutAllFailureRetryMeter = CounterStatisticMeter("region.partition.operation.ops.retried.count", "Number of putAll messages which had to be retried due to failures.", arrayOf("operation", "putAll"))
+    private val partitionRegionPutAllRetryMeter = CounterStatisticMeter("region.partition.operation.retries.count", "Total number of times putAll messages had to be retried.", arrayOf("operation", "putAll"))
+    private val partitionRegionPutAllTimer = TimerStatisticMeter("region.partition.operation.time", "Total time spent doing putAlls.", arrayOf("operation", "putAll"), unit = "nanoseconds")
+
+    private val partitionRegionRemoveAllCompletedMeter = CounterStatisticMeter("region.partition.operation.completed.count", "Number of removeAlls completed.", arrayOf("operation", "removeAll"))
+    private val partitionRegionRemoveAllFailureRetryMeter = CounterStatisticMeter("region.partition.operation.ops.retried.count", "Number of removeAll messages which had to be retried due to failures.", arrayOf("operation", "removeAll"))
+    private val partitionRegionRemoveAllRetryMeter = CounterStatisticMeter("region.partition.operation.retries.count", "Total number of times removeAll messages had to be retried.", arrayOf("operation", "removeAll"))
+    private val partitionRegionRemoveAllTimer = TimerStatisticMeter("region.partition.operation.time", "Total time spent doing removeAlls.", arrayOf("operation", "removeAll"), unit = "nanoseconds")
+
+    private val partitionRegionGetCompletedMeter = CounterStatisticMeter("region.partition.operation.completed.count", "Number of gets completed.", arrayOf("operation", "get"))
+    private val partitionRegionGetFailureRetryMeter = CounterStatisticMeter("region.partition.operation.ops.retried.count", "Number of get operations which had to be retried due to failures.", arrayOf("operation", "get"))
+    private val partitionRegionGetRetryMeter = CounterStatisticMeter("region.partition.operation.retries.count", "Total number of times get operations had to be retried.", arrayOf("operation", "get"))
+    private val partitionRegionGetTimer = TimerStatisticMeter("region.partition.operation.time", "Total time spent performing get operations.", arrayOf("operation", "get"), unit = "nanoseconds")
+
+    private val partitionRegionDestroyCompletedMeter = CounterStatisticMeter("region.partition.operation.completed.count", "Number of destroys completed.", arrayOf("operation", "destroy"))
+    private val partitionRegionDestroyFailureRetryMeter = CounterStatisticMeter("region.partition.operation.ops.retried.count", "Number of destroy operations which had to be retried due to failures.", arrayOf("operation", "destroy"))
+    private val partitionRegionDestroyRetryMeter = CounterStatisticMeter("region.partition.operation.retries.count", "Total number of times destroy operations had to be retried.", arrayOf("operation", "destroy"))
+    private val partitionRegionDestroyTimer = TimerStatisticMeter("region.partition.operation.time", "Total time spent doing destroys.", arrayOf("operation", "destroy"), unit = "nanoseconds")
+
+    private val partitionRegionInvalidateCompletedMeter = CounterStatisticMeter("region.partition.operation.completed.count", "Number of invalidates completed.", arrayOf("operation", "invalidate"))
+    private val partitionRegionInvalidateFailureRetryMeter = CounterStatisticMeter("region.partition.operation.ops.retried.count", "Number of invalidate operations which had to be retried due to failures.", arrayOf("operation", "invalidate"))
+    private val partitionRegionInvalidateRetryMeter = CounterStatisticMeter("region.partition.operation.retries.count", "Total number of times invalidate operations had to be retried.", arrayOf("operation", "invalidate"))
+    private val partitionRegionInvalidateTimer = TimerStatisticMeter("region.partition.operation.time", "Total time spent doing invalidates.", arrayOf("operation", "invalidate"), unit = "nanoseconds")
+
+    private val partitionRegionContainsKeyCompletedMeter = CounterStatisticMeter("region.partition.operation.completed.count", "Number of containsKeys completed.", arrayOf("operation", "containsKey"))
+    private val partitionRegionContainsKeyFailureRetryMeter = CounterStatisticMeter("region.partition.operation.ops.retried.count", "Number of containsKey or containsValueForKey operations which had to be retried due to failures.", arrayOf("operation", "containsKey"))
+    private val partitionRegionContainsKeyRetryMeter = CounterStatisticMeter("region.partition.operation.retries.count", "Total number of times containsKey or containsValueForKey operations had to be retried.", arrayOf("operation", "containsKey"))
+    private val partitionRegionContainsKeyTimer = TimerStatisticMeter("region.partition.operation.time", "Total time spent performing containsKey operations.", arrayOf("operation", "containsKey"), unit = "nanoseconds")
+
+    private val partitionRegionContainsValueForKeyCompletedMeter = CounterStatisticMeter("region.partition.operation.completed.count", "Number of containsValueForKeys completed.", arrayOf("operation", "containsValueForKey"))
+    private val partitionRegionContainsValueForKeyTimer = TimerStatisticMeter("region.partition.operation.time", "Total time spent performing containsValueForKey operations.", arrayOf("operation", "containsValueForKey"), unit = "nanoseconds")
+
+    private val partitionRegionGetEntryCompletedMeter = CounterStatisticMeter("region.partition.operation.completed.count", "Number of getEntry operations completed.", arrayOf("operation", "getEntry"))
+    private val partitionRegionGetEntryTimer = TimerStatisticMeter("region.partition.operation.time", "Total time spent performing getEntry operations.", arrayOf("operation", "getEntry"), unit = "nanoseconds")
+
+    private val partitionRegionRedundancyRecoveryInProgressMeter = CounterStatisticMeter("region.partition.operation.inprogress.count", "Current number of redundancy recovery operations in progress for this region.", arrayOf("operation", "redundancy_recovery"))
+    private val partitionRegionRedundancyRecoveryCompletedMeter = CounterStatisticMeter("region.partition.operation.completed.count", "Total number of redundancy recovery operations performed on this region.", arrayOf("operation", "redundancy_recovery"))
+    private val partitionRegionRedundancyRecoveryTimer = TimerStatisticMeter("region.partition.operation.time", "Total number time spent recovering redundancy.", arrayOf("operation", "redundancy_recovery"), unit = "nanoseconds")
+
+    private val partitionRegionBucketCreateInProgressMeter = CounterStatisticMeter("region.partition.operation.inprogress.count", "Current number of bucket create operations being performed for rebalancing.", arrayOf("operation", "bucket_create"))
+    private val partitionRegionBucketCreateFailedMeter = CounterStatisticMeter("region.partition.operation.failed.count", "Total number of bucket create operations performed for rebalancing that failed.", arrayOf("operation", "bucket_create"))
+    private val partitionRegionBucketCreateCompletedMeter = CounterStatisticMeter("region.partition.operation.completed.count", "Total number of bucket create operations performed for rebalancing.", arrayOf("operation", "bucket_create"))
+    private val partitionRegionBucketCreateTimer = TimerStatisticMeter("region.partition.operation.time", "Total time spent performing bucket create operations for rebalancing.", arrayOf("operation", "bucket_create"), unit = "nanoseconds")
+
+    private val partitionRegionRebalanceInProgressMeter = CounterStatisticMeter("region.partition.operation.inprogress.count", "Current number of primary transfer operations being performed for rebalancing.", arrayOf("operation", "rebalancing"))
+    private val partitionRegionRebalanceFailedMeter = CounterStatisticMeter("region.partition.operation.failed.count", "Total number of primary transfer operations performed for rebalancing that failed.", arrayOf("operation", "rebalancing"))
+    private val partitionRegionRebalanceCompletedMeter = CounterStatisticMeter("region.partition.operation.completed.count", "Total number of primary transfer operations performed for rebalancing.", arrayOf("operation", "rebalancing"))
+    private val partitionRegionRebalanceTimer = TimerStatisticMeter("region.partition.operation.time", "Total time spent performing primary transfer operations for rebalancing.", arrayOf("operation", "rebalancing"), unit = "nanoseconds")
+
+    private val partitionRegionMessagesSentMeter = CounterStatisticMeter("region.partition.messages.sent.count", "Number of PartitionMessages Sent.")
+    private val partitionRegionMessagesReceivedMeter = CounterStatisticMeter("region.partition.messages.received.count", "Number of PartitionMessages Received.")
+    private val partitionRegionMessagesProcessedMeter = CounterStatisticMeter("region.partition.messages.processed.count", "Number of PartitionMessages Processed.")
+    private val partitionRegionMessagesProcessedTimer = TimerStatisticMeter("region.partition.messages.processed.time", "Total time spent on PartitionMessages processing.", unit = "nanoseconds")
+
+    private val partitionRegionApplyReplicationInProgressMeter = CounterStatisticMeter("region.partition.operation.inprogress.count", "Current number of replication operations in progress on this redundant data store.", arrayOf("operation", "apply_replication"))
+    private val partitionRegionApplyReplicationCompletedMeter = CounterStatisticMeter("region.partition.operation.completed.count", "Total number of replicated values sent from a primary to this redundant data store.", arrayOf("operation", "apply_replication"))
+    private val partitionRegionApplyReplicationTimer = TimerStatisticMeter("region.partition.operation.time", "Total time spent storing replicated values on this redundant data store.", arrayOf("operation", "apply_replication"), unit = "nanoseconds")
+
+    private val partitionRegionSendReplicationInProgressMeter = CounterStatisticMeter("region.partition.operation.inprogress.count", "Current number of replication operations in progress from this primary.", arrayOf("operation", "send_replication"))
+    private val partitionRegionSendReplicationCompletedMeter = CounterStatisticMeter("region.partition.operation.completed.count", "Total number of replicated values sent from this primary to a redundant data store.", arrayOf("operation", "send_replication"))
+    private val partitionRegionSendReplicationTimer = TimerStatisticMeter("region.partition.operation.time", "Total time spent replicating values from this primary to a redundant data store.", arrayOf("operation", "send_replication"), unit = "nanoseconds")
+
+    private val partitionRegionPutRemoteInProgressMeter = CounterStatisticMeter("region.partition.operation.inprogress.count", "Current number of puts in progress that did not originate in the primary.", arrayOf("operation", "putRemote"))
+    private val partitionRegionPutRemoteCompletedMeter = CounterStatisticMeter("region.partition.operation.completed.count", "Total number of completed puts that did not originate in the primary. These puts require an extra network hop to the primary.", arrayOf("operation", "putRemote"))
+    private val partitionRegionPutRemoteTimer = TimerStatisticMeter("region.partition.operation.time", "Total time spent doing puts that did not originate in the primary.", arrayOf("operation", "putRemote"), unit = "nanoseconds")
+
+    private val partitionRegionPutLocalInProgressMeter = CounterStatisticMeter("region.partition.operation.inprogress.count", "Current number of puts in progress that did originate in the primary.", arrayOf("operation", "putLocal"))
+    private val partitionRegionPutLocalCompletedMeter = CounterStatisticMeter("region.partition.operation.completed.count", "Total number of completed puts that did originate in the primary. These puts are optimal.", arrayOf("operation", "putLocal"))
+    private val partitionRegionPutLocalTimer = TimerStatisticMeter("region.partition.operation.time", "Total time spent doing puts that did originate in the primary.", arrayOf("operation", "putLocal"), unit = "nanoseconds")
+
+    private val partitionRegionBucketRebalanceInProgressMeter = CounterStatisticMeter("region.partition.operation.inprogress.count", "Current number of bucket create operations being performed for rebalancing.", arrayOf("operation", "rebalancingBucket"))
+    private val partitionRegionBucketRebalanceFailedMeter = CounterStatisticMeter("region.partition.operation.failed.count", "Total number of bucket create operations performed for rebalancing that failed.", arrayOf("operation", "rebalancingBucket"))
+    private val partitionRegionBucketRebalanceCompletedMeter = CounterStatisticMeter("region.partition.operation.completed.count", "Total number of bucket create operations performed for rebalancing.", arrayOf("operation", "rebalancingBucket"))
+    private val partitionRegionBucketRebalanceTimer = TimerStatisticMeter("region.partition.operation.time", "Total time spent performing bucket create operations for rebalancing.", arrayOf("operation", "rebalancingBucket"), unit = "nanoseconds")
+
+    private val partitionRegionPrimaryTransferInProgressMeter = CounterStatisticMeter("region.partition.operation.inprogress.count", "Current number of primary transfer operations being performed for rebalancing.", arrayOf("operation", "rebalance_primary_transfer"))
+    private val partitionRegionPrimaryTransferFailedMeter = CounterStatisticMeter("region.partition.operation.failed.count", "Total number of primary transfer operations performed for rebalancing that failed.", arrayOf("operation", "rebalance_primary_transfer"))
+    private val partitionRegionPrimaryTransferCompletedMeter = CounterStatisticMeter("region.partition.operation.completed.count", "Total number of primary transfer operations performed for rebalancing.", arrayOf("operation", "rebalance_primary_transfer"))
+    private val partitionRegionPrimaryTransferTimer = TimerStatisticMeter("region.partition.operation.time", "Total time spent performing primary transfer operations for rebalancing.", arrayOf("operation", "rebalance_primary_transfer"), unit = "nanoseconds")
 
 
-    var configuredRedundantCopies: Int
-        set(`val`) {
-            this.stats.setInt(configuredRedundantCopiesId, `val`)
-        }
+    private val partitionRegionPrimaryVolunteerInProgressMeter = GaugeStatisticMeter("region.partition.volunteer.inprogress", "Current number of atpartitionRegionTempts to volunteer for primary of a bucket.")
+    private val partitionRegionPrimaryVolunteerLocalMeter = CounterStatisticMeter("region.partition.volunteer.primary", "Total number of atpartitionRegionTempts to volunteer that ended when this member became primary.", arrayOf("primaryLocation", "local"))
+    private val partitionRegionPrimaryVolunteerLocalTimer = TimerStatisticMeter("region.partition.volunteer.primary.time", "Total time spent volunteering that ended when this member became primary.", arrayOf("primaryLocation", "local"), unit = "nanoseconds")
+    private val partitionRegionPrimaryVolunteerRemoteMeter = CounterStatisticMeter("region.partition.volunteer.primary", "Total number of atpartitionRegionTempts to volunteer that ended when this member discovered other primary.", arrayOf("primaryLocation", "remote"))
+    private val partitionRegionPrimaryVolunteerRemoteTimer = TimerStatisticMeter("region.partition.volunteer.primary.time", "Total time spent volunteering that ended when this member discovered other primary.", arrayOf("primaryLocation", "remote"), unit = "nanoseconds")
+    private val partitionRegionPrimaryVolunteerClosedMeter = CounterStatisticMeter("region.partition.volunteer.primary.closed.count", "Total number of atpartitionRegionTempts to volunteer that ended when this member's bucket closed.")
+    private val partitionRegionPrimaryVolunteerClosedTimer = TimerStatisticMeter("region.partition.volunteer.primary.closed.time", "Total time spent volunteering that ended when this member's bucket closed.", unit = "nanoseconds")
+    private val partitionRegionPrimaryVolunteerThreadsMeter = GaugeStatisticMeter("region.partition.volunteer.threads.count", "Current number of threads volunteering for primary.")
 
-    var actualRedundantCopies: Int
-        set(`val`) {
-            this.stats.setInt(actualRedundantCopiesId, `val`)
-        }
+    private val partitionRegionBucketTotalMeter = GaugeStatisticMeter("region.parition.buckets.total.count", "The total number of buckets.")
+    private val partitionRegionBucketPrimaryMeter = GaugeStatisticMeter("region.partition.buckets.primary.count", "Current number of primary buckets hosted locally.")
+    private val partitionRegionBucketLowRedundancyMeter = GaugeStatisticMeter("region.partition.buckets.redundancy.low.count", "Current number of buckets without full redundancy.")
+    private val partitionRegionBucketNoRedundancyMeter = GaugeStatisticMeter("region.partition.buckets.redundancy.none.count", "Current number of buckets without any copies remaining.")
+    private val partitionRegionBucketConfiguredRedundancyMeter = GaugeStatisticMeter("region.partition.buckets.redundancy.config.count", "Configured number of redundant copies for this partitioned region.")
+    private val partitionRegionBucketActualRedundancyMeter = GaugeStatisticMeter("region.partition.buckets.redundancy.actual.count", "Actual number of redundant copies for this partitioned region.")
 
-    private val temp = GaugeStatisticMeter("bucketCount", "Number of buckets in this node.")
-    private val temp = CounterStatisticMeter("putsCompleted", "Number of puts completed.")
-    private val temp = CounterStatisticMeter("putOpsRetried",
-            "Number of put operations which had to be retried due to failures.")
-    private val temp = CounterStatisticMeter("putRetries",
-            "Total number of times put operations had to be retried.")
-    private val temp = CounterStatisticMeter("createsCompleted", "Number of creates completed.")
-    private val temp = CounterStatisticMeter("createOpsRetried",
-            "Number of create operations which had to be retried due to failures.")
-    private val temp = CounterStatisticMeter("createRetries",
-            "Total number of times put operations had to be retried.")
-    private val temp = CounterStatisticMeter("preferredReadLocal", "Number of reads satisfied from local store")
-    private val temp = CounterStatisticMeter(PUTALLS_COMPLETED, "Number of putAlls completed.")
-    private val temp = CounterStatisticMeter(PUTALL_MSGS_RETRIED,
-            "Number of putAll messages which had to be retried due to failures.")
-    private val temp = CounterStatisticMeter(PUTALL_RETRIES,
-            "Total number of times putAll messages had to be retried.")
-    private val temp = CounterStatisticMeter(PUTALL_TIME, "Total time spent doing putAlls.", unit="nanoseconds")
-    private val temp = CounterStatisticMeter(REMOVE_ALLS_COMPLETED, "Number of removeAlls completed.")
-    private val temp = CounterStatisticMeter(REMOVE_ALL_MSGS_RETRIED,
-            "Number of removeAll messages which had to be retried due to failures.")
-    private val temp = CounterStatisticMeter(REMOVE_ALL_RETRIES,
-            "Total number of times removeAll messages had to be retried.")
-    private val temp = CounterStatisticMeter(REMOVE_ALL_TIME, "Total time spent doing removeAlls.",
-            unit="nanoseconds")
-    private val temp = CounterStatisticMeter("preferredReadRemote", "Number of reads satisfied from remote store")
-    private val temp = CounterStatisticMeter("getsCompleted", "Number of gets completed.")
-    private val temp = CounterStatisticMeter("getOpsRetried",
-            "Number of get operations which had to be retried due to failures.")
-    private val temp = CounterStatisticMeter("getRetries",
-            "Total number of times get operations had to be retried.")
-    private val temp = CounterStatisticMeter("destroysCompleted", "Number of destroys completed.")
-    private val temp = CounterStatisticMeter("destroyOpsRetried",
-            "Number of destroy operations which had to be retried due to failures.")
-    private val temp = CounterStatisticMeter("destroyRetries",
-            "Total number of times destroy operations had to be retried.")
-    private val temp = CounterStatisticMeter("invalidatesCompleted", "Number of invalidates completed.")
 
-    private val temp = CounterStatisticMeter("invalidateOpsRetried",
-            "Number of invalidate operations which had to be retried due to failures.")
-    private val temp = CounterStatisticMeter("invalidateRetries",
-            "Total number of times invalidate operations had to be retried.")
-    private val temp = CounterStatisticMeter("containsKeyCompleted", "Number of containsKeys completed.")
+    override fun getCommonTags(): Array<String> = arrayOf("regionName", regionName)
 
-    private val temp = CounterStatisticMeter("containsKeyOpsRetried",
-            "Number of containsKey or containsValueForKey operations which had to be retried due to failures.")
-    private val temp = CounterStatisticMeter("containsKeyRetries",
-            "Total number of times containsKey or containsValueForKey operations had to be retried.")
-    private val temp = CounterStatisticMeter("containsValueForKeyCompleted",
-            "Number of containsValueForKeys completed.")
-    private val temp = CounterStatisticMeter("PartitionMessagesSent", "Number of PartitionMessages Sent.")
-    private val temp = CounterStatisticMeter("PartitionMessagesReceived", "Number of PartitionMessages Received.")
-    private val temp = CounterStatisticMeter("PartitionMessagesProcessed",
-            "Number of PartitionMessages Processed.")
-    private val temp = CounterStatisticMeter("putTime", "Total time spent doing puts.", unit="nanoseconds")
-    private val temp = CounterStatisticMeter("createTime", "Total time spent doing create operations.",
-            unit="nanoseconds", false)
-    private val temp = CounterStatisticMeter("getTime", "Total time spent performing get operations.",
-            unit="nanoseconds", false)
-    private val temp = CounterStatisticMeter("destroyTime", "Total time spent doing destroys.", unit="nanoseconds",)
-    private val temp = CounterStatisticMeter("invalidateTime", "Total time spent doing invalidates.",
-            unit="nanoseconds")
-    private val temp = CounterStatisticMeter("containsKeyTime",
-            "Total time spent performing containsKey operations.", unit="nanoseconds")
-    private val temp = CounterStatisticMeter("containsValueForKeyTime",
-            "Total time spent performing containsValueForKey operations.", unit="nanoseconds")
-    private val temp = CounterStatisticMeter("partitionMessagesProcessingTime",
-            "Total time spent on PartitionMessages processing.", unit="nanoseconds"
-    private val temp = GaugeStatisticMeter("dataStoreEntryCount",
-            "The number of entries stored in this Cache for the named Partitioned Region. This does not include entries which are tombstones. See CachePerfStats.tombstoneCount.")
-    private val temp = GaugeStatisticMeter("dataStoreBytesInUse",
-            "The current number of bytes stored in this Cache for the named Partitioned Region")
-    private val temp = GaugeStatisticMeter("volunteeringInProgress",
-            "Current number of attempts to volunteer for primary of a bucket.")
-    private val temp = CounterStatisticMeter("volunteeringBecamePrimary",
-            "Total number of attempts to volunteer that ended when this member became primary.")
-    private val temp = CounterStatisticMeter("volunteeringBecamePrimaryTime",
-            "Total time spent volunteering that ended when this member became primary.",
-            unit="nanoseconds")
-    private val temp = CounterStatisticMeter("volunteeringOtherPrimary",
-            "Total number of attempts to volunteer that ended when this member discovered other primary.")
-    private val temp = CounterStatisticMeter("volunteeringOtherPrimaryTime",
-            "Total time spent volunteering that ended when this member discovered other primary.",
-            unit="nanoseconds")
-    private val temp = CounterStatisticMeter("volunteeringClosed",
-            "Total number of attempts to volunteer that ended when this member's bucket closed.")
-    private val temp = CounterStatisticMeter("volunteeringClosedTime",
-            "Total time spent volunteering that ended when this member's bucket closed.",
-            unit="nanoseconds")
-    private val temp = GaugeStatisticMeter("totalNumBuckets", "The total number of buckets.")
-    private val temp = GaugeStatisticMeter("primaryBucketCount",
-            "Current number of primary buckets hosted locally.")
-    private val temp = GaugeStatisticMeter("volunteeringThreads",
-            "Current number of threads volunteering for primary.")
-    private val temp = GaugeStatisticMeter("lowRedundancyBucketCount",
-            "Current number of buckets without full redundancy.")
-    private val temp = GaugeStatisticMeter("noCopiesBucketCount",
-            "Current number of buckets without any copies remaining.")
-    private val temp = GaugeStatisticMeter("configuredRedundantCopies",
-            "Configured number of redundant copies for this partitioned region.")
-    private val temp = GaugeStatisticMeter("actualRedundantCopies",
-            "Actual number of redundant copies for this partitioned region.")
-    private val temp = CounterStatisticMeter("getEntryCompleted", "Number of getEntry operations completed.")
-    private val temp = CounterStatisticMeter("getEntryTime", "Total time spent performing getEntry operations.",
-            unit="nanoseconds")
+    override fun initializeStaticMeters() {
+        registerMeter(partitionRegionBucketCountMeter)
+        registerMeter(partitionRegionPreferLocalReadMeter)
+        registerMeter(partitionRegionPreferRemoteReadMeter)
+        registerMeter(partitionRegionDataStoreEntryMeter)
+        registerMeter(partitionRegionDataStoreBytesMeter)
+        registerMeter(partitionRegionPRMetadataSentMeter)
+        registerMeter(partitionRegionLocalMaxMemoryBytesMeter)
 
-    private val temp = GaugeStatisticMeter("recoveriesInProgress",
-            "Current number of redundancy recovery operations in progress for this region.")
-    private val temp = CounterStatisticMeter("recoveriesCompleted",
-            "Total number of redundancy recovery operations performed on this region.")
-    private val temp = CounterStatisticMeter("recoveryTime", "Total number time spent recovering redundancy.")
-    private val temp = GaugeStatisticMeter("bucketCreatesInProgress",
-            "Current number of bucket create operations being performed for rebalancing.")
-    private val temp = CounterStatisticMeter("bucketCreatesCompleted",
-            "Total number of bucket create operations performed for rebalancing.")
-    private val temp = CounterStatisticMeter("bucketCreatesFailed",
-            "Total number of bucket create operations performed for rebalancing that failed.")
-    private val temp = CounterStatisticMeter("bucketCreateTime",
-            "Total time spent performing bucket create operations for rebalancing.",
-            unit="nanoseconds")
-    private val temp = GaugeStatisticMeter("primaryTransfersInProgress",
-            "Current number of primary transfer operations being performed for rebalancing.")
-    private val temp = CounterStatisticMeter("primaryTransfersCompleted",
-            "Total number of primary transfer operations performed for rebalancing.")
-    private val temp = CounterStatisticMeter("primaryTransfersFailed",
-            "Total number of primary transfer operations performed for rebalancing that failed.")
-    private val temp = CounterStatisticMeter("primaryTransferTime",
-            "Total time spent performing primary transfer operations for rebalancing.",
-            unit="nanoseconds")
+        registerMeter(partitionRegionPutCompletedMeter)
+        registerMeter(partitionRegionPutFailureRetryMeter)
+        registerMeter(partitionRegionPutRetryMeter)
+        registerMeter(partitionRegionPutTimer)
 
-    private val temp = CounterStatisticMeter("applyReplicationCompleted",
-            "Total number of replicated values sent from a primary to this redundant data store.")
-    private val temp = GaugeStatisticMeter("applyReplicationInProgress",
-            "Current number of replication operations in progress on this redundant data store.")
-    private val temp = CounterStatisticMeter("applyReplicationTime",
-            "Total time spent storing replicated values on this redundant data store.",
-            unit="nanoseconds")
-    private val temp = CounterStatisticMeter("sendReplicationCompleted",
-            "Total number of replicated values sent from this primary to a redundant data store.")
-    private val temp = GaugeStatisticMeter("sendReplicationInProgress",
-            "Current number of replication operations in progress from this primary.")
-    private val temp = CounterStatisticMeter("sendReplicationTime",
-            "Total time spent replicating values from this primary to a redundant data store.",
-            unit="nanoseconds")
-    private val temp = CounterStatisticMeter("putRemoteCompleted",
-            "Total number of completed puts that did not originate in the primary. These puts require an extra network hop to the primary.")
-    private val temp = GaugeStatisticMeter("putRemoteInProgress",
-            "Current number of puts in progress that did not originate in the primary.")
-    private val temp = CounterStatisticMeter("putRemoteTime",
-            "Total time spent doing puts that did not originate in the primary.", unit="nanoseconds")
-    private val temp = CounterStatisticMeter("putLocalCompleted",
-            "Total number of completed puts that did originate in the primary. These puts are optimal.")
-    private val temp = GaugeStatisticMeter("putLocalInProgress",
-            "Current number of puts in progress that did originate in the primary.")
-    private val temp = CounterStatisticMeter("putLocalTime",
-            "Total time spent doing puts that did originate in the primary.", unit="nanoseconds")
+        registerMeter(partitionRegionCreateCompletedMeter)
+        registerMeter(partitionRegionCreateFailureRetryMeter)
+        registerMeter(partitionRegionCreateRetryMeter)
+        registerMeter(partitionRegionCreateTimer)
 
-    private val temp = GaugeStatisticMeter("rebalanceBucketCreatesInProgress",
-            "Current number of bucket create operations being performed for rebalancing.")
-    private val temp = CounterStatisticMeter("rebalanceBucketCreatesCompleted",
-            "Total number of bucket create operations performed for rebalancing.")
-    private val temp = CounterStatisticMeter("rebalanceBucketCreatesFailed",
-            "Total number of bucket create operations performed for rebalancing that failed.")
-    private val temp = CounterStatisticMeter("rebalanceBucketCreateTime",
-            "Total time spent performing bucket create operations for rebalancing.", unit="nanoseconds")
-    private val temp = GaugeStatisticMeter("rebalancePrimaryTransfersInProgress",
-            "Current number of primary transfer operations being performed for rebalancing.")
-    private val temp = CounterStatisticMeter("rebalancePrimaryTransfersCompleted",
-            "Total number of primary transfer operations performed for rebalancing.")
-    private val temp = CounterStatisticMeter("rebalancePrimaryTransfersFailed",
-            "Total number of primary transfer operations performed for rebalancing that failed.")
-    private val temp = CounterStatisticMeter("rebalancePrimaryTransferTime",
-            "Total time spent performing primary transfer operations for rebalancing.", unit="nanoseconds")
-    private val temp = CounterStatisticMeter("prMetaDataSentCount", "total number of times meta data refreshed sent on client's request.")
+        registerMeter(partitionRegionPutAllCompletedMeter)
+        registerMeter(partitionRegionPutAllFailureRetryMeter)
+        registerMeter(partitionRegionPutAllRetryMeter)
+        registerMeter(partitionRegionPutAllTimer)
 
-    private val temp = GaugeStatisticMeter("localMaxMemory", "local max memory in bytes for this region on this member")
+        registerMeter(partitionRegionRemoveAllCompletedMeter)
+        registerMeter(partitionRegionRemoveAllFailureRetryMeter)
+        registerMeter(partitionRegionRemoveAllRetryMeter)
+        registerMeter(partitionRegionRemoveAllTimer)
+
+        registerMeter(partitionRegionGetCompletedMeter)
+        registerMeter(partitionRegionGetFailureRetryMeter)
+        registerMeter(partitionRegionGetRetryMeter)
+        registerMeter(partitionRegionGetTimer)
+
+        registerMeter(partitionRegionDestroyCompletedMeter)
+        registerMeter(partitionRegionDestroyFailureRetryMeter)
+        registerMeter(partitionRegionDestroyRetryMeter)
+        registerMeter(partitionRegionDestroyTimer)
+
+        registerMeter(partitionRegionInvalidateCompletedMeter)
+        registerMeter(partitionRegionInvalidateFailureRetryMeter)
+        registerMeter(partitionRegionInvalidateRetryMeter)
+        registerMeter(partitionRegionInvalidateTimer)
+
+        registerMeter(partitionRegionContainsKeyCompletedMeter)
+        registerMeter(partitionRegionContainsKeyFailureRetryMeter)
+        registerMeter(partitionRegionContainsKeyRetryMeter)
+        registerMeter(partitionRegionContainsKeyTimer)
+
+        registerMeter(partitionRegionContainsValueForKeyCompletedMeter)
+        registerMeter(partitionRegionContainsValueForKeyTimer)
+
+        registerMeter(partitionRegionGetEntryCompletedMeter)
+        registerMeter(partitionRegionGetEntryTimer)
+
+        registerMeter(partitionRegionRedundancyRecoveryInProgressMeter)
+        registerMeter(partitionRegionRedundancyRecoveryCompletedMeter)
+        registerMeter(partitionRegionRedundancyRecoveryTimer)
+
+        registerMeter(partitionRegionBucketCreateInProgressMeter)
+        registerMeter(partitionRegionBucketCreateFailedMeter)
+        registerMeter(partitionRegionBucketCreateCompletedMeter)
+        registerMeter(partitionRegionBucketCreateTimer)
+
+        registerMeter(partitionRegionRebalanceInProgressMeter)
+        registerMeter(partitionRegionRebalanceFailedMeter)
+        registerMeter(partitionRegionRebalanceCompletedMeter)
+        registerMeter(partitionRegionRebalanceTimer)
+
+        registerMeter(partitionRegionMessagesSentMeter)
+        registerMeter(partitionRegionMessagesReceivedMeter)
+        registerMeter(partitionRegionMessagesProcessedMeter)
+        registerMeter(partitionRegionMessagesProcessedTimer)
+
+        registerMeter(partitionRegionApplyReplicationInProgressMeter)
+        registerMeter(partitionRegionApplyReplicationCompletedMeter)
+        registerMeter(partitionRegionApplyReplicationTimer)
+
+        registerMeter(partitionRegionSendReplicationInProgressMeter)
+        registerMeter(partitionRegionSendReplicationCompletedMeter)
+        registerMeter(partitionRegionSendReplicationTimer)
+
+        registerMeter(partitionRegionPutRemoteInProgressMeter)
+        registerMeter(partitionRegionPutRemoteCompletedMeter)
+        registerMeter(partitionRegionPutRemoteTimer)
+
+        registerMeter(partitionRegionPutLocalInProgressMeter)
+        registerMeter(partitionRegionPutLocalCompletedMeter)
+        registerMeter(partitionRegionPutLocalTimer)
+
+        registerMeter(partitionRegionBucketRebalanceInProgressMeter)
+        registerMeter(partitionRegionBucketRebalanceFailedMeter)
+        registerMeter(partitionRegionBucketRebalanceCompletedMeter)
+        registerMeter(partitionRegionBucketRebalanceTimer)
+
+        registerMeter(partitionRegionPrimaryTransferInProgressMeter)
+        registerMeter(partitionRegionPrimaryTransferFailedMeter)
+        registerMeter(partitionRegionPrimaryTransferCompletedMeter)
+        registerMeter(partitionRegionPrimaryTransferTimer)
+
+
+        registerMeter(partitionRegionPrimaryVolunteerInProgressMeter)
+        registerMeter(partitionRegionPrimaryVolunteerLocalMeter)
+        registerMeter(partitionRegionPrimaryVolunteerLocalTimer)
+        registerMeter(partitionRegionPrimaryVolunteerRemoteMeter)
+        registerMeter(partitionRegionPrimaryVolunteerRemoteTimer)
+        registerMeter(partitionRegionPrimaryVolunteerClosedMeter)
+        registerMeter(partitionRegionPrimaryVolunteerClosedTimer)
+        registerMeter(partitionRegionPrimaryVolunteerThreadsMeter)
+
+        registerMeter(partitionRegionBucketTotalMeter)
+        registerMeter(partitionRegionBucketPrimaryMeter)
+        registerMeter(partitionRegionBucketLowRedundancyMeter)
+        registerMeter(partitionRegionBucketNoRedundancyMeter)
+        registerMeter(partitionRegionBucketConfiguredRedundancyMeter)
+        registerMeter(partitionRegionBucketActualRedundancyMeter)
+    }
 
     @JvmOverloads
     fun endPut(start: Long, numInc: Int = 1) {
-        if (CachePerfStats.enableClockStats) {
-            val delta = CachePerfStats.getStatTime() - start
-            this.stats.incLong(putTimeId, delta)
-        }
-        this.stats.incInt(putsCompletedId, numInc)
+        partitionRegionPutTimer.recordValue(NOW_NANOS - start)
+        partitionRegionPutCompletedMeter.increment(numInc)
     }
 
-    /**
-     * This method sets the end time for putAll and updates the counters
-     *
-     */
     @JvmOverloads
     fun endPutAll(start: Long, numInc: Int = 1) {
-        if (CachePerfStats.enableClockStats) {
-            val delta = CachePerfStats.getStatTime() - start
-            this.stats.incLong(fieldId_PUTALL_TIME, delta)
-            // this.putStatsHistogram.endOp(delta);
-
-        }
-        this.stats.incInt(fieldId_PUTALLS_COMPLETED, numInc)
+        partitionRegionPutAllTimer.recordValue(NOW_NANOS - start)
+        partitionRegionPutAllCompletedMeter.increment(numInc)
     }
 
     @JvmOverloads
     fun endRemoveAll(start: Long, numInc: Int = 1) {
-        if (CachePerfStats.enableClockStats) {
-            val delta = CachePerfStats.getStatTime() - start
-            this.stats.incLong(fieldId_REMOVE_ALL_TIME, delta)
-        }
-        this.stats.incInt(fieldId_REMOVE_ALLS_COMPLETED, numInc)
+        partitionRegionRemoveAllTimer.recordValue(NOW_NANOS - start)
+        partitionRegionRemoveAllCompletedMeter.increment(numInc)
     }
 
     @JvmOverloads
     fun endCreate(start: Long, numInc: Int = 1) {
-        if (CachePerfStats.enableClockStats) {
-            this.stats.incLong(createTimeId, CachePerfStats.getStatTime() - start)
-        }
-        this.stats.incInt(createsCompletedId, numInc)
+        partitionRegionCreateTimer.recordValue(NOW_NANOS - start)
+        partitionRegionCreateCompletedMeter.increment(numInc)
     }
 
     @JvmOverloads
     fun endGet(start: Long, numInc: Int = 1) {
-        if (CachePerfStats.enableClockStats) {
-            val delta = CachePerfStats.getStatTime() - start
-            this.stats.incLong(getTimeId, delta)
-        }
-        this.stats.incInt(getsCompletedId, numInc)
+        partitionRegionGetTimer.recordValue(NOW_NANOS - start)
+        partitionRegionGetCompletedMeter.increment(numInc)
     }
 
     fun endDestroy(start: Long) {
-        if (CachePerfStats.enableClockStats) {
-            this.stats.incLong(destroyTimeId, CachePerfStats.getStatTime() - start)
-        }
-        this.stats.incInt(destroysCompletedId, 1)
+        partitionRegionDestroyTimer.recordValue(NOW_NANOS - start)
+        partitionRegionDestroyCompletedMeter.increment()
     }
 
     fun endInvalidate(start: Long) {
-        if (CachePerfStats.enableClockStats) {
-            this.stats.incLong(invalidateTimeId, CachePerfStats.getStatTime() - start)
-        }
-        this.stats.incInt(invalidatesCompletedId, 1)
+        partitionRegionInvalidateTimer.recordValue(NOW_NANOS - start)
+        partitionRegionInvalidateCompletedMeter.increment()
     }
 
     @JvmOverloads
     fun endContainsKey(start: Long, numInc: Int = 1) {
-        if (CachePerfStats.enableClockStats) {
-            this.stats.incLong(containsKeyTimeId, CachePerfStats.getStatTime() - start)
-        }
-        this.stats.incInt(containsKeyCompletedId, numInc)
+        partitionRegionContainsKeyTimer.recordValue(NOW_NANOS - start)
+        partitionRegionContainsKeyCompletedMeter.increment(numInc)
     }
 
     @JvmOverloads
     fun endContainsValueForKey(start: Long, numInc: Int = 1) {
-        if (CachePerfStats.enableClockStats) {
-            this.stats.incLong(containsValueForKeyTimeId, CachePerfStats.getStatTime() - start)
-        }
-        this.stats.incInt(containsValueForKeyCompletedId, numInc)
+        partitionRegionContainsValueForKeyTimer.recordValue(NOW_NANOS - start)
+        partitionRegionContainsValueForKeyCompletedMeter.increment(numInc)
     }
 
     fun incContainsKeyValueRetries() {
-        this.stats.incInt(containsKeyRetriesId, 1)
+        partitionRegionContainsKeyRetryMeter.increment()
     }
 
     fun incContainsKeyValueOpsRetried() {
-        this.stats.incInt(containsKeyOpsRetriedId, 1)
+        partitionRegionContainsKeyFailureRetryMeter.increment()
     }
 
     fun incInvalidateRetries() {
-        this.stats.incInt(invalidateRetriesId, 1)
+        partitionRegionInvalidateRetryMeter.increment()
     }
 
     fun incInvalidateOpsRetried() {
-        this.stats.incInt(invalidateOpsRetriedId, 1)
+        partitionRegionInvalidateFailureRetryMeter.increment()
     }
 
     fun incDestroyRetries() {
-        this.stats.incInt(destroyRetriesId, 1)
+        partitionRegionDestroyRetryMeter.increment()
     }
 
     fun incDestroyOpsRetried() {
-        this.stats.incInt(destroyOpsRetriedId, 1)
+        partitionRegionDestroyFailureRetryMeter.increment()
     }
 
     fun incPutRetries() {
-        this.stats.incInt(putRetriesId, 1)
+        partitionRegionPutRetryMeter.increment()
     }
 
     fun incPutOpsRetried() {
-        this.stats.incInt(putOpsRetriedId, 1)
+        partitionRegionPutFailureRetryMeter.increment()
     }
 
     fun incGetOpsRetried() {
-        this.stats.incInt(getOpsRetriedId, 1)
+        partitionRegionGetFailureRetryMeter.increment()
     }
 
     fun incGetRetries() {
-        this.stats.incInt(getRetriesId, 1)
+        partitionRegionGetRetryMeter.increment()
     }
 
     fun incCreateOpsRetried() {
-        this.stats.incInt(createOpsRetriedId, 1)
+        partitionRegionCreateFailureRetryMeter.increment()
     }
 
     fun incCreateRetries() {
-        this.stats.incInt(createRetriesId, 1)
+        partitionRegionCreateRetryMeter.increment()
     }
 
-    // ------------------------------------------------------------------------
-    // preferred read stats
-    // ------------------------------------------------------------------------
-
     fun incPreferredReadLocal() {
-        this.stats.incInt(preferredReadLocalId, 1)
+        partitionRegionPreferLocalReadMeter.increment()
     }
 
     fun incPreferredReadRemote() {
-        this.stats.incInt(preferredReadRemoteId, 1)
+        partitionRegionPreferRemoteReadMeter.increment()
     }
 
-    // ------------------------------------------------------------------------
-    // messaging stats
-    // ------------------------------------------------------------------------
-
     fun startPartitionMessageProcessing(): Long {
-        this.stats.incInt(partitionMessagesReceivedId, 1)
-        return startTime()
+        partitionRegionMessagesReceivedMeter.increment()
+        return NOW_NANOS
     }
 
     fun endPartitionMessagesProcessing(start: Long) {
-        if (CachePerfStats.enableClockStats) {
-            val delta = CachePerfStats.getStatTime() - start
-            this.stats.incLong(partitionMessagesProcessingTimeId, delta)
-        }
-        this.stats.incInt(partitionMessagesProcessedId, 1)
+        partitionRegionMessagesProcessedTimer.recordValue(NOW_NANOS - start)
+        partitionRegionMessagesProcessedMeter.increment()
     }
 
     fun incPartitionMessagesSent() {
-        this.stats.incInt(partitionMessagesSentId, 1)
+        partitionRegionMessagesSentMeter.increment()
     }
 
-    // ------------------------------------------------------------------------
-    // datastore stats
-    // ------------------------------------------------------------------------
-
     fun incBucketCount(delta: Int) {
-        this.stats.incInt(bucketCountId, delta)
+        partitionRegionBucketCountMeter.increment(delta)
     }
 
     fun setBucketCount(i: Int) {
-        this.stats.setInt(bucketCountId, i)
+        partitionRegionBucketCountMeter.setValue(i)
     }
 
     fun incDataStoreEntryCount(amt: Int) {
-        this.stats.incInt(dataStoreEntryCountId, amt)
+        partitionRegionDataStoreEntryMeter.increment(amt)
     }
 
     fun incBytesInUse(delta: Long) {
-        this.stats.incLong(dataStoreBytesInUseId, delta)
+        partitionRegionDataStoreBytesMeter.increment(delta)
     }
 
     fun incPutAllRetries() {
-        this.stats.incInt(fieldId_PUTALL_RETRIES, 1)
+        partitionRegionPutAllRetryMeter.increment()
     }
 
     fun incPutAllMsgsRetried() {
-        this.stats.incInt(fieldId_PUTALL_MSGS_RETRIED, 1)
+        partitionRegionPutAllFailureRetryMeter.increment()
     }
 
     fun incRemoveAllRetries() {
-        this.stats.incInt(fieldId_REMOVE_ALL_RETRIES, 1)
+        partitionRegionRemoveAllRetryMeter.increment()
     }
 
     fun incRemoveAllMsgsRetried() {
-        this.stats.incInt(fieldId_REMOVE_ALL_MSGS_RETRIED, 1)
+        partitionRegionRemoveAllFailureRetryMeter.increment()
     }
 
     fun startVolunteering(): Long {
-        this.stats.incInt(volunteeringInProgressId, 1)
-        return CachePerfStats.getStatTime()
+        partitionRegionPrimaryVolunteerInProgressMeter.increment()
+        return NOW_NANOS
     }
 
     fun endVolunteeringBecamePrimary(start: Long) {
-        val ts = CachePerfStats.getStatTime()
-        this.stats.incInt(volunteeringInProgressId, -1)
-        this.stats.incInt(volunteeringBecamePrimaryId, 1)
-        if (CachePerfStats.enableClockStats) {
-            val time = ts - start
-            this.stats.incLong(volunteeringBecamePrimaryTimeId, time)
-        }
+        partitionRegionPrimaryVolunteerInProgressMeter.decrement()
+        partitionRegionPrimaryVolunteerLocalMeter.increment()
+        partitionRegionPrimaryVolunteerLocalTimer.recordValue(NOW_NANOS - start)
     }
 
     fun endVolunteeringOtherPrimary(start: Long) {
-        val ts = CachePerfStats.getStatTime()
-        this.stats.incInt(volunteeringInProgressId, -1)
-        this.stats.incInt(volunteeringOtherPrimaryId, 1)
-        if (CachePerfStats.enableClockStats) {
-            val time = ts - start
-            this.stats.incLong(volunteeringOtherPrimaryTimeId, time)
-        }
+        partitionRegionPrimaryVolunteerInProgressMeter.decrement()
+        partitionRegionPrimaryVolunteerRemoteMeter.increment()
+        partitionRegionPrimaryVolunteerRemoteTimer.recordValue(NOW_NANOS - start)
     }
 
     fun endVolunteeringClosed(start: Long) {
-        val ts = CachePerfStats.getStatTime()
-        this.stats.incInt(volunteeringInProgressId, -1)
-        this.stats.incInt(volunteeringClosedId, 1)
-        if (CachePerfStats.enableClockStats) {
-            val time = ts - start
-            this.stats.incLong(volunteeringClosedTimeId, time)
-        }
+        partitionRegionPrimaryVolunteerInProgressMeter.decrement()
+        partitionRegionPrimaryVolunteerClosedMeter.decrement()
+        partitionRegionPrimaryVolunteerClosedTimer.recordValue(NOW_NANOS - start)
     }
 
-    fun incTotalNumBuckets(`val`: Int) {
-        this.stats.incInt(totalNumBucketsId, `val`)
+    fun incTotalNumBuckets(buckets: Int) {
+        partitionRegionBucketTotalMeter.increment(buckets)
     }
 
-    fun incPrimaryBucketCount(`val`: Int) {
-        this.stats.incInt(primaryBucketCountId, `val`)
+    fun incPrimaryBucketCount(buckets: Int) {
+        partitionRegionBucketPrimaryMeter.increment(buckets)
     }
 
-    fun incVolunteeringThreads(`val`: Int) {
-        this.stats.incInt(volunteeringThreadsId, `val`)
+    fun incVolunteeringThreads(threads: Int) {
+        partitionRegionPrimaryVolunteerThreadsMeter.increment(threads)
     }
 
-    fun incLowRedundancyBucketCount(`val`: Int) {
-        this.stats.incInt(lowRedundancyBucketCountId, `val`)
+    fun incLowRedundancyBucketCount(buckets: Int) {
+        partitionRegionBucketLowRedundancyMeter.increment(buckets)
     }
 
-    fun incNoCopiesBucketCount(`val`: Int) {
-        this.stats.incInt(noCopiesBucketCountId, `val`)
+    fun incNoCopiesBucketCount(buckets: Int) {
+        partitionRegionBucketNoRedundancyMeter.increment(buckets)
     }
 
-    fun setLocalMaxMemory(l: Long) {
-        this.stats.setLong(localMaxMemoryId, l)
+    fun setLocalMaxMemory(memory: Long) {
+        partitionRegionLocalMaxMemoryBytesMeter.setValue(memory)
     }
 
-    // ------------------------------------------------------------------------
-    // startTimeMap methods
-    // ------------------------------------------------------------------------
-
-    /** Put stat start time in holding map for later removal and use by caller  */
     fun putStartTime(key: Any, startTime: Long) {
-        if (CachePerfStats.enableClockStats) {
-            this.startTimeMap[key] = java.lang.Long.valueOf(startTime)
-        }
+        this.startTimeMap[key] = startTime
     }
 
-    /** Remove stat start time from holding map to complete a clock stat  */
-    fun removeStartTime(key: Any): Long {
-        val startTime = this.startTimeMap.remove(key) as Long
-        return startTime ?: 0
-    }
+    fun removeStartTime(key: Any): Long = this.startTimeMap.remove(key) ?: 0
 
-    /**
-     * Statistic to track the [Region.getEntry] call
-     *
-     * @param startTime the time the getEntry operation started
-     */
     fun endGetEntry(startTime: Long) {
         endGetEntry(startTime, 1)
     }
 
-    /**
-     * This method sets the end time for update and updates the counters
-     *
-     */
     fun endGetEntry(start: Long, numInc: Int) {
-        if (CachePerfStats.enableClockStats) {
-            this.stats.incLong(getEntryTimeId, CachePerfStats.getStatTime() - start)
-        }
-        this.stats.incInt(getEntriesCompletedId, numInc)
+        partitionRegionGetEntryTimer.recordValue(NOW_NANOS - start)
+        partitionRegionGetEntryCompletedMeter.increment(numInc)
     }
 
-    // ------------------------------------------------------------------------
-    // bucket creation, primary transfer stats (see also rebalancing stats below)
-    // ------------------------------------------------------------------------
     fun startRecovery(): Long {
-        this.stats.incInt(recoveriesInProgressId, 1)
-        return PartitionedRegionStats.statTime
+        partitionRegionRedundancyRecoveryInProgressMeter.increment()
+        return NOW_NANOS
     }
 
     fun endRecovery(start: Long) {
-        val ts = PartitionedRegionStats.statTime
-        this.stats.incInt(recoveriesInProgressId, -1)
-        if (CachePerfStats.enableClockStats) {
-            this.stats.incLong(recoveriesTimeId, ts - start)
-        }
-        this.stats.incInt(recoveriesCompletedId, 1)
+        partitionRegionRedundancyRecoveryTimer.recordValue(NOW_NANOS - start)
+        partitionRegionRedundancyRecoveryInProgressMeter.decrement()
+        partitionRegionRedundancyRecoveryCompletedMeter.increment()
     }
 
     fun startBucketCreate(isRebalance: Boolean): Long {
-        this.stats.incInt(bucketCreatesInProgressId, 1)
+        partitionRegionBucketCreateInProgressMeter.increment()
         if (isRebalance) {
             startRebalanceBucketCreate()
         }
-        return PartitionedRegionStats.statTime
+        return NOW_NANOS
     }
 
     fun endBucketCreate(start: Long, success: Boolean, isRebalance: Boolean) {
-        val ts = PartitionedRegionStats.statTime
-        this.stats.incInt(bucketCreatesInProgressId, -1)
-        if (CachePerfStats.enableClockStats) {
-            this.stats.incLong(bucketCreateTimeId, ts - start)
-        }
+        val ts = NOW_NANOS
+        partitionRegionBucketCreateInProgressMeter.decrement()
+        partitionRegionBucketCreateTimer.recordValue(ts)
         if (success) {
-            this.stats.incInt(bucketCreatesCompletedId, 1)
+            partitionRegionBucketCreateCompletedMeter.increment()
         } else {
-            this.stats.incInt(bucketCreatesFailedId, 1)
+            partitionRegionBucketCreateFailedMeter.increment()
         }
         if (isRebalance) {
             endRebalanceBucketCreate(start, ts, success)
@@ -556,140 +523,109 @@ class PartitionedRegionStats(name: String) : MicrometerMeterGroup("PartitionRegi
     }
 
     fun startPrimaryTransfer(isRebalance: Boolean): Long {
-        this.stats.incInt(primaryTransfersInProgressId, 1)
+        partitionRegionPrimaryTransferInProgressMeter.increment()
         if (isRebalance) {
             startRebalancePrimaryTransfer()
         }
-        return PartitionedRegionStats.statTime
+        return NOW_NANOS
     }
 
     fun endPrimaryTransfer(start: Long, success: Boolean, isRebalance: Boolean) {
-        val ts = PartitionedRegionStats.statTime
-        this.stats.incInt(primaryTransfersInProgressId, -1)
-        if (CachePerfStats.enableClockStats) {
-            this.stats.incLong(primaryTransferTimeId, ts - start)
-        }
+        val ts = NOW_NANOS
+        partitionRegionPrimaryTransferInProgressMeter.decrement()
+        partitionRegionPrimaryTransferTimer.recordValue(ts)
         if (success) {
-            this.stats.incInt(primaryTransfersCompletedId, 1)
+            partitionRegionPrimaryTransferCompletedMeter.increment()
         } else {
-            this.stats.incInt(primaryTransfersFailedId, 1)
+            partitionRegionPrimaryTransferFailedMeter.increment()
         }
         if (isRebalance) {
             endRebalancePrimaryTransfer(start, ts, success)
         }
     }
 
-    // ------------------------------------------------------------------------
-    // rebalancing stats
-    // ------------------------------------------------------------------------
-
     private fun startRebalanceBucketCreate() {
-        this.stats.incInt(rebalanceBucketCreatesInProgressId, 1)
+        partitionRegionBucketCreateInProgressMeter.increment()
     }
 
     private fun endRebalanceBucketCreate(start: Long, end: Long, success: Boolean) {
-        this.stats.incInt(rebalanceBucketCreatesInProgressId, -1)
-        if (CachePerfStats.enableClockStats) {
-            this.stats.incLong(rebalanceBucketCreateTimeId, end - start)
-        }
+        partitionRegionBucketCreateInProgressMeter.decrement()
+        partitionRegionBucketCreateTimer.recordValue(end - start)
         if (success) {
-            this.stats.incInt(rebalanceBucketCreatesCompletedId, 1)
+            partitionRegionBucketCreateCompletedMeter.increment()
         } else {
-            this.stats.incInt(rebalanceBucketCreatesFailedId, 1)
+            partitionRegionBucketCreateFailedMeter.increment()
         }
     }
 
     private fun startRebalancePrimaryTransfer() {
-        this.stats.incInt(rebalancePrimaryTransfersInProgressId, 1)
+        partitionRegionPrimaryTransferInProgressMeter.increment()
     }
 
     private fun endRebalancePrimaryTransfer(start: Long, end: Long, success: Boolean) {
-        this.stats.incInt(rebalancePrimaryTransfersInProgressId, -1)
-        if (CachePerfStats.enableClockStats) {
-            this.stats.incLong(rebalancePrimaryTransferTimeId, end - start)
-        }
+        partitionRegionPrimaryTransferInProgressMeter.decrement()
+        partitionRegionPrimaryTransferTimer.recordValue(end - start)
         if (success) {
-            this.stats.incInt(rebalancePrimaryTransfersCompletedId, 1)
+            partitionRegionPrimaryTransferCompletedMeter.increment()
         } else {
-            this.stats.incInt(rebalancePrimaryTransfersFailedId, 1)
+            partitionRegionPrimaryTransferFailedMeter.increment()
         }
     }
 
     fun startApplyReplication(): Long {
-        stats.incInt(applyReplicationInProgressId, 1)
-        return CachePerfStats.getStatTime()
+        partitionRegionApplyReplicationInProgressMeter.increment()
+        return NOW_NANOS
     }
 
     fun endApplyReplication(start: Long) {
-        val delta = CachePerfStats.getStatTime() - start
-        stats.incInt(applyReplicationInProgressId, -1)
-        stats.incInt(applyReplicationCompletedId, 1)
-        stats.incLong(applyReplicationTimeId, delta)
+        partitionRegionApplyReplicationTimer.recordValue(NOW_NANOS - start)
+        partitionRegionApplyReplicationInProgressMeter.decrement()
+        partitionRegionApplyReplicationCompletedMeter.increment()
+
     }
 
     fun startSendReplication(): Long {
-        stats.incInt(sendReplicationInProgressId, 1)
-        return CachePerfStats.getStatTime()
+        partitionRegionSendReplicationInProgressMeter.increment()
+        return NOW_NANOS
     }
 
     fun endSendReplication(start: Long) {
-        val delta = CachePerfStats.getStatTime() - start
-        stats.incInt(sendReplicationInProgressId, -1)
-        stats.incInt(sendReplicationCompletedId, 1)
-        stats.incLong(sendReplicationTimeId, delta)
+        partitionRegionSendReplicationTimer.recordValue(NOW_NANOS - start)
+        partitionRegionSendReplicationInProgressMeter.decrement()
+        partitionRegionSendReplicationCompletedMeter.increment()
     }
 
     fun startPutRemote(): Long {
-        stats.incInt(putRemoteInProgressId, 1)
-        return CachePerfStats.getStatTime()
+        partitionRegionPutRemoteInProgressMeter.increment()
+        return NOW_NANOS
     }
 
     fun endPutRemote(start: Long) {
-        val delta = CachePerfStats.getStatTime() - start
-        stats.incInt(putRemoteInProgressId, -1)
-        stats.incInt(putRemoteCompletedId, 1)
-        stats.incLong(putRemoteTimeId, delta)
+        partitionRegionPutRemoteTimer.recordValue(NOW_NANOS - start)
+        partitionRegionPutRemoteInProgressMeter.decrement()
+        partitionRegionPutRemoteCompletedMeter.increment()
     }
 
     fun startPutLocal(): Long {
-        stats.incInt(putLocalInProgressId, 1)
-        return CachePerfStats.getStatTime()
+        partitionRegionPutLocalInProgressMeter.increment()
+        return NOW_NANOS
     }
 
     fun endPutLocal(start: Long) {
-        val delta = CachePerfStats.getStatTime() - start
-        stats.incInt(putLocalInProgressId, -1)
-        stats.incInt(putLocalCompletedId, 1)
-        stats.incLong(putLocalTimeId, delta)
+        partitionRegionPutLocalTimer.recordValue(NOW_NANOS - start)
+        partitionRegionPutLocalInProgressMeter.decrement()
+        partitionRegionPutLocalCompletedMeter.increment()
     }
 
     fun incPRMetaDataSentCount() {
-        this.stats.incLong(prMetaDataSentCountId, 1)
+        partitionRegionPRMetadataSentMeter.increment()
     }
 
-    companion object {
-
-        private val PUTALLS_COMPLETED = "putAllsCompleted"
-        private val PUTALL_MSGS_RETRIED = "putAllMsgsRetried"
-        private val PUTALL_RETRIES = "putAllRetries"
-        private val PUTALL_TIME = "putAllTime"
-
-        private val REMOVE_ALLS_COMPLETED = "removeAllsCompleted"
-        private val REMOVE_ALL_MSGS_RETRIED = "removeAllMsgsRetried"
-        private val REMOVE_ALL_RETRIES = "removeAllRetries"
-        private val REMOVE_ALL_TIME = "removeAllTime"
-
-        fun startTime(): Long {
-            return CachePerfStats.getStatTime()
-        }
-
-        val statTime: Long
-            get() = CachePerfStats.getStatTime()
+    fun setConfiguredRedundantCopies(copies: Int) {
+        partitionRegionBucketConfiguredRedundancyMeter.setValue(copies)
     }
-}// ------------------------------------------------------------------------
-// region op stats
-// ------------------------------------------------------------------------
-/**
- * This method sets the end time for putAll and updates the counters
- *
- */
+
+    fun setActualRedundantCopies(copies: Int) {
+        partitionRegionBucketActualRedundancyMeter.setValue(copies)
+    }
+}

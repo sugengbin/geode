@@ -98,4 +98,7 @@ class CacheClientProxyStats(clientName: String) : MicrometerMeterGroup("CacheCli
     override fun decMessagesBytesBeingReceived(bytes: Int) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
+
+    @Deprecated("The method is deprecated to be removed, but here until a better stats mechanism is found")
+    fun getCqCount(): Long = clientProxyCQCountMeter.getValue()
 }

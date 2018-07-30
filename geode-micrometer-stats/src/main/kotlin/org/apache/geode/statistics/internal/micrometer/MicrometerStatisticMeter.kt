@@ -8,25 +8,26 @@ import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.LongAdder
 
 interface MicrometerStatisticMeter {
-    fun register(meterRegistry: MeterRegistry,tags: Iterable<Tag> = emptyList())
+    fun register(meterRegistry: MeterRegistry, commonTags: Array<String> = emptyArray())
 }
 
 data class GaugeStatisticMeter(val meterName: String,
                                val description: String,
-                               val tags:Array<String> = emptyArray(),
+                               val tags: Array<String> = emptyArray(),
                                private val unit: String = "") : ScalarStatisticsMeter, MicrometerStatisticMeter {
-
 
 
     private lateinit var meter: Gauge
     private val backingValue: LongAdder = LongAdder()
 
+    override fun getValue(): Long = backingValue.sum()
+
     override fun getBaseUnit(): String = unit
     override fun getMetricName(): String = meterName
 
-    override fun register(registry: MeterRegistry,tags: Iterable<Tag>) {
+    override fun register(meterRegistry: MeterRegistry, commonTags: Array<String>) {
         meter = Gauge.builder(meterName, backingValue) { backingValue.toDouble() }
-                .description(description).baseUnit(unit).tags(tags).register(registry)
+                .description(description).baseUnit(unit).tags(*commonTags).tags(*tags).register(meterRegistry)
     }
 
     override fun increment() {
@@ -95,17 +96,18 @@ data class GaugeStatisticMeter(val meterName: String,
 
 data class CounterStatisticMeter(val meterName: String,
                                  val description: String,
-                                 val tags:Array<String> = emptyArray(),
+                                 val tags: Array<String> = emptyArray(),
                                  private val unit: String = "") : ScalarStatisticsMeter, MicrometerStatisticMeter {
-
     private lateinit var meter: Counter
 
     override fun getBaseUnit(): String = unit
     override fun getMetricName(): String = meterName
 
-    override fun register(registry: MeterRegistry,tags: Iterable<Tag>) {
+    override fun getValue(): Long = meter.count().toLong()
+
+    override fun register(meterRegistry: MeterRegistry, commonTags: Array<String>) {
         meter = Counter.builder(meterName)
-                .description(description).tags(tags).baseUnit(unit).register(registry)
+                .description(description).tags(*commonTags).tags(*tags).baseUnit(unit).register(meterRegistry)
     }
 
     override fun increment() {
@@ -160,7 +162,7 @@ data class CounterStatisticMeter(val meterName: String,
 
 data class TimerStatisticMeter(val meterName: String,
                                val description: String,
-                               val tags:Array<String> = emptyArray(),
+                               val tags: Array<String> = emptyArray(),
                                private val unit: String = "") : TimedStatisticsMeter, MicrometerStatisticMeter {
 
     private lateinit var meter: Timer
@@ -168,9 +170,9 @@ data class TimerStatisticMeter(val meterName: String,
     override fun getBaseUnit(): String = unit
     override fun getMetricName(): String = meterName
 
-    override fun register(registry: MeterRegistry,tags: Iterable<Tag>) {
+    override fun register(meterRegistry: MeterRegistry, commonTags: Array<String>) {
         meter = Timer.builder(meterName)
-                .description(description).tags(tags).register(registry)
+                .description(description).tags(*commonTags).tags(*tags).register(meterRegistry)
     }
 
     override fun recordValue(amount: Long, timeUnit: TimeUnit) {

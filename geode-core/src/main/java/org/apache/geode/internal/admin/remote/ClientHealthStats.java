@@ -231,17 +231,6 @@ public class ClientHealthStats implements DataSerializableFixedID, Serializable 
     DataSerializer.writeHashMap((poolStats), out);
   }
 
-  public void toDataPre_GFE_8_0_0_0(DataOutput out) throws IOException {
-    DataSerializer.writePrimitiveInt(numOfGets, out);
-    DataSerializer.writePrimitiveInt(numOfPuts, out);
-    DataSerializer.writePrimitiveInt(numOfMisses, out);
-    DataSerializer.writePrimitiveInt(numOfCacheListenerCalls, out);
-    DataSerializer.writePrimitiveInt(numOfThreads, out);
-    DataSerializer.writePrimitiveInt(cpus, out);
-    DataSerializer.writePrimitiveLong(processCpuTime, out);
-    DataSerializer.writeDate(updateTime, out);
-  }
-
   public void fromData(DataInput in) throws IOException, ClassNotFoundException {
     this.numOfGets = DataSerializer.readPrimitiveInt(in);
     this.numOfPuts = DataSerializer.readPrimitiveInt(in);
@@ -254,39 +243,26 @@ public class ClientHealthStats implements DataSerializableFixedID, Serializable 
     this.poolStats = DataSerializer.readHashMap(in);
   }
 
-  public void fromDataPre_GFE_8_0_0_0(DataInput in) throws IOException, ClassNotFoundException {
-    this.numOfGets = DataSerializer.readPrimitiveInt(in);
-    this.numOfPuts = DataSerializer.readPrimitiveInt(in);
-    this.numOfMisses = DataSerializer.readPrimitiveInt(in);
-    this.numOfCacheListenerCalls = DataSerializer.readPrimitiveInt(in);
-    this.numOfThreads = DataSerializer.readPrimitiveInt(in);
-    this.cpus = DataSerializer.readPrimitiveInt(in);
-    this.processCpuTime = DataSerializer.readPrimitiveLong(in);
-    this.updateTime = DataSerializer.readDate(in);
-  }
-
   @Override
   public String toString() {
 
-    StringBuffer buf = new StringBuffer();
+    StringBuilder buf = new StringBuilder();
     buf.append("ClientHealthStats [");
-    buf.append("\n numOfGets=" + this.numOfGets);
-    buf.append("\n numOfPuts=" + this.numOfPuts);
-    buf.append("\n numOfMisses=" + this.numOfMisses);
-    buf.append("\n numOfCacheListenerCalls=" + this.numOfCacheListenerCalls);
-    buf.append("\n numOfThreads=" + this.numOfThreads);
-    buf.append("\n cpus=" + this.cpus);
-    buf.append("\n processCpuTime=" + this.processCpuTime);
-    buf.append("\n updateTime=" + this.updateTime);
+    buf.append("\n numOfGets=").append(this.numOfGets);
+    buf.append("\n numOfPuts=").append(this.numOfPuts);
+    buf.append("\n numOfMisses=").append(this.numOfMisses);
+    buf.append("\n numOfCacheListenerCalls=").append(this.numOfCacheListenerCalls);
+    buf.append("\n numOfThreads=").append(this.numOfThreads);
+    buf.append("\n cpus=").append(this.cpus);
+    buf.append("\n processCpuTime=").append(this.processCpuTime);
+    buf.append("\n updateTime=").append(this.updateTime);
     Iterator<Entry<String, String>> it = this.poolStats.entrySet().iterator();
-    StringBuffer tempBuffer = new StringBuffer();
+    StringBuilder tempBuffer = new StringBuilder();
     while (it.hasNext()) {
       Entry<String, String> entry = it.next();
-      tempBuffer.append(entry.getKey() + " = " + entry.getValue());
+      tempBuffer.append(entry.getKey()).append(" = ").append(entry.getValue());
     }
-    buf.append("\n poolStats " + tempBuffer);
-    buf.append("\n]");
-
+    buf.append("\n poolStats ").append(tempBuffer).append("\n]");
     return buf.toString();
   }
 
@@ -301,9 +277,5 @@ public class ClientHealthStats implements DataSerializableFixedID, Serializable 
 
   public HashMap<String, String> getPoolStats() {
     return this.poolStats;
-  }
-
-  public void setPoolStats(HashMap<String, String> statsMap) {
-    this.poolStats = statsMap;
   }
 }

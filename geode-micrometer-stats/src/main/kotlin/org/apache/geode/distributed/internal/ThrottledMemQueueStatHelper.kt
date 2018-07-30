@@ -13,26 +13,40 @@
  * the License.
  */
 
-package org.apache.geode.distributed.internal;
+package org.apache.geode.distributed.internal
 
 /**
  * Used to implement statistics on a throttled queue. The implementation will call these methods at
  * to proper time.
  *
  *
- * @since GemFire 3.5
+ * @since GemFire 5.0
  */
-public interface ThrottledQueueStatHelper extends QueueStatHelper {
+interface ThrottledMemQueueStatHelper : QueueStatHelper {
 
-  /**
-   * Called each time a thread was delayed by the throttle.
-   */
-  void incThrottleCount();
+    /**
+     * Called each time a thread was delayed by the throttle.
+     */
+    fun incThrottleCount()
 
-  /**
-   * Called after a throttled operation has completed.
-   *
-   * @param nanos the amount of time, in nanoseconds, the throttle caused us to wait.
-   */
-  void throttleTime(long nanos);
+    /**
+     * Called after a throttled operation has completed.
+     *
+     * @param nanos the amount of time, in nanoseconds, the throttle caused us to wait.
+     */
+    fun throttleTime(nanos: Long)
+
+    /**
+     * Increments the amount of memory consumed by queue contents.
+     *
+     * @param amount number of bytes added to the queue
+     */
+    fun addMem(amount: Int)
+
+    /**
+     * Decrements the amount of memory consumed by queue contents.
+     *
+     * @param amount number of bytes removed from the queue
+     */
+    fun removeMem(amount: Int)
 }

@@ -89,7 +89,6 @@ import org.apache.geode.internal.cache.StateFlushOperation;
 import org.apache.geode.internal.cache.ha.HAContainerWrapper;
 import org.apache.geode.internal.cache.ha.HARegionQueue;
 import org.apache.geode.internal.cache.ha.HARegionQueueAttributes;
-import org.apache.geode.internal.cache.ha.HARegionQueueStats;
 import org.apache.geode.internal.cache.tier.InterestType;
 import org.apache.geode.internal.cache.tier.sockets.ClientUpdateMessageImpl.CqNameToOp;
 import org.apache.geode.internal.cache.tier.sockets.command.Get70;
@@ -1944,6 +1943,10 @@ public class CacheClientProxy implements ClientSession {
         _cache.purgeCCPTimer();
       }
     }
+  }
+
+  public boolean hasNoCq() {
+    return _statistics.getCqCount() == 0;
   }
 
   /**

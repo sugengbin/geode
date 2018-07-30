@@ -663,4 +663,7 @@ open class CachePerfStats(regionName:String?) : MicrometerMeterGroup("CachePerfS
         regionExportedEntryMeter.increment(entryCount)
         regionExportedEntryTimer.recordValue(NOW_NANOS - start)
     }
+
+    @Deprecated(message = "This was just done as an interim solution until GEODE does not depend on stats for internal state")
+    fun getReliableRegionsMissing(): Int = regionReliableRegionMissingMeter.getValue().toInt()
 }

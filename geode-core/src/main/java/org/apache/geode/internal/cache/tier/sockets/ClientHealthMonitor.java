@@ -45,6 +45,7 @@ import org.apache.geode.internal.i18n.LocalizedStrings;
 import org.apache.geode.internal.logging.LogService;
 import org.apache.geode.internal.logging.LoggingThreadGroup;
 import org.apache.geode.internal.logging.log4j.LocalizedMessage;
+import org.apache.geode.statistics.cache.CacheClientNotifierStats;
 
 /**
  * Class <code>ClientHealthMonitor</code> is a server-side singleton that monitors the health of

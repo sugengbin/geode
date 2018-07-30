@@ -133,18 +133,18 @@ public class CacheServerBridge extends ServerBridge {
 
   public void stopMonitor() {
     super.stopMonitor();
-    monitor.stopListener();
+//    monitor.stopListener();
   }
 
   private void initializeCacheServerStats() {
 
-    clientNotificationRate =
-        new StatsRate(StatsKey.NUM_CLIENT_NOTIFICATION_REQUEST, StatType.INT_TYPE, monitor);
-
-    clientNotificatioAvgLatency = new StatsAverageLatency(StatsKey.NUM_CLIENT_NOTIFICATION_REQUEST,
-        StatType.INT_TYPE, StatsKey.CLIENT_NOTIFICATION_PROCESS_TIME, monitor);
-
-    queryRequestRate = new StatsRate(StatsKey.QUERY_REQUESTS, StatType.INT_TYPE, monitor);
+//    clientNotificationRate =
+//        new StatsRate(StatsKey.NUM_CLIENT_NOTIFICATION_REQUEST, StatType.INT_TYPE, monitor);
+//
+//    clientNotificatioAvgLatency = new StatsAverageLatency(StatsKey.NUM_CLIENT_NOTIFICATION_REQUEST,
+//        StatType.INT_TYPE, StatsKey.CLIENT_NOTIFICATION_PROCESS_TIME, monitor);
+//
+//    queryRequestRate = new StatsRate(StatsKey.QUERY_REQUESTS, StatType.INT_TYPE, monitor);
   }
 
   /**
@@ -626,33 +626,33 @@ public class CacheServerBridge extends ServerBridge {
     return qs.getIndexes().size();
   }
 
-  public int getNumClientNotificationRequests() {
-    return getStatistic(StatsKey.NUM_CLIENT_NOTIFICATION_REQUEST).intValue();
-  }
-
-  public long getClientNotificationAvgLatency() {
-    return clientNotificatioAvgLatency.getAverageLatency();
-  }
-
-  public float getClientNotificationRate() {
-    return clientNotificationRate.getRate();
-  }
-
-  public float getQueryRequestRate() {
-    return queryRequestRate.getRate();
-  }
+//  public int getNumClientNotificationRequests() {
+//    return getStatistic(StatsKey.NUM_CLIENT_NOTIFICATION_REQUEST).intValue();
+//  }
+//
+//  public long getClientNotificationAvgLatency() {
+//    return clientNotificatioAvgLatency.getAverageLatency();
+//  }
+//
+//  public float getClientNotificationRate() {
+//    return clientNotificationRate.getRate();
+//  }
+//
+//  public float getQueryRequestRate() {
+//    return queryRequestRate.getRate();
+//  }
 
   public long getTotalIndexMaintenanceTime() {
     return memberMBeanBridge.getTotalIndexMaintenanceTime();
   }
 
-  public long getActiveCQCount() {
-    CqService cqService = cache.getCqService();
-    if (cqService != null && cqService.isRunning()) {
-      return cqService.getCqStatistics().numCqsActive();
-    }
-    return 0;
-  }
+//  public long getActiveCQCount() {
+//    CqService cqService = cache.getCqService();
+//    if (cqService != null && cqService.isRunning()) {
+//      return cqService.getCqStatistics().numCqsActive();
+//    }
+//    return 0;
+//  }
 
   public int getNumSubscriptions() {
     Map clientProxyMembershipIDMap = InternalClientMembership.getClientQueueSizes(cache);

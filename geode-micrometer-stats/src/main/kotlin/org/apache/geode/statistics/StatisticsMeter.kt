@@ -17,6 +17,7 @@ interface ScalarStatisticsMeter : StatisticsMeter {
     fun decrement(value: Double = -1.0)
     fun decrement(value: Long = -1L)
     fun decrement(value: Int = -1)
+    fun getValue(): Long
 }
 
 interface TimedStatisticsMeter : StatisticsMeter {
