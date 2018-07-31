@@ -24,6 +24,7 @@ import org.apache.geode.internal.cache.tier.CachedRegionHelper;
 import org.apache.geode.internal.i18n.LocalizedStrings;
 import org.apache.geode.internal.logging.log4j.LocalizedMessage;
 import org.apache.geode.internal.security.SecurityService;
+import org.apache.geode.statistics.cache.CacheServerStats;
 
 /**
  * Handles everything but the new client protocol.
@@ -42,9 +43,9 @@ public class OriginalServerConnection extends ServerConnection {
    *
    */
   public OriginalServerConnection(Socket socket, InternalCache internalCache,
-      CachedRegionHelper helper, CacheServerStats stats, int hsTimeout, int socketBufferSize,
-      String communicationModeStr, byte communicationMode, Acceptor acceptor,
-      SecurityService securityService) {
+                                  CachedRegionHelper helper, CacheServerStats stats, int hsTimeout, int socketBufferSize,
+                                  String communicationModeStr, byte communicationMode, Acceptor acceptor,
+                                  SecurityService securityService) {
     super(socket, internalCache, helper, stats, hsTimeout, socketBufferSize, communicationModeStr,
         communicationMode, acceptor, securityService);
 

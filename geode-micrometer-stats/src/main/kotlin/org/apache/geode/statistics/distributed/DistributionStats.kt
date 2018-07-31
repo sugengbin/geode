@@ -10,7 +10,9 @@ import org.apache.geode.statistics.internal.micrometer.MicrometerMeterGroup
 import org.apache.geode.statistics.internal.micrometer.TimerStatisticMeter
 import org.apache.geode.statistics.util.NOW_NANOS
 
-class DistributionStats : MicrometerMeterGroup("DistributionStats"), DMStats {
+class DistributionStats(private val processID: Long) : MicrometerMeterGroup("DistributionStats-$processID"), DMStats {
+    override fun getCommonTags(): Array<String> = arrayOf("processID", processID.toString())
+
     override fun initializeStaticMeters() {
         registerMeter(distributionMessageMeter)
         registerMeter(distributionMessageTransactionCommitMeter)
@@ -999,6 +1001,9 @@ class DistributionStats : MicrometerMeterGroup("DistributionStats"), DMStats {
     override fun incUdpFinalCheckResponsesReceived() {
         udpFinalCheckResponseReceivedMeter.increment()
     }
+
+    @Deprecated(message = "This was just done as an interim solution until GEODE does not depend on stats for internal state")
+    fun getSerialQueueBytes(): Long = distributionQueueSerialBytesMeter.getValue()
 
     val overflowQueueHelper: ThrottledQueueStatHelper
         get() = object : ThrottledQueueStatHelper {

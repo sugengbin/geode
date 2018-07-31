@@ -95,7 +95,6 @@ import org.apache.geode.internal.cache.eviction.EvictableEntry;
 import org.apache.geode.internal.cache.execute.DistributedRegionFunctionExecutor;
 import org.apache.geode.internal.cache.execute.DistributedRegionFunctionResultSender;
 import org.apache.geode.internal.cache.execute.DistributedRegionFunctionResultWaiter;
-import org.apache.geode.internal.cache.execute.FunctionStats;
 import org.apache.geode.internal.cache.execute.LocalResultCollector;
 import org.apache.geode.internal.cache.execute.RegionFunctionContextImpl;
 import org.apache.geode.internal.cache.execute.ServerToClientFunctionResultSender;
@@ -127,6 +126,7 @@ import org.apache.geode.internal.offheap.annotations.Retained;
 import org.apache.geode.internal.sequencelog.RegionLogger;
 import org.apache.geode.internal.util.concurrent.StoppableCountDownLatch;
 import org.apache.geode.statistics.disk.DiskRegionStats;
+import org.apache.geode.statistics.function.FunctionStats;
 
 @SuppressWarnings("deprecation")
 public class DistributedRegion extends LocalRegion implements InternalDistributedRegion {
@@ -2268,7 +2268,7 @@ public class DistributedRegion extends LocalRegion implements InternalDistribute
     // Set eventId. Required for interested clients.
     event.setNewEventId(cache.getDistributedSystem());
 
-    long startPut = CachePerfStats.getStatTime();
+    long startPut = System.nanoTime();
     validateKey(event.getKey());
     // this next step also distributes the object to other processes, if necessary
     try {
@@ -3702,9 +3702,9 @@ public class DistributedRegion extends LocalRegion implements InternalDistribute
     ResultSender resultSender = new DistributedRegionFunctionResultSender(dm, msg, function);
     final RegionFunctionContextImpl context = new RegionFunctionContextImpl(cache, function.getId(),
         this, args, filter, null, null, resultSender, isReExecute);
-    FunctionStats stats = FunctionStats.getFunctionStats(function.getId(), dm.getSystem());
+    FunctionStats stats = FunctionStats.getFunctionStats(function.getId());
     try {
-      long start = stats.startTime();
+      long start = System.nanoTime();
       stats.startFunctionExecution(function.hasResult());
       function.execute(context);
       stats.endFunctionExecution(start, function.hasResult());

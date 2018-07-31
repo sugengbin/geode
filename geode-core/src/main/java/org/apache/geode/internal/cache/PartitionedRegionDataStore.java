@@ -74,12 +74,10 @@ import org.apache.geode.distributed.internal.membership.InternalDistributedMembe
 import org.apache.geode.i18n.StringId;
 import org.apache.geode.internal.Assert;
 import org.apache.geode.internal.cache.BucketRegion.RawValue;
-import org.apache.geode.internal.cache.LocalRegion.RegionPerfStats;
 import org.apache.geode.internal.cache.PartitionedRegion.BucketLock;
 import org.apache.geode.internal.cache.PartitionedRegion.SizeEntry;
 import org.apache.geode.internal.cache.backup.BackupService;
 import org.apache.geode.internal.cache.execute.BucketMovedException;
-import org.apache.geode.internal.cache.execute.FunctionStats;
 import org.apache.geode.internal.cache.execute.PartitionedRegionFunctionResultSender;
 import org.apache.geode.internal.cache.execute.RegionFunctionContextImpl;
 import org.apache.geode.internal.cache.partitioned.Bucket;
@@ -102,6 +100,9 @@ import org.apache.geode.internal.logging.log4j.LocalizedMessage;
 import org.apache.geode.internal.util.concurrent.StoppableReentrantReadWriteLock;
 import org.apache.geode.internal.util.concurrent.StoppableReentrantReadWriteLock.StoppableReadLock;
 import org.apache.geode.internal.util.concurrent.StoppableReentrantReadWriteLock.StoppableWriteLock;
+import org.apache.geode.statistics.cache.CachePerfStats;
+import org.apache.geode.statistics.function.FunctionStats;
+import org.apache.geode.statistics.region.RegionPerfStats;
 
 /**
  * Implementation of DataStore (DS) for a PartitionedRegion (PR). This will be import
@@ -206,8 +207,7 @@ public class PartitionedRegionDataStore implements HasCachePerfStats {
     this.maximumLocalBytes = (pr.getLocalMaxMemory() * PartitionedRegionHelper.BYTES_PER_MB);
 
     // this.bucketStats = new CachePerfStats(pr.getSystem(), "partition-" + pr.getName());
-    this.bucketStats =
-        new RegionPerfStats(pr.getCache(), pr.getCachePerfStats(), "partition-" + pr.getName());
+    this.bucketStats = new RegionPerfStats(pr.getCachePerfStats(), "partition-" + pr.getName());
     this.keysOfInterest = new ConcurrentHashMap();
   }
 
@@ -1472,7 +1472,6 @@ public class PartitionedRegionDataStore implements HasCachePerfStats {
           this.partitionedRegion.getFullPath()), ex);
     } finally {
       this.partitionedRegion.getPrStats().setBucketCount(0);
-      this.bucketStats.close();
     }
   }
 
@@ -3009,9 +3008,9 @@ public class PartitionedRegionDataStore implements HasCachePerfStats {
                 .constructAndGetAllColocatedLocalDataSet(this.partitionedRegion, bucketSet),
             bucketSet, resultSender, isReExecute);
 
-    FunctionStats stats = FunctionStats.getFunctionStats(function.getId(), dm.getSystem());
+    FunctionStats stats = FunctionStats.getFunctionStats(function.getId());
     try {
-      long start = stats.startTime();
+      long start = System.nanoTime();
       stats.startFunctionExecution(function.hasResult());
       if (logger.isDebugEnabled()) {
         logger.debug("Executing Function: {} on Remote Node with context: ", function.getId(),

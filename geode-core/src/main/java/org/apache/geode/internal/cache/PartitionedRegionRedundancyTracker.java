@@ -20,6 +20,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.geode.internal.i18n.LocalizedStrings;
 import org.apache.geode.internal.logging.LogService;
 import org.apache.geode.internal.logging.log4j.LocalizedMessage;
+import org.apache.geode.statistics.region.PartitionedRegionStats;
 
 /**
  * Keeps track redundancy statistics across the buckets of a given {@link PartitionedRegion}
@@ -45,7 +46,7 @@ class PartitionedRegionRedundancyTracker {
    * @param regionPath the full path of the region to track
    */
   PartitionedRegionRedundancyTracker(int totalBuckets, int redundantCopies,
-      PartitionedRegionStats stats, String regionPath) {
+                                     PartitionedRegionStats stats, String regionPath) {
     this.stats = stats;
     this.regionPath = regionPath;
     this.totalBuckets = totalBuckets;

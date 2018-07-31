@@ -73,6 +73,7 @@ import org.apache.geode.internal.util.Breadcrumbs;
 import org.apache.geode.security.AuthenticationFailedException;
 import org.apache.geode.security.AuthenticationRequiredException;
 import org.apache.geode.security.GemFireSecurityException;
+import org.apache.geode.statistics.cache.CacheServerStats;
 
 /**
  * Provides an implementation for the server socket end of the hierarchical cache connection. Each

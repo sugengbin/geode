@@ -86,7 +86,6 @@ import org.apache.geode.internal.cache.partitioned.AllBucketProfilesUpdateMessag
 import org.apache.geode.internal.cache.tier.Acceptor;
 import org.apache.geode.internal.cache.tier.CachedRegionHelper;
 import org.apache.geode.internal.cache.tier.CommunicationMode;
-import org.apache.geode.internal.cache.wan.GatewayReceiverStats;
 import org.apache.geode.internal.i18n.LocalizedStrings;
 import org.apache.geode.internal.logging.LogService;
 import org.apache.geode.internal.logging.LoggingThreadGroup;
@@ -99,6 +98,7 @@ import org.apache.geode.internal.security.SecurityService;
 import org.apache.geode.internal.tcp.ConnectionTable;
 import org.apache.geode.internal.util.ArrayUtils;
 import org.apache.geode.statistics.cache.CacheServerStats;
+import org.apache.geode.statistics.wan.GatewayReceiverStats;
 
 /**
  * Implements the acceptor thread on the bridge server. Accepts connections from the edge and starts
@@ -530,7 +530,7 @@ public class AcceptorImpl implements Acceptor, Runnable, CommBufferPool {
           LocalizedStrings.AcceptorImpl_CACHE_SERVER_CONNECTION_LISTENER_BOUND_TO_ADDRESS_0_WITH_BACKLOG_1,
           new Object[] {sockName, Integer.valueOf(backLog)}));
       if (isGatewayReceiver) {
-        this.stats = GatewayReceiverStats.createGatewayReceiverStats(sockName);
+        this.stats = new GatewayReceiverStats(sockName);
       } else {
         this.stats = new CacheServerStats(sockName);
       }
@@ -592,7 +592,6 @@ public class AcceptorImpl implements Acceptor, Runnable, CommBufferPool {
       return new ThreadPoolExecutor(1, HANDSHAKE_POOL_SIZE, 60, TimeUnit.SECONDS, blockingQueue,
           socketThreadFactory, rejectedExecutionHandler);
     } catch (IllegalArgumentException poolInitException) {
-      this.stats.close();
       this.serverSock.close();
       this.pool.shutdown();
       throw poolInitException;
@@ -664,7 +663,6 @@ public class AcceptorImpl implements Acceptor, Runnable, CommBufferPool {
             TimeUnit.MILLISECONDS, new SynchronousQueue(), socketThreadFactory);
       }
     } catch (IllegalArgumentException poolInitException) {
-      this.stats.close();
       this.serverSock.close();
       throw poolInitException;
     }
@@ -1221,9 +1219,6 @@ public class AcceptorImpl implements Acceptor, Runnable, CommBufferPool {
         }
       } catch (IOException ignore) {
       }
-      if (this.stats != null) {
-        this.stats.close();
-      }
     }
   }
 
@@ -1629,7 +1624,6 @@ public class AcceptorImpl implements Acceptor, Runnable, CommBufferPool {
         shutdownSCs();
         this.clientNotifier.shutdown(this.acceptorId);
         shutdownPools();
-        this.stats.close();
         notifyCacheMembersOfClose();
       } // synchronized
     } catch (RuntimeException e) {/* ignore and log */
