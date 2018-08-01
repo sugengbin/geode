@@ -48,7 +48,6 @@ import org.apache.geode.cache.persistence.PartitionOfflineException;
 import org.apache.geode.cache.query.types.CollectionType;
 import org.apache.geode.distributed.DistributedSystemDisconnectedException;
 import org.apache.geode.distributed.internal.DistributionConfig;
-import org.apache.geode.distributed.internal.DistributionStats;
 import org.apache.geode.distributed.internal.membership.InternalDistributedMember;
 import org.apache.geode.internal.Assert;
 import org.apache.geode.internal.Version;
@@ -81,6 +80,7 @@ import org.apache.geode.internal.offheap.OffHeapHelper;
 import org.apache.geode.internal.security.SecurityService;
 import org.apache.geode.internal.sequencelog.EntryLogger;
 import org.apache.geode.security.GemFireSecurityException;
+import org.apache.geode.statistics.cache.CacheServerStats;
 
 public abstract class BaseCommand implements Command {
   protected static final Logger logger = LogService.getLogger();
@@ -141,7 +141,7 @@ public abstract class BaseCommand implements Command {
   public void execute(Message clientMessage, ServerConnection serverConnection,
       SecurityService securityService) {
     // Read the request and update the statistics
-    long start = DistributionStats.getStatTime();
+    long start = System.nanoTime();
     if (EntryLogger.isEnabled() && serverConnection != null) {
       EntryLogger.setSource(serverConnection.getMembershipID(), "c2s");
     }

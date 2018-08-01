@@ -47,9 +47,6 @@ import org.apache.geode.internal.i18n.LocalizedStrings;
 import org.apache.geode.internal.logging.LogService;
 import org.apache.geode.internal.logging.LoggingThreadGroup;
 import org.apache.geode.internal.logging.log4j.LocalizedMessage;
-import org.apache.geode.internal.statistics.GemFireStatSampler;
-import org.apache.geode.internal.statistics.LocalStatListener;
-import org.apache.geode.internal.statistics.StatisticsImpl;
 import org.apache.geode.statistics.resourcemanger.ResourceManagerStats;
 
 /**

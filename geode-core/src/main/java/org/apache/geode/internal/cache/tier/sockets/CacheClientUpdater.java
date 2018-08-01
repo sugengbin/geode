@@ -37,11 +37,6 @@ import org.apache.logging.log4j.Logger;
 import org.apache.geode.CancelException;
 import org.apache.geode.DataSerializer;
 import org.apache.geode.InvalidDeltaException;
-import org.apache.geode.statistics.StatisticDescriptor;
-import org.apache.geode.statistics.Statistics;
-import org.apache.geode.statistics.StatisticsFactory;
-import org.apache.geode.statistics.StatisticsType;
-import org.apache.geode.statistics.StatisticsTypeFactory;
 import org.apache.geode.cache.EntryNotFoundException;
 import org.apache.geode.cache.InterestResultPolicy;
 import org.apache.geode.cache.Operation;
@@ -88,10 +83,10 @@ import org.apache.geode.internal.logging.log4j.LogMarker;
 import org.apache.geode.internal.net.SocketCreator;
 import org.apache.geode.internal.offheap.annotations.Released;
 import org.apache.geode.internal.sequencelog.EntryLogger;
-import org.apache.geode.internal.statistics.StatisticsTypeFactoryImpl;
 import org.apache.geode.security.AuthenticationFailedException;
 import org.apache.geode.security.AuthenticationRequiredException;
 import org.apache.geode.security.GemFireSecurityException;
+import org.apache.geode.statistics.cache.CCUStats;
 
 /**
  * {@code CacheClientUpdater} is a thread that processes update messages from a cache server and
@@ -288,7 +283,7 @@ public class CacheClientUpdater extends Thread implements ClientUpdater, Disconn
     // this holds the connection which this threads reads
     this.eManager = eManager;
     this.endpoint = endpoint;
-    this.stats = new CCUStats(this.system.getStatisticsFactory(), this.location);
+    this.stats = new CCUStats(this.location.toString());
 
     // Create the connection...
     final boolean isDebugEnabled = logger.isDebugEnabled();
@@ -553,8 +548,6 @@ public class CacheClientUpdater extends Thread implements ClientUpdater, Disconn
     } catch (IOException ignore) {
       // ignore
     }
-
-    this.stats.close();
 
     // close the helper
     if (this.cacheHelper != null) {

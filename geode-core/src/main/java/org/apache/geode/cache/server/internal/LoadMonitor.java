@@ -28,18 +28,17 @@ import org.apache.geode.distributed.internal.ServerLocation;
 import org.apache.geode.distributed.internal.membership.MembershipManager;
 import org.apache.geode.internal.cache.CacheServerAdvisor;
 import org.apache.geode.internal.cache.tier.CommunicationMode;
-import org.apache.geode.internal.cache.tier.sockets.CacheServerStats;
 import org.apache.geode.internal.cache.tier.sockets.ClientProxyMembershipID;
 import org.apache.geode.internal.cache.tier.sockets.ConnectionListener;
 import org.apache.geode.internal.i18n.LocalizedStrings;
 import org.apache.geode.internal.logging.LogService;
 import org.apache.geode.internal.logging.log4j.LocalizedMessage;
+import org.apache.geode.statistics.cache.CacheServerStats;
 
 /**
- * A class which monitors the load on a bridge server and periodically sends updates to the locator.
- *
+ * A class which monitors the load on a bridge server and periodically sends updates to the
+ * locator.
  * @since GemFire 5.7
- *
  */
 public class LoadMonitor implements ConnectionListener {
   private static final Logger logger = LogService.getLogger();
@@ -53,7 +52,7 @@ public class LoadMonitor implements ConnectionListener {
   protected CacheServerStats stats;
 
   public LoadMonitor(ServerLoadProbe probe, int maxConnections, long pollInterval,
-      int forceUpdateFrequency, CacheServerAdvisor advisor) {
+                     int forceUpdateFrequency, CacheServerAdvisor advisor) {
     this.probe = probe;
     this.metrics = new ServerMetricsImpl(maxConnections);
     this.pollingThread = new PollingThread(pollInterval, forceUpdateFrequency);
@@ -70,7 +69,8 @@ public class LoadMonitor implements ConnectionListener {
     this.location = location;
     this.pollingThread.start();
     this.stats = cacheServerStats;
-    this.stats.setLoad(lastLoad);
+    this.stats.setLoad(lastLoad.getConnectionLoad(), lastLoad.getLoadPerConnection(),
+        lastLoad.getSubscriptionConnectionLoad(), lastLoad.getLoadPerSubscriptionConnection());
   }
 
   /**
@@ -113,7 +113,6 @@ public class LoadMonitor implements ConnectionListener {
   /**
    * Keeps track of the clients that have added a queue since the last load was sent to the
    * server-locator.
-   *
    * @since GemFire 5.7
    */
   protected final ArrayList clientIds = new ArrayList();
@@ -199,7 +198,8 @@ public class LoadMonitor implements ConnectionListener {
                   locators);
             }
 
-            stats.setLoad(load);
+            stats.setLoad(load.getConnectionLoad(), load.getLoadPerConnection(),
+                load.getSubscriptionConnectionLoad(), load.getLoadPerSubscriptionConnection());
             if (locators != null) {
               CacheServerLoadMessage message =
                   new CacheServerLoadMessage(load, location, myClientIds);

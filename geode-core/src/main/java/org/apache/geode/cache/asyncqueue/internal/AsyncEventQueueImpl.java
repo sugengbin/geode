@@ -30,6 +30,7 @@ import org.apache.geode.internal.cache.RegionQueue;
 import org.apache.geode.internal.cache.wan.AbstractGatewaySender;
 import org.apache.geode.internal.cache.wan.AbstractGatewaySenderEventProcessor;
 import org.apache.geode.internal.cache.wan.serial.ConcurrentSerialGatewaySenderEventProcessor;
+import org.apache.geode.statistics.wan.AsyncEventQueueStats;
 
 public class AsyncEventQueueImpl implements AsyncEventQueue {
 

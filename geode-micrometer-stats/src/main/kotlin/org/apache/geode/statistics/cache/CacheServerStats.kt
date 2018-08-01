@@ -605,11 +605,11 @@ open class CacheServerStats @JvmOverloads constructor(private val ownerName: Str
         cacheServerClientReadyResponseWrittenMeter.increment()
     }
 
-    fun setLoad(connectionLoad: Int, loadPerConnection: Int, queueLoad: Int, loadPerQueue: Int) {
-        cacheServerConnectionLoadMeter.increment(connectionLoad)
-        cacheServerLoadPerConnectionMeter.increment(loadPerConnection)
-        cacheServerQueueLoadMeter.increment(queueLoad)
-        cacheServerLoadPerQueueMeter.increment(loadPerQueue)
+    fun setLoad(connectionLoad: Float, loadPerConnection: Float, queueLoad: Float, loadPerQueue: Float) {
+        cacheServerConnectionLoadMeter.increment(connectionLoad.toDouble())
+        cacheServerLoadPerConnectionMeter.increment(loadPerConnection.toDouble())
+        cacheServerQueueLoadMeter.increment(queueLoad.toDouble())
+        cacheServerLoadPerQueueMeter.increment(loadPerQueue.toDouble())
     }
 
     val cnxPoolHelper: PoolStatHelper

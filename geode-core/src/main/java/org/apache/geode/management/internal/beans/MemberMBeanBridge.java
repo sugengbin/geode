@@ -42,7 +42,6 @@ import javax.management.ObjectName;
 import org.apache.logging.log4j.Logger;
 
 import org.apache.geode.internal.statistics.InternalDistributedSystemStats;
-import org.apache.geode.statistics.Statistics;
 import org.apache.geode.statistics.StatisticsType;
 import org.apache.geode.cache.DiskStore;
 import org.apache.geode.cache.Region;

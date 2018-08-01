@@ -15,7 +15,6 @@
 package org.apache.geode.internal.admin;
 
 import org.apache.geode.DataSerializable;
-import org.apache.geode.statistics.StatisticsFactory;
 import org.apache.geode.internal.admin.statalerts.StatisticInfo;
 
 /**
@@ -73,8 +72,6 @@ public interface StatAlertDefinition extends DataSerializable {
    * @return Number[]
    */
   Number[] getValue(Number[] vals);
-
-  boolean verify(StatisticsFactory factory);
 
   boolean hasDecorator(String decoratorID);
 

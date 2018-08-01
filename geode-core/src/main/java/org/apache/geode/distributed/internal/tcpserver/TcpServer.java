@@ -46,7 +46,6 @@ import org.apache.geode.cache.IncompatibleVersionException;
 import org.apache.geode.cache.UnsupportedVersionException;
 import org.apache.geode.distributed.internal.DistributionConfig;
 import org.apache.geode.distributed.internal.DistributionConfigImpl;
-import org.apache.geode.distributed.internal.DistributionStats;
 import org.apache.geode.distributed.internal.InternalConfigurationPersistenceService;
 import org.apache.geode.distributed.internal.InternalDistributedSystem;
 import org.apache.geode.distributed.internal.InternalLocator;
@@ -356,7 +355,7 @@ public class TcpServer {
    */
   private void processRequest(final Socket socket) {
     executor.execute(() -> {
-      long startTime = DistributionStats.getStatTime();
+      long startTime = System.nanoTime();
       DataInputStream input = null;
       try {
         socket.setSoTimeout(READ_TIMEOUT);
@@ -486,7 +485,7 @@ public class TcpServer {
 
       handler.endRequest(request, startTime);
 
-      startTime = DistributionStats.getStatTime();
+      startTime = System.nanoTime();
       if (response != null) {
         DataOutputStream output = new DataOutputStream(socket.getOutputStream());
         if (versionOrdinal != Version.CURRENT_ORDINAL) {
@@ -523,8 +522,7 @@ public class TcpServer {
 
     try {
       ClientProtocolService clientProtocolService = clientProtocolServiceLoader.lookupService();
-      clientProtocolService.initializeStatistics("LocatorStats",
-          internalLocator.getDistributedSystem().getStatisticsFactory());
+      clientProtocolService.initializeStatistics("LocatorStats");
       try (ClientProtocolProcessor pipeline = clientProtocolService.createProcessorForLocator(
           internalLocator, internalLocator.getCache().getSecurityService())) {
         while (!pipeline.socketProcessingIsFinished()) {
