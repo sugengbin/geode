@@ -101,7 +101,6 @@ import org.apache.geode.internal.offheap.MemoryAllocator;
 import org.apache.geode.internal.offheap.OffHeapStorage;
 import org.apache.geode.internal.security.SecurityService;
 import org.apache.geode.internal.security.SecurityServiceFactory;
-import org.apache.geode.internal.statistics.platform.LinuxProcFsStatistics;
 import org.apache.geode.internal.tcp.ConnectionTable;
 import org.apache.geode.management.ManagementException;
 import org.apache.geode.security.GemFireSecurityException;
@@ -745,27 +744,28 @@ public class InternalDistributedSystem extends DistributedSystem {
               .createOffHeapStorage(offHeapMemorySize,this);
 
       // Note: this can only happen on a linux system
-      if (getConfig().getLockMemory()) {
-        // This calculation is not exact, but seems fairly close. So far we have
-        // not loaded much into the heap and the current RSS usage is already
-        // included the available memory calculation.
-        long avail = LinuxProcFsStatistics.getAvailableMemory(logger);
-        long size = offHeapMemorySize + Runtime.getRuntime().totalMemory();
-        if (avail < size) {
-          if (ALLOW_MEMORY_LOCK_WHEN_OVERCOMMITTED) {
-            logger.warn(LocalizedMessage.create(
-                LocalizedStrings.InternalDistributedSystem_MEMORY_OVERCOMMIT_WARN, size - avail));
-          } else {
-            throw new IllegalStateException(
-                LocalizedStrings.InternalDistributedSystem_MEMORY_OVERCOMMIT
-                    .toLocalizedString(avail, size));
-          }
-        }
-
-        logger.info("Locking memory. This may take a while...");
-        GemFireCacheImpl.lockMemory();
-        logger.info("Finished locking memory.");
-      }
+      //TODO: Udo re-enable the linux lockMemory func
+//      if (getConfig().getLockMemory()) {
+//        // This calculation is not exact, but seems fairly close. So far we have
+//        // not loaded much into the heap and the current RSS usage is already
+//        // included the available memory calculation.
+//        long avail = LinuxProcFsStatistics.getAvailableMemory(logger);
+//        long size = offHeapMemorySize + Runtime.getRuntime().totalMemory();
+//        if (avail < size) {
+//          if (ALLOW_MEMORY_LOCK_WHEN_OVERCOMMITTED) {
+//            logger.warn(LocalizedMessage.create(
+//                LocalizedStrings.InternalDistributedSystem_MEMORY_OVERCOMMIT_WARN, size - avail));
+//          } else {
+//            throw new IllegalStateException(
+//                LocalizedStrings.InternalDistributedSystem_MEMORY_OVERCOMMIT
+//                    .toLocalizedString(avail, size));
+//          }
+//        }
+//
+//        logger.info("Locking memory. This may take a while...");
+//        GemFireCacheImpl.lockMemory();
+//        logger.info("Finished locking memory.");
+//      }
 
       synchronized (this.isConnectedMutex) {
         this.isConnected = true;

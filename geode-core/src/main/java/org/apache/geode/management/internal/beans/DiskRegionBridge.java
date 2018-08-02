@@ -14,31 +14,24 @@
  */
 package org.apache.geode.management.internal.beans;
 
-import org.apache.geode.internal.cache.DiskDirectoryStats;
-import org.apache.geode.internal.cache.DiskRegionStats;
 import org.apache.geode.management.internal.ManagementConstants;
-import org.apache.geode.management.internal.beans.stats.AggregateRegionStatsMonitor;
-import org.apache.geode.management.internal.beans.stats.MBeanStatsMonitor;
-import org.apache.geode.management.internal.beans.stats.StatType;
-import org.apache.geode.management.internal.beans.stats.StatsAverageLatency;
-import org.apache.geode.management.internal.beans.stats.StatsKey;
-import org.apache.geode.management.internal.beans.stats.StatsRate;
+import org.apache.geode.statistics.disk.DiskRegionStats;
 
 public class DiskRegionBridge {
 
-  private DiskRegionStats diskRegionStats;
-
-  private AggregateRegionStatsMonitor aggregateRegionMonitor;
-
-  private MBeanStatsMonitor diskRegionMonitor;
-
-  private StatsAverageLatency diskRegionReadsAverageLatency;
-
-  private StatsAverageLatency diskRegionWritesAverageLatency;
-
-  private StatsRate diskRegionReadsRate;
-
-  private StatsRate diskRegionWritesRate;
+//  private DiskRegionStats diskRegionStats;
+//
+//  private AggregateRegionStatsMonitor aggregateRegionMonitor;
+//
+//  private MBeanStatsMonitor diskRegionMonitor;
+//
+//  private StatsAverageLatency diskRegionReadsAverageLatency;
+//
+//  private StatsAverageLatency diskRegionWritesAverageLatency;
+//
+//  private StatsRate diskRegionReadsRate;
+//
+//  private StatsRate diskRegionWritesRate;
 
   public static final String DISK_REGION_MONITOR = "DiskRegionMonitor";
 
@@ -47,83 +40,83 @@ public class DiskRegionBridge {
   private static final String REGION_MONITOR = "MemberLevelRegionMonitor";
 
   public DiskRegionBridge(DiskRegionStats stats) {
-    this.diskRegionStats = stats;
-    this.aggregateRegionMonitor = new AggregateRegionStatsMonitor(REGION_MONITOR);
-
-    this.diskRegionMonitor = new MBeanStatsMonitor(DISK_REGION_MONITOR);
-
-    addDiskRegionStats(diskRegionStats);
+//    this.diskRegionStats = stats;
+//    this.aggregateRegionMonitor = new AggregateRegionStatsMonitor(REGION_MONITOR);
+//
+//    this.diskRegionMonitor = new MBeanStatsMonitor(DISK_REGION_MONITOR);
+//
+//    addDiskRegionStats(diskRegionStats);
 
     this.configureDiskRegionMetrics();
   }
 
   private Number getDiskRegionStatistic(String statName) {
-    if (diskRegionStats != null) {
-      return diskRegionStats.getStats().get(statName);
-    } else {
+//    if (diskRegionStats != null) {
+//      return diskRegionStats.getStats().get(statName);
+//    } else {
       return ManagementConstants.ZERO;
-    }
+//    }
   }
 
   public void stopMonitor() {
-    diskRegionMonitor.stopListener();
-    aggregateRegionMonitor.stopListener();
+//    diskRegionMonitor.stopListener();
+//    aggregateRegionMonitor.stopListener();
   }
 
-  public void addDirectoryStats(DiskDirectoryStats diskDirStats) {
-    aggregateRegionMonitor.addStatisticsToMonitor(diskDirStats.getStats());
-  }
+//  public void addDirectoryStats(DiskDirectoryStats diskDirStats) {
+//    aggregateRegionMonitor.addStatisticsToMonitor(diskDirStats.getStats());
+//  }
 
   public void addDiskRegionStats(DiskRegionStats diskRegionStats) {
-    diskRegionMonitor.addStatisticsToMonitor(diskRegionStats.getStats());
+//    diskRegionMonitor.addStatisticsToMonitor(diskRegionStats.getStats());
   }
 
   private void configureDiskRegionMetrics() {
-
-    diskRegionReadsRate = new StatsRate(StatsKey.DISK_READS, StatType.LONG_TYPE, diskRegionMonitor);
-
-    diskRegionWritesRate =
-        new StatsRate(StatsKey.DISK_WRITES, StatType.LONG_TYPE, diskRegionMonitor);
-
-    diskRegionReadsAverageLatency = new StatsAverageLatency(StatsKey.DISK_READS, StatType.LONG_TYPE,
-        StatsKey.DISK_REGION_READ_TIME, diskRegionMonitor);
-
-    diskRegionWritesAverageLatency = new StatsAverageLatency(StatsKey.DISK_WRITES,
-        StatType.LONG_TYPE, StatsKey.DISK_REGION_WRITE_TIMES, diskRegionMonitor);
+//
+//    diskRegionReadsRate = new StatsRate(StatsKey.DISK_READS, StatType.LONG_TYPE, diskRegionMonitor);
+//
+//    diskRegionWritesRate =
+//        new StatsRate(StatsKey.DISK_WRITES, StatType.LONG_TYPE, diskRegionMonitor);
+//
+//    diskRegionReadsAverageLatency = new StatsAverageLatency(StatsKey.DISK_READS, StatType.LONG_TYPE,
+//        StatsKey.DISK_REGION_READ_TIME, diskRegionMonitor);
+//
+//    diskRegionWritesAverageLatency = new StatsAverageLatency(StatsKey.DISK_WRITES,
+//        StatType.LONG_TYPE, StatsKey.DISK_REGION_WRITE_TIMES, diskRegionMonitor);
   }
 
-  public float getDiskReadsRate() {
-    return diskRegionReadsRate.getRate();
-  }
+//  public float getDiskReadsRate() {
+//    return diskRegionReadsRate.getRate();
+//  }
+//
+//  public float getDiskWritesRate() {
+//    return diskRegionWritesRate.getRate();
+//  }
+//
+//  public long getDiskReadsAverageLatency() {
+//    return diskRegionReadsAverageLatency.getAverageLatency();
+//  }
 
-  public float getDiskWritesRate() {
-    return diskRegionWritesRate.getRate();
-  }
+//  public long getDiskWritesAverageLatency() {
+//    return diskRegionWritesAverageLatency.getAverageLatency();
+//  }
 
-  public long getDiskReadsAverageLatency() {
-    return diskRegionReadsAverageLatency.getAverageLatency();
-  }
+//  public long getTotalDiskWritesProgress() {
+//    return getDiskRegionStatistic(StatsKey.DISK_REGION_WRITE_IN_PROGRESS).longValue();
+//  }
 
-  public long getDiskWritesAverageLatency() {
-    return diskRegionWritesAverageLatency.getAverageLatency();
-  }
+//  public long getTotalDiskEntriesInVM() {
+//    return getDiskRegionStatistic(StatsKey.DISK_REGION_ENTRIES_IN_VM).longValue();
+//  }
 
-  public long getTotalDiskWritesProgress() {
-    return getDiskRegionStatistic(StatsKey.DISK_REGION_WRITE_IN_PROGRESS).longValue();
-  }
-
-  public long getTotalDiskEntriesInVM() {
-    return getDiskRegionStatistic(StatsKey.DISK_REGION_ENTRIES_IN_VM).longValue();
-  }
-
-  public long getTotalEntriesOnlyOnDisk() {
-    return getDiskRegionStatistic(StatsKey.DISK_REGION_ENTRIES_IN_DISK).longValue();
-  }
-
-  public long getDiskUsage() {
-    long diskSpaceUsage = aggregateRegionMonitor.getDiskSpace();
-    return diskSpaceUsage;
-  }
+//  public long getTotalEntriesOnlyOnDisk() {
+//    return getDiskRegionStatistic(StatsKey.DISK_REGION_ENTRIES_IN_DISK).longValue();
+//  }
+//
+//  public long getDiskUsage() {
+//    long diskSpaceUsage = aggregateRegionMonitor.getDiskSpace();
+//    return diskSpaceUsage;
+//  }
 
   public long getDiskTaskWaiting() {
     return ManagementConstants.NOT_AVAILABLE_LONG;

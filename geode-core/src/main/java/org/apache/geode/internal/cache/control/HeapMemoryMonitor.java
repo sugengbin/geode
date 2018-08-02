@@ -47,6 +47,7 @@ import org.apache.geode.internal.i18n.LocalizedStrings;
 import org.apache.geode.internal.logging.LogService;
 import org.apache.geode.internal.logging.LoggingThreadGroup;
 import org.apache.geode.internal.logging.log4j.LocalizedMessage;
+import org.apache.geode.internal.statistics.LocalStatListener;
 import org.apache.geode.statistics.resourcemanger.ResourceManagerStats;
 
 /**
@@ -328,13 +329,10 @@ public class HeapMemoryMonitor implements NotificationListener, MemoryMonitor {
     }
 
     final ThreadGroup threadGroup = LoggingThreadGroup.createThreadGroup("HeapPoller", logger);
-    final ThreadFactory threadFactory = new ThreadFactory() {
-      @Override
-      public Thread newThread(Runnable r) {
-        Thread thread = new Thread(threadGroup, r, "GemfireHeapPoller");
-        thread.setDaemon(true);
-        return thread;
-      }
+    final ThreadFactory threadFactory = r -> {
+      Thread thread = new Thread(threadGroup, r, "GemfireHeapPoller");
+      thread.setDaemon(true);
+      return thread;
     };
 
     this.pollerExecutor = Executors.newScheduledThreadPool(1, threadFactory);

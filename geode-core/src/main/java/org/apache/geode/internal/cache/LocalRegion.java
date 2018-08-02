@@ -224,6 +224,8 @@ import org.apache.geode.internal.util.concurrent.StoppableReadWriteLock;
 import org.apache.geode.pdx.JSONFormatter;
 import org.apache.geode.pdx.PdxInstance;
 import org.apache.geode.statistics.cache.CachePerfStats;
+import org.apache.geode.statistics.disk.DiskRegionStats;
+import org.apache.geode.statistics.eviction.EvictionStats;
 import org.apache.geode.statistics.region.RegionPerfStats;
 
 /**
@@ -7651,7 +7653,7 @@ public class LocalRegion extends AbstractRegion implements LoaderHelperFactory,
     if (this instanceof BucketRegion) {
       stats = internalRegionArgs.getPartitionedRegion().getDiskRegionStats();
     } else {
-      stats = new DiskRegionStats(getCache().getDistributedSystem().getStatisticsFactory(), getFullPath());
+      stats = new DiskRegionStats(getFullPath());
     }
 
     EnumSet<DiskRegionFlag> diskFlags = EnumSet.noneOf(DiskRegionFlag.class);
@@ -11673,13 +11675,13 @@ public class LocalRegion extends AbstractRegion implements LoaderHelperFactory,
   }
 
   @Override
-  public Statistics getEvictionStatistics() {
-    Statistics result = null;
+  public EvictionStats getEvictionStatistics() {
+    EvictionStats result = null;
     EvictionController evictionController = getEvictionController();
     if (evictionController != null) {
-      EvictionCounters es = evictionController.getCounters();
-      if (es != null) {
-        result = es.getStatistics();
+      EvictionCounters evictionCounters = evictionController.getCounters();
+      if (evictionCounters != null) {
+        result = evictionCounters.getStatistics();
       }
     }
     return result;

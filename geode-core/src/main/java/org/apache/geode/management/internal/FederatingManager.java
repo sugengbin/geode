@@ -46,12 +46,12 @@ import org.apache.geode.cache.TimeoutException;
 import org.apache.geode.distributed.DistributedMember;
 import org.apache.geode.distributed.internal.InternalDistributedSystem;
 import org.apache.geode.distributed.internal.membership.InternalDistributedMember;
-import org.apache.geode.internal.cache.CachePerfStats;
 import org.apache.geode.internal.cache.HasCachePerfStats;
 import org.apache.geode.internal.cache.InternalCache;
 import org.apache.geode.internal.cache.InternalRegionArguments;
 import org.apache.geode.internal.logging.LogService;
 import org.apache.geode.management.ManagementException;
+import org.apache.geode.statistics.cache.CachePerfStats;
 
 /**
  * Manager implementation which manages federated MBeans for the entire DistributedSystem and
@@ -381,9 +381,7 @@ public class FederatingManager extends Manager {
             internalArgs.setIsUsedForMetaRegion(true);
 
             // Create anonymous stats holder for Management Regions
-            final HasCachePerfStats monitoringRegionStats =
-                () -> new CachePerfStats(cache.getDistributedSystem().getStatisticsFactory(),
-                    "managementRegionStats");
+            final HasCachePerfStats monitoringRegionStats = () -> new CachePerfStats("managementRegionStats");
 
             internalArgs.setCachePerfStatsHolder(monitoringRegionStats);
 

@@ -26,11 +26,11 @@ import org.apache.geode.distributed.internal.DistributionManager;
 import org.apache.geode.distributed.internal.InternalDistributedSystem;
 import org.apache.geode.internal.OSProcess;
 import org.apache.geode.internal.cache.CacheLifecycleListener;
-import org.apache.geode.internal.cache.CachePerfStats;
 import org.apache.geode.internal.cache.GemFireCacheImpl;
 import org.apache.geode.internal.cache.InternalCache;
 import org.apache.geode.internal.i18n.LocalizedStrings;
 import org.apache.geode.internal.logging.LogService;
+import org.apache.geode.statistics.cache.CachePerfStats;
 
 /**
  * Contains the logic for evaluating the health of a GemFire {@code Cache} instance according to the
@@ -132,30 +132,30 @@ class CacheHealthEvaluator extends AbstractHealthEvaluator implements CacheLifec
    * interval is less than the {@linkplain CacheHealthConfig#getMaxNetSearchTime threshold}. If not,
    * the status is "okay" health.
    *
-   * @see CachePerfStats#getNetsearchTime
+//   * @see CachePerfStats#getNetsearchTime
    * @see CachePerfStats#getNetsearchesCompleted
    */
   private void checkNetSearchTime(List status) {
-    if (this.cacheStats == null || isFirstEvaluation() || this.cacheStats.isClosed()) {
+    if (this.cacheStats == null || isFirstEvaluation()) {
       return;
     }
 
-    long deltaNetsearchTime = this.cacheStats.getNetsearchTime() - this.prevNetsearchTime;
-    long deltaNetsearchesCompleted =
-        this.cacheStats.getNetsearchesCompleted() - this.prevNetsearchesCompleted;
-
-    if (deltaNetsearchesCompleted != 0) {
-      long ratio = deltaNetsearchTime / deltaNetsearchesCompleted;
-      ratio /= 1000000;
-      long threshold = this.config.getMaxNetSearchTime();
-
-      if (ratio > threshold) {
-        String s =
-            LocalizedStrings.CacheHealthEvaluator_THE_AVERAGE_DURATION_OF_A_CACHE_NETSEARCH_0_MS_EXCEEDS_THE_THRESHOLD_1_MS
-                .toLocalizedString(ratio, threshold);
-        status.add(okayHealth(s));
-      }
-    }
+//    long deltaNetsearchTime = this.cacheStats.getNetsearchTime() - this.prevNetsearchTime;
+//    long deltaNetsearchesCompleted =
+//        this.cacheStats.getNetsearchesCompleted() - this.prevNetsearchesCompleted;
+//
+//    if (deltaNetsearchesCompleted != 0) {
+//      long ratio = deltaNetsearchTime / deltaNetsearchesCompleted;
+//      ratio /= 1000000;
+//      long threshold = this.config.getMaxNetSearchTime();
+//
+//      if (ratio > threshold) {
+//        String s =
+//            LocalizedStrings.CacheHealthEvaluator_THE_AVERAGE_DURATION_OF_A_CACHE_NETSEARCH_0_MS_EXCEEDS_THE_THRESHOLD_1_MS
+//                .toLocalizedString(ratio, threshold);
+        status.add(okayHealth("TODO fix health check"));
+//      }
+//    }
   }
 
   /**
@@ -163,39 +163,38 @@ class CacheHealthEvaluator extends AbstractHealthEvaluator implements CacheLifec
    * interval is less than the {@linkplain CacheHealthConfig#getMaxLoadTime threshold}. If not, the
    * status is "okay" health.
    *
-   * @see CachePerfStats#getLoadTime
-   * @see CachePerfStats#getLoadsCompleted
+//   * @see CachePerfStats#getLoadTime
+//   * @see CachePerfStats#getLoadsCompleted
    */
   private void checkLoadTime(List<HealthStatus> status) {
-    if (this.cacheStats == null || isFirstEvaluation() || this.cacheStats.isClosed()) {
+    if (this.cacheStats == null || isFirstEvaluation()) {
       return;
     }
 
-    if (!isFirstEvaluation()) {
-      long deltaLoadTime = this.cacheStats.getLoadTime() - this.prevLoadTime;
-      long deltaLoadsCompleted = this.cacheStats.getLoadsCompleted() - this.prevLoadsCompleted;
-
-      if (logger.isDebugEnabled()) {
-        logger.debug("Completed {} loads in {} ms", deltaLoadsCompleted, deltaLoadTime / 1000000);
-      }
-
-      if (deltaLoadsCompleted != 0) {
-        long ratio = deltaLoadTime / deltaLoadsCompleted;
-        ratio /= 1000000;
-        long threshold = this.config.getMaxLoadTime();
-
-        if (ratio > threshold) {
-          String s =
-              LocalizedStrings.CacheHealthEvaluator_THE_AVERAGE_DURATION_OF_A_CACHE_LOAD_0_MS_EXCEEDS_THE_THRESHOLD_1_MS
-                  .toLocalizedString(ratio, threshold);
-          if (logger.isDebugEnabled()) {
-            logger.debug(s);
-          }
-          status.add(okayHealth(s));
-        }
-      }
+//    if (!isFirstEvaluation()) {
+//      long deltaLoadTime = this.cacheStats.getLoadTime() - this.prevLoadTime;
+//      long deltaLoadsCompleted = this.cacheStats.getLoadsCompleted() - this.prevLoadsCompleted;
+//
+//      if (logger.isDebugEnabled()) {
+//        logger.debug("Completed {} loads in {} ms", deltaLoadsCompleted, deltaLoadTime / 1000000);
+//      }
+//
+//      if (deltaLoadsCompleted != 0) {
+//        long ratio = deltaLoadTime / deltaLoadsCompleted;
+//        ratio /= 1000000;
+//        long threshold = this.config.getMaxLoadTime();
+//
+//        if (ratio > threshold) {
+//          String s =
+//              LocalizedStrings.CacheHealthEvaluator_THE_AVERAGE_DURATION_OF_A_CACHE_LOAD_0_MS_EXCEEDS_THE_THRESHOLD_1_MS
+//                  .toLocalizedString(ratio, threshold);
+//          if (logger.isDebugEnabled()) {
+//            logger.debug(s);
+//          }
+          status.add(okayHealth("TODO fix health check"));
+//        }
+//      }
     }
-  }
 
   /**
    * Checks to make sure that the cache hit ratio during the previous health check interval is less
@@ -211,30 +210,31 @@ class CacheHealthEvaluator extends AbstractHealthEvaluator implements CacheLifec
    * </PRE>
    *
    *
-   * @see CachePerfStats#getGets
-   * @see CachePerfStats#getLoadsCompleted
+//   * @see CachePerfStats#getGets
+//   * @see CachePerfStats#getLoadsCompleted
    * @see CachePerfStats#getNetsearchesCompleted
    */
   private void checkHitRatio(List<HealthStatus> status) {
-    if (this.cacheStats == null || isFirstEvaluation() || this.cacheStats.isClosed()) {
+    if (this.cacheStats == null || isFirstEvaluation()) {
       return;
     }
 
-    long deltaGets = this.cacheStats.getGets() - this.prevGets;
-    if (deltaGets != 0) {
-      long deltaLoadsCompleted = this.cacheStats.getLoadsCompleted() - this.prevLoadsCompleted;
-      long deltaNetsearchesCompleted =
-          this.cacheStats.getNetsearchesCompleted() - this.prevNetsearchesCompleted;
-
-      double hits = deltaGets - (deltaLoadsCompleted + deltaNetsearchesCompleted);
-      double hitRatio = hits / deltaGets;
-      double threshold = this.config.getMinHitRatio();
-      if (hitRatio < threshold) {
-        String s = "The hit ratio of this Cache (" + hitRatio + ") is below the threshold ("
-            + threshold + ')';
-        status.add(okayHealth(s));
-      }
-    }
+//    long deltaGets = this.cacheStats.getGets() - this.prevGets;
+//    if (deltaGets != 0) {
+//      long deltaLoadsCompleted = this.cacheStats.getLoadsCompleted() - this.prevLoadsCompleted;
+//      long deltaNetsearchesCompleted =
+//          this.cacheStats.getNetsearchesCompleted() - this.prevNetsearchesCompleted;
+//
+//      double hits = deltaGets - (deltaLoadsCompleted + deltaNetsearchesCompleted);
+//      double hitRatio = hits / deltaGets;
+//      double threshold = this.config.getMinHitRatio();
+//      if (hitRatio < threshold) {
+//        String s = "The hit ratio of this Cache (" + hitRatio + ") is below the threshold ("
+//            + threshold + ')';
+//        status.add(okayHealth(s));
+        status.add(okayHealth("TODO fix health check"));
+//      }
+//    }
   }
 
   /**
@@ -243,7 +243,7 @@ class CacheHealthEvaluator extends AbstractHealthEvaluator implements CacheLifec
    * does, the status is "okay" health.
    */
   private void checkEventQueueSize(List<HealthStatus> status) {
-    if (this.cacheStats == null || isFirstEvaluation() || this.cacheStats.isClosed()) {
+    if (this.cacheStats == null || isFirstEvaluation() ) {
       return;
     }
 
@@ -261,10 +261,10 @@ class CacheHealthEvaluator extends AbstractHealthEvaluator implements CacheLifec
    * Updates the previous values of statistics
    */
   private void updatePrevious() {
-    if (this.cacheStats != null && !this.cacheStats.isClosed()) {
-      this.prevLoadTime = this.cacheStats.getLoadTime();
+    if (this.cacheStats != null) {
+//      this.prevLoadTime = this.cacheStats.getLoadTime();
       this.prevLoadsCompleted = this.cacheStats.getLoadsCompleted();
-      this.prevNetsearchTime = this.cacheStats.getNetsearchTime();
+//      this.prevNetsearchTime = this.cacheStats.getNetsearchTime();
       this.prevNetsearchesCompleted = this.cacheStats.getNetsearchesCompleted();
       this.prevGets = this.cacheStats.getGets();
 

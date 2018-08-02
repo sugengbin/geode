@@ -8,12 +8,18 @@ import org.apache.geode.statistics.internal.micrometer.MicrometerMeterGroup
 import org.apache.geode.statistics.internal.micrometer.TimerStatisticMeter
 import org.apache.geode.statistics.util.NOW_NANOS
 
-open class CachePerfStats(regionName:String?) : MicrometerMeterGroup("CachePerfStats${regionName?.let{"-$it"}?:""}") {
+open class CachePerfStats(regionName: String?) : MicrometerMeterGroup("CachePerfStats${regionName?.let { "-$it" }
+        ?: ""}") {
 
-    constructor(): this(null)
+    constructor() : this(null)
 
-    private val cachePerfStatsPrefix :String by lazy { regionName?.let{"region."}?:"cachePerf." }
-    private val meterTagDefaultArray: Array<String> by lazy { regionName?.let{ arrayOf("regionName", regionName)}?: emptyArray() }
+    private val cachePerfStatsPrefix: String by lazy {
+        regionName?.let { "region." } ?: "cachePerf."
+    }
+    private val meterTagDefaultArray: Array<String> by lazy {
+        regionName?.let { arrayOf("regionName", regionName) } ?: emptyArray()
+    }
+
 
     val regionLoadsInProgressMeter = GaugeStatisticMeter("$cachePerfStatsPrefix.loads.inprogress", "Current number of threads in this cache doing a cache load.", meterTagDefaultArray)
     val regionLoadsCompletedMeter = CounterStatisticMeter("$cachePerfStatsPrefix.loads.completed", "Total number of times a load on this cache has completed (as a result of either a local get() or a remote netload).", meterTagDefaultArray)
@@ -666,4 +672,18 @@ open class CachePerfStats(regionName:String?) : MicrometerMeterGroup("CachePerfS
 
     @Deprecated(message = "This was just done as an interim solution until GEODE does not depend on stats for internal state")
     fun getReliableRegionsMissing(): Int = regionReliableRegionMissingMeter.getValue().toInt()
+
+    @Deprecated("The method is deprecated to be removed, but here until a better stats mechanism is found")
+    fun getNetsearchesCompleted(): Long = regionNetLoadCompletedMeter.getValue()
+
+    @Deprecated("The method is deprecated to be removed, but here until a better stats mechanism is found")
+    fun getEventQueueSize(): Long = regionEventQueueSizeMeter.getValue()
+
+    @Deprecated("The method is deprecated to be removed, but here until a better stats mechanism is found")
+    fun getLoadsCompleted(): Long = regionLoadsCompletedMeter.getValue()
+
+    @Deprecated("The method is deprecated to be removed, but here until a better stats mechanism is found")
+    fun getGets(): Long = regionGetOperationMeter.getValue()
+
+
 }

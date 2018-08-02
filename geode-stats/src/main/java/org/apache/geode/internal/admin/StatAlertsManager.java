@@ -340,7 +340,7 @@ public class StatAlertsManager {
      */
     @Override
     public void run2() {
-      final boolean isDebugEnabled = logger.isDebugEnabled();
+      final boolean isDebugEnabled = SystemTimerTask.logger.isDebugEnabled();
 
       synchronized (StatAlertsManager.this) {
         if (dm.getCancelCriterion().isCancelInProgress()) {
@@ -356,13 +356,13 @@ public class StatAlertsManager {
           return;
 
         if (isDebugEnabled) {
-          logger.debug("EvaluateAlertDefnsTask: starting");
+          SystemTimerTask.logger.debug("EvaluateAlertDefnsTask: starting");
         }
         try {
           StatAlert[] alerts = getAlerts();
           if (alerts.length == 0) {
             if (isDebugEnabled) {
-              logger.debug("EvaluateAlertsDefnsTask: no alerts");
+              SystemTimerTask.logger.debug("EvaluateAlertsDefnsTask: no alerts");
             }
             return;
           }
@@ -372,24 +372,24 @@ public class StatAlertsManager {
           if (isDebugEnabled) {
             Iterator iterator = adminMemberSet.iterator();
             while (iterator.hasNext()) {
-              logger.debug("EvaluateAlertDefnsTask: sending {} alerts to {}", alerts.length,
+              SystemTimerTask.logger.debug("EvaluateAlertDefnsTask: sending {} alerts to {}", alerts.length,
                   iterator.next());
             }
           }
           request.setRecipients(adminMemberSet);
           dm.putOutgoing(request);
         } catch (CancelException e) {
-          logger.debug("EvaluateAlertDefnsTask: system closed: {}", e.getMessage(), e);
+          SystemTimerTask.logger.debug("EvaluateAlertDefnsTask: system closed: {}", e.getMessage(), e);
           close();
         } catch (Exception e) {
-          logger.error(
+          SystemTimerTask.logger.error(
               LocalizedMessage.create(
                   LocalizedStrings.StatAlertsManager_EVALUATEALERTDEFNSTASK_FAILED_WITH_AN_EXCEPTION),
               e);
           close();
         }
         if (isDebugEnabled) {
-          logger.debug("EvaluateAlertDefnsTask: done ");
+          SystemTimerTask.logger.debug("EvaluateAlertDefnsTask: done ");
         }
       }
     } // run

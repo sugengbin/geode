@@ -85,9 +85,6 @@ import org.apache.geode.internal.admin.ApplicationVM;
 import org.apache.geode.internal.admin.ClientMembershipMessage;
 import org.apache.geode.internal.admin.GemFireVM;
 import org.apache.geode.internal.admin.GfManagerAgent;
-import org.apache.geode.internal.admin.StatAlert;
-import org.apache.geode.internal.admin.StatAlertDefinition;
-import org.apache.geode.internal.admin.remote.UpdateAlertDefinitionMessage;
 import org.apache.geode.internal.i18n.LocalizedStrings;
 import org.apache.geode.internal.logging.InternalLogWriter;
 import org.apache.geode.internal.logging.LogService;
@@ -103,7 +100,8 @@ import org.apache.geode.internal.logging.log4j.LocalizedMessage;
  * @since GemFire 3.5
  */
 public class AdminDistributedSystemJmxImpl extends AdminDistributedSystemImpl
-    implements ManagedResource, DistributedSystemConfig, StatAlertsAggregator {
+//    implements ManagedResource, DistributedSystemConfig, StatAlertsAggregator {
+    implements ManagedResource, DistributedSystemConfig{
 
   private static final Logger logger = LogService.getLogger();
 
@@ -990,7 +988,7 @@ public class AdminDistributedSystemJmxImpl extends AdminDistributedSystemImpl
       super.connect(logWriter);
 
       // Load existing StatAlert Definitions
-      readAlertDefinitionsAsSerializedObjects();
+//      readAlertDefinitionsAsSerializedObjects();
 
       /* Add Cache Listener to listen to Cache & Region create/destroy events */
       if (logger.isDebugEnabled()) {
@@ -1023,7 +1021,7 @@ public class AdminDistributedSystemJmxImpl extends AdminDistributedSystemImpl
       super.disconnect();
 
       // Save existing StatAlert Definitions
-      saveAlertDefinitionsAsSerializedObjects();
+//      saveAlertDefinitionsAsSerializedObjects();
 
       /* Remove Cache Listener to listen to Cache & Region create/destroy events */
       if (logger.isDebugEnabled()) {
@@ -1424,11 +1422,11 @@ public class AdminDistributedSystemJmxImpl extends AdminDistributedSystemImpl
    * @return StatAlertDefinition reference to an instance of StatAlertDefinition
    * @since GemFire 5.7
    */
-  private StatAlertDefinition getAlertDefinition(int alertDefinitionId) {
-    synchronized (ALERT_DEFINITIONS) {
-      return (StatAlertDefinition) ALERT_DEFINITIONS.get(Integer.valueOf(alertDefinitionId));
-    }
-  }
+//  private StatAlertDefinition getAlertDefinition(int alertDefinitionId) {
+//    synchronized (ALERT_DEFINITIONS) {
+//      return (StatAlertDefinition) ALERT_DEFINITIONS.get(Integer.valueOf(alertDefinitionId));
+//    }
+//  }
 
   /*
    * private void setAlertDefinition(StatAlertDefinition alertDefinition) {
@@ -1441,131 +1439,131 @@ public class AdminDistributedSystemJmxImpl extends AdminDistributedSystemImpl
    * @param alertDefinition StatAlertDefinition to retrieve
    * @since GemFire 5.7
    */
-  public StatAlertDefinition getAlertDefinition(StatAlertDefinition alertDefinition) {
-    return getAlertDefinition(alertDefinition.getId());
-  }
+//  public StatAlertDefinition getAlertDefinition(StatAlertDefinition alertDefinition) {
+//    return getAlertDefinition(alertDefinition.getId());
+//  }
 
   /**
    * This method is used to write existing StatAlertDefinitions to a file
    */
-  protected void readAlertDefinitionsAsSerializedObjects() {
-    StatAlertDefinition[] defns = new StatAlertDefinition[0];
-
-    File serFile = null;
-    FileInputStream foStr = null;
-    DataInputStream ooStr = null;
-
-    try {
-      serFile = new File(statAlertDefnSerFile);
-
-      if (!canWriteToFile(serFile)) {/* can not write a file */
-        canPersistStatAlertDefs = false;
-      }
-      if (!serFile.exists()) {/* file does not exist */
-        return;
-      }
-
-      if (logger.isDebugEnabled()) {
-        logger.debug(
-            "AdminDistributedSystemJmxImpl.readAlertDefinitionsAsSerializedObjects: File: {}",
-            serFile.getPath());
-      }
-
-      foStr = new FileInputStream(serFile);
-      ooStr = new DataInputStream(foStr);
-      defns = (StatAlertDefinition[]) DataSerializer.readObjectArray(ooStr);
-    } catch (ClassNotFoundException cnfEx) {
-      logger.error(LocalizedMessage.create(
-          LocalizedStrings.AdminDistributedSystem_ENCOUNTERED_A_0_WHILE_LOADING_STATALERTDEFINITIONS_1,
-          new Object[] {cnfEx.getClass().getName(), statAlertDefnSerFile}), cnfEx);
-      canPersistStatAlertDefs = false;
-    } catch (IOException ex) {
-      logger.error(LocalizedMessage.create(
-          LocalizedStrings.AdminDistributedSystem_ENCOUNTERED_A_0_WHILE_LOADING_STATALERTDEFINITIONS_1_LOADING_ABORTED,
-          new Object[] {ex.getClass().getName(), statAlertDefnSerFile}), ex);
-      canPersistStatAlertDefs = false;
-    } finally {
-      if (foStr != null) {
-        try {
-          foStr.close();
-        } catch (IOException ex) {
-          ;
-        }
-      }
-      if (ooStr != null) {
-        try {
-          ooStr.close();
-        } catch (IOException ex) {
-          ;
-        }
-      }
-    }
-
-    for (int i = 0; i < defns.length; i++) {
-      updateAlertDefinition(defns[i]);
-    }
-  }
+//  protected void readAlertDefinitionsAsSerializedObjects() {
+//    StatAlertDefinition[] defns = new StatAlertDefinition[0];
+//
+//    File serFile = null;
+//    FileInputStream foStr = null;
+//    DataInputStream ooStr = null;
+//
+//    try {
+//      serFile = new File(statAlertDefnSerFile);
+//
+//      if (!canWriteToFile(serFile)) {/* can not write a file */
+//        canPersistStatAlertDefs = false;
+//      }
+//      if (!serFile.exists()) {/* file does not exist */
+//        return;
+//      }
+//
+//      if (logger.isDebugEnabled()) {
+//        logger.debug(
+//            "AdminDistributedSystemJmxImpl.readAlertDefinitionsAsSerializedObjects: File: {}",
+//            serFile.getPath());
+//      }
+//
+//      foStr = new FileInputStream(serFile);
+//      ooStr = new DataInputStream(foStr);
+//      defns = (StatAlertDefinition[]) DataSerializer.readObjectArray(ooStr);
+//    } catch (ClassNotFoundException cnfEx) {
+//      logger.error(LocalizedMessage.create(
+//          LocalizedStrings.AdminDistributedSystem_ENCOUNTERED_A_0_WHILE_LOADING_STATALERTDEFINITIONS_1,
+//          new Object[] {cnfEx.getClass().getName(), statAlertDefnSerFile}), cnfEx);
+//      canPersistStatAlertDefs = false;
+//    } catch (IOException ex) {
+//      logger.error(LocalizedMessage.create(
+//          LocalizedStrings.AdminDistributedSystem_ENCOUNTERED_A_0_WHILE_LOADING_STATALERTDEFINITIONS_1_LOADING_ABORTED,
+//          new Object[] {ex.getClass().getName(), statAlertDefnSerFile}), ex);
+//      canPersistStatAlertDefs = false;
+//    } finally {
+//      if (foStr != null) {
+//        try {
+//          foStr.close();
+//        } catch (IOException ex) {
+//          ;
+//        }
+//      }
+//      if (ooStr != null) {
+//        try {
+//          ooStr.close();
+//        } catch (IOException ex) {
+//          ;
+//        }
+//      }
+//    }
+//
+//    for (int i = 0; i < defns.length; i++) {
+//      updateAlertDefinition(defns[i]);
+//    }
+//  }
 
   /**
    * This method is used to write existing StatAlertDefinitions to a file
    */
-  public void saveAlertDefinitionsAsSerializedObjects() {
-    File serFile = null;
-    FileOutputStream foStr = null;
-    DataOutputStream ooStr = null;
-    try {
-      serFile = new File(statAlertDefnSerFile);
-
-
-      if (logger.isDebugEnabled()) {
-        logger.debug(
-            "AdminDistributedSystemJmxImpl.saveAlertDefinitionsAsSerializedObjects: File: {}",
-            serFile.getPath());
-      }
-
-      if (!canWriteToFile(serFile)) {
-        return;
-      }
-
-      foStr = new FileOutputStream(serFile);
-      ooStr = new DataOutputStream(foStr);
-
-      int numOfAlerts = 0;
-      StatAlertDefinition[] defs = null;
-
-      synchronized (ALERT_DEFINITIONS) {
-        numOfAlerts = ALERT_DEFINITIONS.size();
-        defs = new StatAlertDefinition[numOfAlerts];
-
-        int i = 0;
-        for (Iterator iter = ALERT_DEFINITIONS.keySet().iterator(); iter.hasNext();) {
-          Integer key = (Integer) iter.next();
-          StatAlertDefinition readDefn = (StatAlertDefinition) ALERT_DEFINITIONS.get(key);
-          defs[i] = readDefn;
-          i++;
-        }
-      }
-
-      DataSerializer.writeObjectArray(defs, ooStr);
-    } catch (IOException ex) {
-      logger.error(LocalizedMessage.create(
-          LocalizedStrings.AdminDistributedSystem_ENCOUNTERED_A_0_WHILE_SAVING_STATALERTDEFINITIONS_1,
-          new Object[] {ex.getClass().getName(), statAlertDefnSerFile}), ex);
-    } finally {
-      if (foStr != null)
-        try {
-          foStr.close();
-        } catch (IOException ex) {
-          ;
-        }
-      if (ooStr != null)
-        try {
-          ooStr.close();
-        } catch (IOException ex) {
-          ;
-        }
-    }
-  }
+//  public void saveAlertDefinitionsAsSerializedObjects() {
+//    File serFile = null;
+//    FileOutputStream foStr = null;
+//    DataOutputStream ooStr = null;
+//    try {
+//      serFile = new File(statAlertDefnSerFile);
+//
+//
+//      if (logger.isDebugEnabled()) {
+//        logger.debug(
+//            "AdminDistributedSystemJmxImpl.saveAlertDefinitionsAsSerializedObjects: File: {}",
+//            serFile.getPath());
+//      }
+//
+//      if (!canWriteToFile(serFile)) {
+//        return;
+//      }
+//
+//      foStr = new FileOutputStream(serFile);
+//      ooStr = new DataOutputStream(foStr);
+//
+//      int numOfAlerts = 0;
+//      StatAlertDefinition[] defs = null;
+//
+//      synchronized (ALERT_DEFINITIONS) {
+//        numOfAlerts = ALERT_DEFINITIONS.size();
+//        defs = new StatAlertDefinition[numOfAlerts];
+//
+//        int i = 0;
+//        for (Iterator iter = ALERT_DEFINITIONS.keySet().iterator(); iter.hasNext();) {
+//          Integer key = (Integer) iter.next();
+//          StatAlertDefinition readDefn = (StatAlertDefinition) ALERT_DEFINITIONS.get(key);
+//          defs[i] = readDefn;
+//          i++;
+//        }
+//      }
+//
+//      DataSerializer.writeObjectArray(defs, ooStr);
+//    } catch (IOException ex) {
+//      logger.error(LocalizedMessage.create(
+//          LocalizedStrings.AdminDistributedSystem_ENCOUNTERED_A_0_WHILE_SAVING_STATALERTDEFINITIONS_1,
+//          new Object[] {ex.getClass().getName(), statAlertDefnSerFile}), ex);
+//    } finally {
+//      if (foStr != null)
+//        try {
+//          foStr.close();
+//        } catch (IOException ex) {
+//          ;
+//        }
+//      if (ooStr != null)
+//        try {
+//          ooStr.close();
+//        } catch (IOException ex) {
+//          ;
+//        }
+//    }
+//  }
 
   /**
    * Checks if the given file is writable.
@@ -1617,32 +1615,32 @@ public class AdminDistributedSystemJmxImpl extends AdminDistributedSystemImpl
    * @param alertDefinition alertDefinition to be updated
    * @since GemFire 5.7
    */
-  public void updateAlertDefinition(StatAlertDefinition alertDefinition) {
-    if (logger.isDebugEnabled()) {
-      logger.debug(
-          "Entered AdminDistributedSystemJmxImpl.updateAlertDefinition(StatAlertDefinition) *****");
-    }
-    /*
-     * What to update in the alert definition? There should be another argument or arguments in a
-     * map. 1. Need to update the list/map of alert definitions across members.
-     */
-    synchronized (ALERT_DEFINITIONS) {
-      ALERT_DEFINITIONS.put(Integer.valueOf(alertDefinition.getId()), alertDefinition);
-
-      if (logger.isDebugEnabled()) {
-        logger.debug(
-            "AdminDistributedSystemJmxImpl.updateAlertDefinition : alertDefinition :: id={} :: {}",
-            alertDefinition.getId(), alertDefinition.getStringRepresentation());
-      }
-
-      /* TODO: add code to retry on failure */
-      notifyMembersForAlertDefinitionChange(alertDefinition);
-    }
-    if (logger.isDebugEnabled()) {
-      logger.debug(
-          "Exiting AdminDistributedSystemJmxImpl.updateAlertDefinition(StatAlertDefinition) *****");
-    }
-  }
+//  public void updateAlertDefinition(StatAlertDefinition alertDefinition) {
+//    if (logger.isDebugEnabled()) {
+//      logger.debug(
+//          "Entered AdminDistributedSystemJmxImpl.updateAlertDefinition(StatAlertDefinition) *****");
+//    }
+//    /*
+//     * What to update in the alert definition? There should be another argument or arguments in a
+//     * map. 1. Need to update the list/map of alert definitions across members.
+//     */
+//    synchronized (ALERT_DEFINITIONS) {
+//      ALERT_DEFINITIONS.put(Integer.valueOf(alertDefinition.getId()), alertDefinition);
+//
+//      if (logger.isDebugEnabled()) {
+//        logger.debug(
+//            "AdminDistributedSystemJmxImpl.updateAlertDefinition : alertDefinition :: id={} :: {}",
+//            alertDefinition.getId(), alertDefinition.getStringRepresentation());
+//      }
+//
+//      /* TODO: add code to retry on failure */
+//      notifyMembersForAlertDefinitionChange(alertDefinition);
+//    }
+//    if (logger.isDebugEnabled()) {
+//      logger.debug(
+//          "Exiting AdminDistributedSystemJmxImpl.updateAlertDefinition(StatAlertDefinition) *****");
+//    }
+//  }
 
   /**
    * This method can be used to remove alert definition for the Stat mentioned. This method should
@@ -1652,28 +1650,28 @@ public class AdminDistributedSystemJmxImpl extends AdminDistributedSystemImpl
    * @param defId id of the alert definition to be removed
    * @since GemFire 5.7
    */
-  public void removeAlertDefinition(Integer defId) {
-    if (logger.isDebugEnabled()) {
-      logger.debug("Entered AdminDistributedSystemJmxImpl.removeAlertDefinition id *****");
-    }
-    /*
-     * alert passed to be deleted from the list/map of alerts on JMX MBean & all Member MBeans
-     */
-    synchronized (ALERT_DEFINITIONS) {
-      StatAlertDefinition alertDefinition = (StatAlertDefinition) ALERT_DEFINITIONS.get(defId);
-      if (alertDefinition != null) {
-        ALERT_DEFINITIONS.remove(defId);
-        synchronized (alertsStore) {
-          alertsStore.remove(defId);
-        }
-        /* TODO: add code to retry on failure */
-        notifyMembersForAlertDefinitionRemoval(alertDefinition);
-      }
-    }
-    if (logger.isDebugEnabled()) {
-      logger.debug("Exiting AdminDistributedSystemJmxImpl.removeAlertDefinition() *****");
-    }
-  }
+//  public void removeAlertDefinition(Integer defId) {
+//    if (logger.isDebugEnabled()) {
+//      logger.debug("Entered AdminDistributedSystemJmxImpl.removeAlertDefinition id *****");
+//    }
+//    /*
+//     * alert passed to be deleted from the list/map of alerts on JMX MBean & all Member MBeans
+//     */
+//    synchronized (ALERT_DEFINITIONS) {
+//      StatAlertDefinition alertDefinition = (StatAlertDefinition) ALERT_DEFINITIONS.get(defId);
+//      if (alertDefinition != null) {
+//        ALERT_DEFINITIONS.remove(defId);
+//        synchronized (alertsStore) {
+//          alertsStore.remove(defId);
+//        }
+//        /* TODO: add code to retry on failure */
+//        notifyMembersForAlertDefinitionRemoval(alertDefinition);
+//      }
+//    }
+//    if (logger.isDebugEnabled()) {
+//      logger.debug("Exiting AdminDistributedSystemJmxImpl.removeAlertDefinition() *****");
+//    }
+//  }
 
   /**
    * Convenience method to check whether an alert definition is created.
@@ -1682,17 +1680,17 @@ public class AdminDistributedSystemJmxImpl extends AdminDistributedSystemImpl
    * @return true if the alert definition is already created, false otherwise
    * @since GemFire 5.7
    */
-  public boolean isAlertDefinitionCreated(StatAlertDefinition alertDefinition) {
-    /*
-     * Need to maintain a map of stat against the StatAlertDefinitions. check in that map whether
-     * the alert definition is there for the given alert
-     *
-     * TODO: optimize to use Map.containsKey - DONE
-     */
-    synchronized (ALERT_DEFINITIONS) {
-      return ALERT_DEFINITIONS.containsKey(Integer.valueOf(alertDefinition.getId()));
-    }
-  }
+//  public boolean isAlertDefinitionCreated(StatAlertDefinition alertDefinition) {
+//    /*
+//     * Need to maintain a map of stat against the StatAlertDefinitions. check in that map whether
+//     * the alert definition is there for the given alert
+//     *
+//     * TODO: optimize to use Map.containsKey - DONE
+//     */
+//    synchronized (ALERT_DEFINITIONS) {
+//      return ALERT_DEFINITIONS.containsKey(Integer.valueOf(alertDefinition.getId()));
+//    }
+//  }
 
   /**
    * Returns the refresh interval for the Stats in seconds.
@@ -1751,42 +1749,42 @@ public class AdminDistributedSystemJmxImpl extends AdminDistributedSystemImpl
    *
    * @param alertDef stat alert definition that got changed
    */
-  private void notifyMembersForAlertDefinitionChange(StatAlertDefinition alertDef) {
-    if (logger.isDebugEnabled()) {
-      logger.debug(
-          "Entered AdminDistributedSystemJmxImpl.notifyMembersForAlertDefinitionChange(StatAlertDefinition) *****");
-    }
-    GfManagerAgent agent = getGfManagerAgent();
-    StatAlertDefinition[] alertDefs = new StatAlertDefinition[] {alertDef};
-    ApplicationVM[] VMs = agent.listApplications();
-
-    for (int i = 0; i < VMs.length; i++) {
-      VMs[i].updateAlertDefinitions(alertDefs,
-          UpdateAlertDefinitionMessage.UPDATE_ALERT_DEFINITION);
-    }
-
-    if (logger.isDebugEnabled()) {
-      logger.debug(
-          "Exiting AdminDistributedSystemJmxImpl.notifyMembersForAlertDefinitionChange(StatAlertDefinition) "
-              + VMs.length + " members notified.*****");
-    }
-  }
+//  private void notifyMembersForAlertDefinitionChange(StatAlertDefinition alertDef) {
+//    if (logger.isDebugEnabled()) {
+//      logger.debug(
+//          "Entered AdminDistributedSystemJmxImpl.notifyMembersForAlertDefinitionChange(StatAlertDefinition) *****");
+//    }
+//    GfManagerAgent agent = getGfManagerAgent();
+//    StatAlertDefinition[] alertDefs = new StatAlertDefinition[] {alertDef};
+//    ApplicationVM[] VMs = agent.listApplications();
+//
+//    for (int i = 0; i < VMs.length; i++) {
+//      VMs[i].updateAlertDefinitions(alertDefs,
+//          UpdateAlertDefinitionMessage.UPDATE_ALERT_DEFINITION);
+//    }
+//
+//    if (logger.isDebugEnabled()) {
+//      logger.debug(
+//          "Exiting AdminDistributedSystemJmxImpl.notifyMembersForAlertDefinitionChange(StatAlertDefinition) "
+//              + VMs.length + " members notified.*****");
+//    }
+//  }
 
   /**
    * An intermediate method to notify all members for removal of stat alert definition.
    *
    * @param alertDef stat alert definition to be removed
    */
-  private void notifyMembersForAlertDefinitionRemoval(StatAlertDefinition alertDef) {
-    GfManagerAgent agent = getGfManagerAgent();
-    StatAlertDefinition[] alertDefs = new StatAlertDefinition[] {alertDef};
-    ApplicationVM[] VMs = agent.listApplications();
-
-    for (int i = 0; i < VMs.length; i++) {
-      VMs[i].updateAlertDefinitions(alertDefs,
-          UpdateAlertDefinitionMessage.REMOVE_ALERT_DEFINITION);
-    }
-  }
+//  private void notifyMembersForAlertDefinitionRemoval(StatAlertDefinition alertDef) {
+//    GfManagerAgent agent = getGfManagerAgent();
+//    StatAlertDefinition[] alertDefs = new StatAlertDefinition[] {alertDef};
+//    ApplicationVM[] VMs = agent.listApplications();
+//
+//    for (int i = 0; i < VMs.length; i++) {
+//      VMs[i].updateAlertDefinitions(alertDefs,
+//          UpdateAlertDefinitionMessage.REMOVE_ALERT_DEFINITION);
+//    }
+//  }
 
   /**
    * This method can be used to set the AlertsManager for the newly joined member VM.
@@ -1811,20 +1809,20 @@ public class AdminDistributedSystemJmxImpl extends AdminDistributedSystemImpl
     }
 
     // creating an array of stat alert definition objects
-    StatAlertDefinition[] alertDefs = new StatAlertDefinition[0];
-
-    Collection alertDefsCollection = null;
-    synchronized (ALERT_DEFINITIONS) {
-      alertDefsCollection = ALERT_DEFINITIONS.values();
-    }
-
-    alertDefs = (StatAlertDefinition[]) alertDefsCollection.toArray(alertDefs);
-
-    memberVM.setAlertsManager(alertDefs, getRefreshIntervalForStatAlerts() * 1000l, true);
-
-    if (logger.isDebugEnabled()) {
-      logger.debug("Exiting AdminDistributedSystemJmxImpl.setAlertsManager(GemFireVM) *****");
-    }
+//    StatAlertDefinition[] alertDefs = new StatAlertDefinition[0];
+//
+//    Collection alertDefsCollection = null;
+//    synchronized (ALERT_DEFINITIONS) {
+//      alertDefsCollection = ALERT_DEFINITIONS.values();
+//    }
+//
+//    alertDefs = (StatAlertDefinition[]) alertDefsCollection.toArray(alertDefs);
+//
+//    memberVM.setAlertsManager(alertDefs, getRefreshIntervalForStatAlerts() * 1000l, true);
+//
+//    if (logger.isDebugEnabled()) {
+//      logger.debug("Exiting AdminDistributedSystemJmxImpl.setAlertsManager(GemFireVM) *****");
+//    }
   }
 
   /**
@@ -1834,31 +1832,31 @@ public class AdminDistributedSystemJmxImpl extends AdminDistributedSystemImpl
    * @return An array of all available StatAlertDefinition objects
    * @since GemFire 5.7
    */
-  public StatAlertDefinition[] getAllStatAlertDefinitions() {
-    if (logger.isDebugEnabled()) {
-      logger.debug("Entered AdminDistributedSystemJmxImpl.getAllStatAlertDefinitions() *****");
-    }
-
-    Collection alertDefs = null;
-    synchronized (ALERT_DEFINITIONS) {
-      alertDefs = ALERT_DEFINITIONS.values();
-    }
-
-    StatAlertDefinition[] alertDefsArr = null;
-
-    if (alertDefs != null) {
-      alertDefsArr = new StatAlertDefinition[alertDefs.size()];
-      alertDefsArr = (StatAlertDefinition[]) alertDefs.toArray(alertDefsArr);
-    } else {
-      alertDefsArr = new StatAlertDefinition[0];
-    }
-
-    if (logger.isDebugEnabled()) {
-      logger.debug("Exiting AdminDistributedSystemJmxImpl.getAllStatAlertDefinitions() *****");
-    }
-
-    return alertDefsArr;
-  }
+//  public StatAlertDefinition[] getAllStatAlertDefinitions() {
+//    if (logger.isDebugEnabled()) {
+//      logger.debug("Entered AdminDistributedSystemJmxImpl.getAllStatAlertDefinitions() *****");
+//    }
+//
+//    Collection alertDefs = null;
+//    synchronized (ALERT_DEFINITIONS) {
+//      alertDefs = ALERT_DEFINITIONS.values();
+//    }
+//
+//    StatAlertDefinition[] alertDefsArr = null;
+//
+//    if (alertDefs != null) {
+//      alertDefsArr = new StatAlertDefinition[alertDefs.size()];
+//      alertDefsArr = (StatAlertDefinition[]) alertDefs.toArray(alertDefsArr);
+//    } else {
+//      alertDefsArr = new StatAlertDefinition[0];
+//    }
+//
+//    if (logger.isDebugEnabled()) {
+//      logger.debug("Exiting AdminDistributedSystemJmxImpl.getAllStatAlertDefinitions() *****");
+//    }
+//
+//    return alertDefsArr;
+//  }
 
 
   /**
@@ -1866,98 +1864,96 @@ public class AdminDistributedSystemJmxImpl extends AdminDistributedSystemImpl
    * of stats can occur here. The array contains alert objects with alert def. ID & value.
    * AlertHelper class can be used to retrieve the corresponding alert definition.
    *
-   * @param alerts array of Alert class(contains alert def. ID & value)
-   * @param remoteVM Remote Member VM that sent Stat Alerts for processing the notifications to the
    *        clients
    */
-  public void processNotifications(StatAlert[] alerts, GemFireVM remoteVM) {
-    if (logger.isDebugEnabled()) {
-      logger.debug(
-          "Entered AdminDistributedSystemJmxImpl.processNotifications(StatAlert[{}], GemFireVM) *************",
-          alerts.length);
-    }
-
-    /*
-     * Notifications can not be processed if the remote VM is not available. NOTE: Should this
-     * method get the required GemFireVM information instead of its reference so that even if the
-     * member leaves we still have the information collected earlier to process the notification?
-     */
-    if (remoteVM == null) {
-      if (logger.isDebugEnabled()) {
-        logger.debug("Could not process stat alert notifications as given GemFireVM is null.");
-      }
-      return;
-    }
-
-    /*
-     * 1. The implementation idea is yet not clear. 2. The StatAlert array would received directly
-     * or from a request object.
-     */
-    ArrayList notificationObjects = new ArrayList();
-
-    String memberId = remoteVM.getId().getId();
-
-    final boolean isSystemWide = false;
-
-    StatAlert alert = null;
-    Integer defId = null;
-    for (int i = 0; i < alerts.length; i++) {
-      alert = alerts[i];
-
-      if (getAlertDefinition(alert.getDefinitionId()) == null)
-        continue; // Ignore any removed AlertDefns
-
-      /*
-       * 1. check if it's system-wide. 2. if system-wide keep, it in a collection (that should get
-       * cleared on timeout). Process all alerts when notifications from all members are received.
-       * Need to check if the member leaves meanwhile.
-       *
-       * 1. Check if function evaluation is required? 2. If it's not required, the notification
-       * should directly be sent to clients.
-       */
-
-      StatAlertNotification alertNotification = new StatAlertNotification(alert, memberId);
-
-      /*
-       * variable isSystemWide is created only for convienience, there should be an indication for
-       * the same in the alert definition. Currently there is no systemWide definition
-       *
-       * Evaluating system wide alerts: 1. It'll take time for aggregator to gather alerts from all
-       * members. Member might keep joining & leaving in between. The member for whom the stat-alert
-       * value was taken might have left & new ones might have joined leave until all the
-       * calculations are complete. A disclaimer to be put that these are not exact values. 2. How
-       * would the aggregator know that it has received alerts from all the managers? Is the concept
-       * of system-wide alerts valid? System-wide stats might be!
-       *
-       */
-      if (!isSystemWide) {
-        notificationObjects.add(alertNotification);
-        continue;
-      }
-      HashSet accumulatedAlertValues;
-      synchronized (alertsStore) {
-        accumulatedAlertValues = (HashSet) alertsStore.get(defId);
-
-        if (accumulatedAlertValues == null) {
-          accumulatedAlertValues = new HashSet();
-          alertsStore.put(defId, accumulatedAlertValues);
-        }
-      }
-      synchronized (accumulatedAlertValues) {
-        accumulatedAlertValues.add(alertNotification);
-      }
-    } // for ends
-
-    if (!notificationObjects.isEmpty()) {
-      /* TODO: should ths method send & forget or be fail-safe? */
-      sendNotifications(notificationObjects, getObjectName());
-    }
-
-    if (logger.isDebugEnabled()) {
-      logger.debug(
-          "Exiting AdminDistributedSystemJmxImpl.processNotifications(StatAlert[], GemFireVM) *************");
-    }
-  }
+//  public void processNotifications(StatAlert[] alerts, GemFireVM remoteVM) {
+//    if (logger.isDebugEnabled()) {
+//      logger.debug(
+//          "Entered AdminDistributedSystemJmxImpl.processNotifications(StatAlert[{}], GemFireVM) *************",
+//          alerts.length);
+//    }
+//
+//    /*
+//     * Notifications can not be processed if the remote VM is not available. NOTE: Should this
+//     * method get the required GemFireVM information instead of its reference so that even if the
+//     * member leaves we still have the information collected earlier to process the notification?
+//     */
+//    if (remoteVM == null) {
+//      if (logger.isDebugEnabled()) {
+//        logger.debug("Could not process stat alert notifications as given GemFireVM is null.");
+//      }
+//      return;
+//    }
+//
+//    /*
+//     * 1. The implementation idea is yet not clear. 2. The StatAlert array would received directly
+//     * or from a request object.
+//     */
+//    ArrayList notificationObjects = new ArrayList();
+//
+//    String memberId = remoteVM.getId().getId();
+//
+//    final boolean isSystemWide = false;
+//
+//    StatAlert alert = null;
+//    Integer defId = null;
+//    for (int i = 0; i < alerts.length; i++) {
+//      alert = alerts[i];
+//
+//      if (getAlertDefinition(alert.getDefinitionId()) == null)
+//        continue; // Ignore any removed AlertDefns
+//
+//      /*
+//       * 1. check if it's system-wide. 2. if system-wide keep, it in a collection (that should get
+//       * cleared on timeout). Process all alerts when notifications from all members are received.
+//       * Need to check if the member leaves meanwhile.
+//       *
+//       * 1. Check if function evaluation is required? 2. If it's not required, the notification
+//       * should directly be sent to clients.
+//       */
+//
+//      StatAlertNotification alertNotification = new StatAlertNotification(alert, memberId);
+//
+//      /*
+//       * variable isSystemWide is created only for convienience, there should be an indication for
+//       * the same in the alert definition. Currently there is no systemWide definition
+//       *
+//       * Evaluating system wide alerts: 1. It'll take time for aggregator to gather alerts from all
+//       * members. Member might keep joining & leaving in between. The member for whom the stat-alert
+//       * value was taken might have left & new ones might have joined leave until all the
+//       * calculations are complete. A disclaimer to be put that these are not exact values. 2. How
+//       * would the aggregator know that it has received alerts from all the managers? Is the concept
+//       * of system-wide alerts valid? System-wide stats might be!
+//       *
+//       */
+//      if (!isSystemWide) {
+//        notificationObjects.add(alertNotification);
+//        continue;
+//      }
+//      HashSet accumulatedAlertValues;
+//      synchronized (alertsStore) {
+//        accumulatedAlertValues = (HashSet) alertsStore.get(defId);
+//
+//        if (accumulatedAlertValues == null) {
+//          accumulatedAlertValues = new HashSet();
+//          alertsStore.put(defId, accumulatedAlertValues);
+//        }
+//      }
+//      synchronized (accumulatedAlertValues) {
+//        accumulatedAlertValues.add(alertNotification);
+//      }
+//    } // for ends
+//
+//    if (!notificationObjects.isEmpty()) {
+//      /* TODO: should ths method send & forget or be fail-safe? */
+//      sendNotifications(notificationObjects, getObjectName());
+//    }
+//
+//    if (logger.isDebugEnabled()) {
+//      logger.debug(
+//          "Exiting AdminDistributedSystemJmxImpl.processNotifications(StatAlert[], GemFireVM) *************");
+//    }
+//  }
 
   private byte[] convertNotificationsDataToByteArray(ArrayList notificationObjects) {
     if (logger.isDebugEnabled()) {
@@ -1988,57 +1984,57 @@ public class AdminDistributedSystemJmxImpl extends AdminDistributedSystemImpl
    *
    * @param notificationObjects list of StatAlertNotification objects
    */
-  private void sendNotifications(ArrayList notificationObjects, ObjectName objName) {
-    try {
-      if (logger.isDebugEnabled()) {
-        logger.debug("AdminDistributedSystemJmxImpl#sendNotifications: sending {} notifications",
-            notificationObjects.size());
-      }
-
-      byte[] notifBytes = convertNotificationsDataToByteArray(notificationObjects);
-      if (notifBytes != null) {
-        Notification notif = new Notification(NOTIF_STAT_ALERT, objName, // Pass the
-                                                                         // StatNotifications
-            notificationSequenceNumber.addAndGet(1), "StatAlert Notifications");
-        notif.setUserData(notifBytes);
-        this.modelMBean.sendNotification(notif);
-      } // IOException handled and logged in convertNotificationsDataToByteArray
-
-      StringBuffer buf = new StringBuffer();
-      for (int i = 0; i < notificationObjects.size(); i++) {
-        StatAlertNotification not = (StatAlertNotification) notificationObjects.get(i);
-        buf.append(not.toString(getAlertDefinition(not.getDefinitionId())));
-      }
-      if (isEmailNotificationEnabled) {
-        String mess =
-            LocalizedStrings.AdminDistributedSystemJmxImpl_STATISTICS_ALERT_FROM_DISTRIBUTED_SYSTEM_MEMBER_0_STATISTICS_1
-                .toLocalizedString(new Object[] {objName.getCanonicalName(), buf.toString()});
-        sendEmail(EML_SUBJ_PRFX_GFE_ALERT + EML_SUBJ_ITEM_GFE_DS + getName() + " <"
-            + LocalizedStrings.AdminDistributedSystemJmxImpl_STATISTICS_ALERT_FOR_MEMBER
-                .toLocalizedString()
-            + ">", mess);
-      }
-    } catch (javax.management.MBeanException e) {
-      logger.error(e.getMessage(), e);
-    } catch (RuntimeException e) {
-      logger.error(e.getMessage(), e);
-      throw e;
-    } catch (VirtualMachineError err) {
-      SystemFailure.initiateFailure(err);
-      // If this ever returns, rethrow the error. We're poisoned
-      // now, so don't let this thread continue.
-      throw err;
-    } catch (Error e) {
-      // Whenever you catch Error or Throwable, you must also
-      // catch VirtualMachineError (see above). However, there is
-      // _still_ a possibility that you are dealing with a cascading
-      // error condition, so you also need to check to see if the JVM
-      // is still usable:
-      SystemFailure.checkFailure();
-      logger.error(e.getMessage(), e);
-      throw e;
-    }
-  }
+//  private void sendNotifications(ArrayList notificationObjects, ObjectName objName) {
+//    try {
+//      if (logger.isDebugEnabled()) {
+//        logger.debug("AdminDistributedSystemJmxImpl#sendNotifications: sending {} notifications",
+//            notificationObjects.size());
+//      }
+//
+//      byte[] notifBytes = convertNotificationsDataToByteArray(notificationObjects);
+//      if (notifBytes != null) {
+//        Notification notif = new Notification(NOTIF_STAT_ALERT, objName, // Pass the
+//                                                                         // StatNotifications
+//            notificationSequenceNumber.addAndGet(1), "StatAlert Notifications");
+//        notif.setUserData(notifBytes);
+//        this.modelMBean.sendNotification(notif);
+//      } // IOException handled and logged in convertNotificationsDataToByteArray
+//
+//      StringBuffer buf = new StringBuffer();
+//      for (int i = 0; i < notificationObjects.size(); i++) {
+//        StatAlertNotification not = (StatAlertNotification) notificationObjects.get(i);
+//        buf.append(not.toString(getAlertDefinition(not.getDefinitionId())));
+//      }
+//      if (isEmailNotificationEnabled) {
+//        String mess =
+//            LocalizedStrings.AdminDistributedSystemJmxImpl_STATISTICS_ALERT_FROM_DISTRIBUTED_SYSTEM_MEMBER_0_STATISTICS_1
+//                .toLocalizedString(new Object[] {objName.getCanonicalName(), buf.toString()});
+//        sendEmail(EML_SUBJ_PRFX_GFE_ALERT + EML_SUBJ_ITEM_GFE_DS + getName() + " <"
+//            + LocalizedStrings.AdminDistributedSystemJmxImpl_STATISTICS_ALERT_FOR_MEMBER
+//                .toLocalizedString()
+//            + ">", mess);
+//      }
+//    } catch (javax.management.MBeanException e) {
+//      logger.error(e.getMessage(), e);
+//    } catch (RuntimeException e) {
+//      logger.error(e.getMessage(), e);
+//      throw e;
+//    } catch (VirtualMachineError err) {
+//      SystemFailure.initiateFailure(err);
+//      // If this ever returns, rethrow the error. We're poisoned
+//      // now, so don't let this thread continue.
+//      throw err;
+//    } catch (Error e) {
+//      // Whenever you catch Error or Throwable, you must also
+//      // catch VirtualMachineError (see above). However, there is
+//      // _still_ a possibility that you are dealing with a cascading
+//      // error condition, so you also need to check to see if the JVM
+//      // is still usable:
+//      SystemFailure.checkFailure();
+//      logger.error(e.getMessage(), e);
+//      throw e;
+//    }
+//  }
 
   /**
    * Sends an email to the configured recipients using configured email server. The given message

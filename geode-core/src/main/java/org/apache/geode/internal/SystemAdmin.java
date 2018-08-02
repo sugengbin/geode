@@ -82,8 +82,6 @@ import org.apache.geode.internal.logging.DateFormatter;
 import org.apache.geode.internal.logging.MergeLogFiles;
 import org.apache.geode.internal.net.SocketCreator;
 import org.apache.geode.internal.statistics.StatArchiveReader;
-import org.apache.geode.internal.statistics.StatArchiveReader.ResourceInst;
-import org.apache.geode.internal.statistics.StatArchiveReader.StatValue;
 import org.apache.geode.internal.util.JavaCommandBuilder;
 import org.apache.geode.internal.util.PluckStacks;
 import org.apache.geode.internal.util.PluckStacks.ThreadStack;
@@ -614,7 +612,7 @@ public class SystemAdmin {
     }
   }
 
-  public static void backup(String targetDir) throws AdminException {
+  public static void backup(String targetDir)  {
     InternalDistributedSystem ads = getAdminCnx();
 
     // Baseline directory should be null if it was not provided on the command line
@@ -1212,8 +1210,8 @@ public class SystemAdmin {
           if (specs.length == 0) {
             Iterator it = reader.getResourceInstList().iterator();
             while (it.hasNext()) {
-              ResourceInst inst = (ResourceInst) it.next();
-              StatValue values[] = inst.getStatValues();
+              StatArchiveReader.ResourceInst inst = (StatArchiveReader.ResourceInst) it.next();
+              StatArchiveReader.StatValue values[] = inst.getStatValues();
               boolean firstTime = true;
               for (int i = 0; i < values.length; i++) {
                 if (values[i] != null && values[i].hasValueChanged()) {
@@ -1227,25 +1225,25 @@ public class SystemAdmin {
               }
             }
           } else {
-            Map<CombinedResources, List<StatValue>> allSpecsMap =
-                new HashMap<CombinedResources, List<StatValue>>();
+            Map<CombinedResources, List<StatArchiveReader.StatValue>> allSpecsMap =
+                new HashMap<CombinedResources, List<StatArchiveReader.StatValue>>();
             for (int i = 0; i < specs.length; i++) {
-              StatValue[] values = reader.matchSpec(specs[i]);
+              StatArchiveReader.StatValue[] values = reader.matchSpec(specs[i]);
               if (values.length == 0) {
                 if (!quiet) {
                   System.err.println(LocalizedStrings.SystemAdmin_WARNING_NO_STATS_MATCHED_0
                       .toLocalizedString(specs[i].cmdLineSpec));
                 }
               } else {
-                Map<CombinedResources, List<StatValue>> specMap =
-                    new HashMap<CombinedResources, List<StatValue>>();
-                for (StatValue v : values) {
+                Map<CombinedResources, List<StatArchiveReader.StatValue>> specMap =
+                    new HashMap<CombinedResources, List<StatArchiveReader.StatValue>>();
+                for (StatArchiveReader.StatValue v : values) {
                   CombinedResources key = new CombinedResources(v);
                   List<StatArchiveReader.StatValue> list = specMap.get(key);
                   if (list != null) {
                     list.add(v);
                   } else {
-                    specMap.put(key, new ArrayList<StatValue>(Collections.singletonList(v)));
+                    specMap.put(key, new ArrayList<StatArchiveReader.StatValue>(Collections.singletonList(v)));
                   }
                 }
                 if (!quiet) {
@@ -1253,7 +1251,7 @@ public class SystemAdmin {
                       LocalizedStrings.SystemAdmin_INFO_FOUND_0_MATCHES_FOR_1.toLocalizedString(
                           new Object[] {Integer.valueOf(specMap.size()), specs[i].cmdLineSpec}));
                 }
-                for (Map.Entry<CombinedResources, List<StatValue>> me : specMap.entrySet()) {
+                for (Map.Entry<CombinedResources, List<StatArchiveReader.StatValue>> me : specMap.entrySet()) {
                   List<StatArchiveReader.StatValue> list = allSpecsMap.get(me.getKey());
                   if (list != null) {
                     list.addAll(me.getValue());
@@ -1263,9 +1261,9 @@ public class SystemAdmin {
                 }
               }
             }
-            for (Map.Entry<CombinedResources, List<StatValue>> me : allSpecsMap.entrySet()) {
+            for (Map.Entry<CombinedResources, List<StatArchiveReader.StatValue>> me : allSpecsMap.entrySet()) {
               System.out.println(me.getKey());
-              for (StatValue v : me.getValue()) {
+              for (StatArchiveReader.StatValue v : me.getValue()) {
                 printStatValue(v, startTime, endTime, nofilter, persec, persample, prunezeros,
                     details);
               }
@@ -1304,8 +1302,8 @@ public class SystemAdmin {
    *
    */
   @SuppressWarnings("serial")
-  private static class CombinedResources extends ArrayList<ResourceInst> {
-    public CombinedResources(StatValue v) {
+  private static class CombinedResources extends ArrayList<StatArchiveReader.ResourceInst> {
+    public CombinedResources(StatArchiveReader.StatValue v) {
       super(Arrays.asList(v.getResources()));
     }
 
@@ -1313,7 +1311,7 @@ public class SystemAdmin {
     public String toString() {
       StringBuffer sb = new StringBuffer();
       boolean first = true;
-      for (ResourceInst inst : this) {
+      for (StatArchiveReader.ResourceInst inst : this) {
         if (first) {
           first = false;
         } else {

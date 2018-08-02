@@ -14,6 +14,8 @@
  */
 package org.apache.geode.internal.cache.eviction;
 
+import org.apache.geode.statistics.eviction.EvictionStats;
+
 public interface EvictionCounters {
 
   long getCounter();
@@ -39,6 +41,8 @@ public interface EvictionCounters {
   void incEvaluations(long evaluations);
 
   void incGreedyReturns(long greedyReturns);
+
+  EvictionStats getStatistics();
 
   void close();
 }

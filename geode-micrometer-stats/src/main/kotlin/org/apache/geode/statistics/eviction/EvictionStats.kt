@@ -12,19 +12,21 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.apache.geode.admin;
+package org.apache.geode.statistics.eviction
 
-/**
- * A listener whose callback methods are invoked when an {@link Alert} is received.
- *
- * @deprecated as of 7.0 use the <code><a href=
- *             "{@docRoot}/org/apache/geode/management/package-summary.html">management</a></code>
- *             package instead
- */
-public interface AlertListener extends java.util.EventListener {
+interface EvictionStats {
 
-  /**
-   * Invoked when an <code>Alert</code> is received.
-   */
-  void alert(Alert alert);
+    fun incEvictions()
+
+    fun updateCounter(delta: Long)
+
+    fun incDestroys()
+
+    fun setLimit(newValue: Long)
+
+    fun setCounter(l: Long)
+
+    fun incEvaluations(evaluations: Long)
+
+    fun incGreedyReturns(greedyReturns: Long)
 }

@@ -27,12 +27,11 @@ import org.apache.geode.internal.cache.tier.sockets.Message;
 import org.apache.geode.internal.cache.tier.sockets.Part;
 import org.apache.geode.internal.i18n.LocalizedStrings;
 import org.apache.geode.internal.logging.LogService;
+import org.apache.geode.statistics.client.connection.ConnectionStats;
 
 /**
  * Retrieves {@link ClientPartitionAdvisor} for the specified PartitionedRegion from one of the
  * servers
- *
- *
  * @since GemFire 6.5
  */
 public class GetClientPRMetaDataOp {
@@ -44,7 +43,7 @@ public class GetClientPRMetaDataOp {
   }
 
   public static void execute(ExecutablePool pool, String regionFullPath,
-      ClientMetadataService cms) {
+                             ClientMetadataService cms) {
     AbstractOp op = new GetClientPRMetaDataOpImpl(regionFullPath, cms);
     if (logger.isDebugEnabled()) {
       logger.debug(

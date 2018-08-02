@@ -85,28 +85,28 @@ public interface GemFireVM {
   /**
    * Returns all statistic resources except those involving SharedClass
    */
-  StatResource[] getStats(String statisticsTypeName);
-
-  /**
-   * Returns all statistic resources
-   */
-  StatResource[] getAllStats();
+//  StatResource[] getStats(String statisticsTypeName);
+//
+//  /**
+//   * Returns all statistic resources
+//   */
+//  StatResource[] getAllStats();
 
   /**
    * Returns a snapshot of the distributed lock services
    */
   DLockInfo[] getDistributedLockInfo();
 
-  /**
-   * Adds a {@link StatListener} for the given resource and attribute. Changes in value will be
-   * streamed back from the vm.
-   */
-  void addStatListener(StatListener observer, StatResource observedResource, Stat observedStat);
-
-  /**
-   * Removes {@link StatListener}
-   */
-  void removeStatListener(StatListener observer);
+//  /**
+//   * Adds a {@link StatListener} for the given resource and attribute. Changes in value will be
+//   * streamed back from the vm.
+//   */
+//  void addStatListener(StatListener observer, StatResource observedResource, Stat observedStat);
+//
+//  /**
+//   * Removes {@link StatListener}
+//   */
+//  void removeStatListener(StatListener observer);
 
   /**
    * Adds a {@link HealthListener} with the given configuration to the vm. If a health listener has
@@ -340,7 +340,7 @@ public interface GemFireVM {
    *
    * @since GemFire 5.7
    */
-  void setAlertsManager(StatAlertDefinition[] alertDefs, long refreshInterval, boolean setRemotely);
+//  void setAlertsManager(StatAlertDefinition[] alertDefs, long refreshInterval, boolean setRemotely);
 
   /**
    * This method would be used to set refresh interval for the GemFireVM. This method would mostly
@@ -364,5 +364,5 @@ public interface GemFireVM {
    *
    * @since GemFire 5.7
    */
-  void updateAlertDefinitions(StatAlertDefinition[] alertDefs, int actionCode);
+//  void updateAlertDefinitions(StatAlertDefinition[] alertDefs, int actionCode);
 }

@@ -62,7 +62,6 @@ import org.apache.geode.internal.cache.BucketRegion;
 import org.apache.geode.internal.cache.BucketRegionQueue;
 import org.apache.geode.internal.cache.ColocationHelper;
 import org.apache.geode.internal.cache.Conflatable;
-import org.apache.geode.internal.cache.DiskRegionStats;
 import org.apache.geode.internal.cache.DistributedRegion;
 import org.apache.geode.internal.cache.EntryEventImpl;
 import org.apache.geode.internal.cache.ForceReattemptException;
@@ -78,7 +77,6 @@ import org.apache.geode.internal.cache.wan.AsyncEventQueueConfigurationException
 import org.apache.geode.internal.cache.wan.GatewaySenderConfigurationException;
 import org.apache.geode.internal.cache.wan.GatewaySenderEventImpl;
 import org.apache.geode.internal.cache.wan.GatewaySenderException;
-import org.apache.geode.internal.cache.wan.GatewaySenderStats;
 import org.apache.geode.internal.i18n.LocalizedStrings;
 import org.apache.geode.internal.logging.LogService;
 import org.apache.geode.internal.logging.LoggingThreadGroup;
@@ -86,9 +84,7 @@ import org.apache.geode.internal.logging.log4j.LocalizedMessage;
 import org.apache.geode.internal.size.SingleObjectSizer;
 import org.apache.geode.internal.util.concurrent.StoppableCondition;
 import org.apache.geode.internal.util.concurrent.StoppableReentrantLock;
-import org.apache.geode.management.ManagementService;
-import org.apache.geode.management.internal.beans.AsyncEventQueueMBean;
-import org.apache.geode.management.internal.beans.GatewaySenderMBean;
+import org.apache.geode.statistics.wan.GatewaySenderStats;
 
 public class ParallelGatewaySenderQueue implements RegionQueue {
 
@@ -562,30 +558,30 @@ public class ParallelGatewaySenderQueue implements RegionQueue {
 
   private void addOverflowStatisticsToMBean(Cache cache, PartitionedRegion prQ) {
     // Get the appropriate mbean and add the eviction and disk region stats to it
-    ManagementService service = ManagementService.getManagementService(cache);
-    if (this.sender.getId().contains(AsyncEventQueueImpl.ASYNC_EVENT_QUEUE_PREFIX)) {
-      AsyncEventQueueMBean bean = (AsyncEventQueueMBean) service.getLocalAsyncEventQueueMXBean(
-          AsyncEventQueueImpl.getAsyncEventQueueIdFromSenderId(this.sender.getId()));
-
-      if (bean != null) {
-        // Add the eviction stats
-        bean.getBridge().addOverflowStatistics(prQ.getEvictionStatistics());
-
-        // Add the disk region stats
-        bean.getBridge().addOverflowStatistics(prQ.getDiskRegionStats().getStats());
-      }
-    } else {
-      GatewaySenderMBean bean =
-          (GatewaySenderMBean) service.getLocalGatewaySenderMXBean(this.sender.getId());
-
-      if (bean != null) {
-        // Add the eviction stats
-        bean.getBridge().addOverflowStatistics(prQ.getEvictionStatistics());
-
-        // Add the disk region stats
-        bean.getBridge().addOverflowStatistics(prQ.getDiskRegionStats().getStats());
-      }
-    }
+//    ManagementService service = ManagementService.getManagementService(cache);
+//    if (this.sender.getId().contains(AsyncEventQueueImpl.ASYNC_EVENT_QUEUE_PREFIX)) {
+//      AsyncEventQueueMBean bean = (AsyncEventQueueMBean) service.getLocalAsyncEventQueueMXBean(
+//          AsyncEventQueueImpl.getAsyncEventQueueIdFromSenderId(this.sender.getId()));
+//
+//      if (bean != null) {
+//        // Add the eviction stats
+//        bean.getBridge().addOverflowStatistics(prQ.getEvictionStatistics());
+//
+//        // Add the disk region stats
+//        bean.getBridge().addOverflowStatistics(prQ.getDiskRegionStats().getStats());
+//      }
+//    } else {
+//      GatewaySenderMBean bean =
+//          (GatewaySenderMBean) service.getLocalGatewaySenderMXBean(this.sender.getId());
+//
+//      if (bean != null) {
+//        // Add the eviction stats
+//        bean.getBridge().addOverflowStatistics(prQ.getEvictionStatistics());
+//
+//        // Add the disk region stats
+//        bean.getBridge().addOverflowStatistics(prQ.getDiskRegionStats().getStats());
+//      }
+//    }
   }
 
   /**
@@ -1514,48 +1510,48 @@ public class ParallelGatewaySenderQueue implements RegionQueue {
     conflationExecutor.execute(conflationHandler);
   }
 
-  public long getNumEntriesOverflowOnDiskTestOnly() {
-    long numEntriesOnDisk = 0;
-    for (PartitionedRegion prQ : this.userRegionNameToshadowPRMap.values()) {
-      DiskRegionStats diskStats = prQ.getDiskRegionStats();
-      if (diskStats == null) {
-        if (logger.isDebugEnabled()) {
-          logger.debug(
-              "{}: DiskRegionStats for shadow PR is null. Returning the numEntriesOverflowOnDisk as 0",
-              this);
-        }
-        return 0;
-      }
-      if (logger.isDebugEnabled()) {
-        logger.debug(
-            "{}: DiskRegionStats for shadow PR is NOT null. Returning the numEntriesOverflowOnDisk obtained from DiskRegionStats",
-            this);
-      }
-      numEntriesOnDisk += diskStats.getNumOverflowOnDisk();
-    }
-    return numEntriesOnDisk;
-  }
+//  public long getNumEntriesOverflowOnDiskTestOnly() {
+//    long numEntriesOnDisk = 0;
+//    for (PartitionedRegion prQ : this.userRegionNameToshadowPRMap.values()) {
+//      DiskRegionStats diskStats = prQ.getDiskRegionStats();
+//      if (diskStats == null) {
+//        if (logger.isDebugEnabled()) {
+//          logger.debug(
+//              "{}: DiskRegionStats for shadow PR is null. Returning the numEntriesOverflowOnDisk as 0",
+//              this);
+//        }
+//        return 0;
+//      }
+//      if (logger.isDebugEnabled()) {
+//        logger.debug(
+//            "{}: DiskRegionStats for shadow PR is NOT null. Returning the numEntriesOverflowOnDisk obtained from DiskRegionStats",
+//            this);
+//      }
+//      numEntriesOnDisk += diskStats.getNumOverflowOnDisk();
+//    }
+//    return numEntriesOnDisk;
+//  }
 
-  public long getNumEntriesInVMTestOnly() {
-    long numEntriesInVM = 0;
-    for (PartitionedRegion prQ : this.userRegionNameToshadowPRMap.values()) {
-      DiskRegionStats diskStats = prQ.getDiskRegionStats();
-      if (diskStats == null) {
-        if (logger.isDebugEnabled()) {
-          logger.debug(
-              "{}: DiskRegionStats for shadow PR is null. Returning the numEntriesInVM as 0", this);
-        }
-        return 0;
-      }
-      if (logger.isDebugEnabled()) {
-        logger.debug(
-            "{}: DiskRegionStats for shadow PR is NOT null. Returning the numEntriesInVM obtained from DiskRegionStats",
-            this);
-      }
-      numEntriesInVM += diskStats.getNumEntriesInVM();
-    }
-    return numEntriesInVM;
-  }
+//  public long getNumEntriesInVMTestOnly() {
+//    long numEntriesInVM = 0;
+//    for (PartitionedRegion prQ : this.userRegionNameToshadowPRMap.values()) {
+//      DiskRegionStats diskStats = prQ.getDiskRegionStats();
+//      if (diskStats == null) {
+//        if (logger.isDebugEnabled()) {
+//          logger.debug(
+//              "{}: DiskRegionStats for shadow PR is null. Returning the numEntriesInVM as 0", this);
+//        }
+//        return 0;
+//      }
+//      if (logger.isDebugEnabled()) {
+//        logger.debug(
+//            "{}: DiskRegionStats for shadow PR is NOT null. Returning the numEntriesInVM obtained from DiskRegionStats",
+//            this);
+//      }
+//      numEntriesInVM += diskStats.getNumEntriesInVM();
+//    }
+//    return numEntriesInVM;
+//  }
 
   /**
    * This method does the cleanup of any threads, sockets, connection that are held up by the queue.

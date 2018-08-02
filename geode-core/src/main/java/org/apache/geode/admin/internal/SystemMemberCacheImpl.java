@@ -36,8 +36,6 @@ import org.apache.geode.internal.ObjIdMap;
 import org.apache.geode.internal.admin.AdminBridgeServer;
 import org.apache.geode.internal.admin.CacheInfo;
 import org.apache.geode.internal.admin.GemFireVM;
-import org.apache.geode.internal.admin.Stat;
-import org.apache.geode.internal.admin.StatResource;
 import org.apache.geode.internal.i18n.LocalizedStrings;
 
 /**
@@ -181,54 +179,54 @@ public class SystemMemberCacheImpl implements SystemMemberCache {
 
   // internal methods
   private void initStats() {
-    StatResource resource = this.info.getPerfStats();
-    if (resource == null) {
-      // See bug 31397
-      Assert.assertTrue(this.isClosed());
-      return;
-    }
-
-    Stat[] stats = resource.getStats();
-    if (stats == null || stats.length < 1) {
-      this.statistics = new Statistic[0];
-      return;
-    }
+//    StatResource resource = this.info.getPerfStats();
+//    if (resource == null) {
+//      // See bug 31397
+//      Assert.assertTrue(this.isClosed());
+//      return;
+//    }
+//
+//    Stat[] stats = resource.getStats();
+//    if (stats == null || stats.length < 1) {
+//      this.statistics = new Statistic[0];
+//      return;
+//    }
 
     // define new statistics instances...
-    List statList = new ArrayList();
-    for (int i = 0; i < stats.length; i++) {
-      statList.add(createStatistic(stats[i]));
-    }
-    this.statistics = (Statistic[]) statList.toArray(new Statistic[statList.size()]);
+//    List statList = new ArrayList();
+//    for (int i = 0; i < stats.length; i++) {
+//      statList.add(createStatistic(stats[i]));
+//    }
+//    this.statistics = (Statistic[]) statList.toArray(new Statistic[statList.size()]);
   }
 
   private void updateStats() {
-    StatResource resource = this.info.getPerfStats();
-    if (resource == null) {
-      // See bug 31397
-      Assert.assertTrue(this.isClosed());
-      return;
-    }
-
-    Stat[] stats = resource.getStats();
-    if (stats == null || stats.length < 1) {
-      return;
-    }
-
-    for (int i = 0; i < stats.length; i++) {
-      updateStatistic(stats[i]);
-    }
+//    StatResource resource = this.info.getPerfStats();
+//    if (resource == null) {
+//      // See bug 31397
+//      Assert.assertTrue(this.isClosed());
+//      return;
+//    }
+//
+//    Stat[] stats = resource.getStats();
+//    if (stats == null || stats.length < 1) {
+//      return;
+//    }
+//
+//    for (int i = 0; i < stats.length; i++) {
+//      updateStatistic(stats[i]);
+//    }
   }
 
-  private void updateStatistic(Stat stat) {
-    for (int i = 0; i < this.statistics.length; i++) {
-      if (this.statistics[i].getName().equals(stat.getName())) {
-        ((StatisticImpl) this.statistics[i]).setStat(stat);
-        return;
-      }
-    }
-    Assert.assertTrue(false, "Unknown stat: " + stat.getName());
-  }
+//  private void updateStatistic(Stat stat) {
+//    for (int i = 0; i < this.statistics.length; i++) {
+//      if (this.statistics[i].getName().equals(stat.getName())) {
+//        ((StatisticImpl) this.statistics[i]).setStat(stat);
+//        return;
+//      }
+//    }
+//    Assert.assertTrue(false, "Unknown stat: " + stat.getName());
+//  }
 
   /**
    * Returns the <code>CacheInfo</code> that describes this cache. Note that this operation does not
@@ -242,9 +240,9 @@ public class SystemMemberCacheImpl implements SystemMemberCache {
     return this.vm;
   }
 
-  protected Statistic createStatistic(Stat stat) {
-    return new StatisticImpl(stat);
-  }
+//  protected Statistic createStatistic(Stat stat) {
+//    return new StatisticImpl(stat);
+//  }
 
   protected SystemMemberRegion createSystemMemberRegion(Region r)
       throws org.apache.geode.admin.AdminException {

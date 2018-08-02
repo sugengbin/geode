@@ -83,4 +83,8 @@ class DiskRegionStats(diskRegionName: String) : MicrometerMeterGroup("DiskRegion
             diskStoreRegionRemoteInitializationMeter.increment()
         }
     }
+
+    fun getNumOverflowOnDisk(): Long {
+        return diskStoreEntriesOnDiskOnlyMeter.getValue()
+    }
 }

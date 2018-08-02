@@ -47,6 +47,7 @@ import org.apache.geode.internal.cache.versions.VersionSource;
 import org.apache.geode.internal.cache.versions.VersionTag;
 import org.apache.geode.internal.util.concurrent.StoppableCountDownLatch;
 import org.apache.geode.statistics.cache.CachePerfStats;
+import org.apache.geode.statistics.eviction.EvictionStats;
 
 /**
  * Interface to be used instead of type-casting to LocalRegion.
@@ -159,7 +160,7 @@ public interface InternalRegion extends Region, HasCachePerfStats, RegionEntryCo
    * Returns null if the region is not configured for eviction otherwise returns the Statistics used
    * to measure eviction activity.
    */
-  Statistics getEvictionStatistics();
+  EvictionStats getEvictionStatistics();
 
   long getEvictionCounter();
 

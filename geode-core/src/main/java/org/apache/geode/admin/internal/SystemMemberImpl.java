@@ -43,7 +43,6 @@ import org.apache.geode.distributed.internal.membership.InternalDistributedMembe
 import org.apache.geode.internal.Config;
 import org.apache.geode.internal.ConfigSource;
 import org.apache.geode.internal.admin.GemFireVM;
-import org.apache.geode.internal.admin.StatResource;
 import org.apache.geode.internal.i18n.LocalizedStrings;
 import org.apache.geode.internal.logging.LogService;
 
@@ -217,17 +216,17 @@ public class SystemMemberImpl implements org.apache.geode.admin.SystemMember,
   public StatisticResource[] getStat(String statisticsTypeName)
       throws org.apache.geode.admin.AdminException {
     StatisticResource[] res = new StatisticResource[0];
-    if (this.vm != null) {
-      res = getStatsImpl(this.vm.getStats(statisticsTypeName));
-    }
+//    if (this.vm != null) {
+//      res = getStatsImpl(this.vm.getStats(statisticsTypeName));
+//    }
     return res.length == 0 ? null : res;
   }
 
   public StatisticResource[] getStats() throws org.apache.geode.admin.AdminException {
     StatisticResource[] statsImpl = new StatisticResource[0];
-    if (this.vm != null) {
-      statsImpl = getStatsImpl(this.vm.getStats(null));
-    }
+//    if (this.vm != null) {
+//      statsImpl = getStatsImpl(this.vm.getStats(null));
+//    }
     return statsImpl;
   }
 
@@ -434,10 +433,10 @@ public class SystemMemberImpl implements org.apache.geode.admin.SystemMember,
    * @param stat the internal stat resource to wrap with {@link StatisticResource}
    * @return new impl instance of {@link StatisticResource}
    */
-  protected StatisticResource createStatisticResource(StatResource stat)
-      throws org.apache.geode.admin.AdminException {
-    return new StatisticResourceImpl(stat, this);
-  }
+//  protected StatisticResource createStatisticResource(StatResource stat)
+//      throws org.apache.geode.admin.AdminException {
+//    return new StatisticResourceImpl(stat, this);
+//  }
 
   /**
    * Template method for creating {@link ConfigurationParameter}.
@@ -466,14 +465,14 @@ public class SystemMemberImpl implements org.apache.geode.admin.SystemMember,
   }
 
   /** Wrap the internal stats with impls of {@link StatisticResource} */
-  protected StatisticResource[] getStatsImpl(StatResource[] stats)
-      throws org.apache.geode.admin.AdminException {
-    List statList = new ArrayList();
-    for (int i = 0; i < stats.length; i++) {
-      statList.add(createStatisticResource(stats[i]));
-    }
-    return (StatisticResource[]) statList.toArray(new StatisticResource[0]);
-  }
+//  protected StatisticResource[] getStatsImpl(StatResource[] stats)
+//      throws org.apache.geode.admin.AdminException {
+//    List statList = new ArrayList();
+//    for (int i = 0; i < stats.length; i++) {
+//      statList.add(createStatisticResource(stats[i]));
+//    }
+//    return (StatisticResource[]) statList.toArray(new StatisticResource[0]);
+//  }
 
   public String[] getRoles() {
     Set roles = this.internalId.getRoles();

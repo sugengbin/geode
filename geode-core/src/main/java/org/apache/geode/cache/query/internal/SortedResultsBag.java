@@ -24,7 +24,6 @@ import java.util.TreeMap;
 import org.apache.geode.cache.query.internal.types.CollectionTypeImpl;
 import org.apache.geode.cache.query.types.CollectionType;
 import org.apache.geode.cache.query.types.ObjectType;
-import org.apache.geode.internal.cache.CachePerfStats;
 import org.apache.geode.statistics.cache.CachePerfStats;
 
 /**

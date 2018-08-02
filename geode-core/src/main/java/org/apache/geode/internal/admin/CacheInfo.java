@@ -71,7 +71,7 @@ public interface CacheInfo {
    * Returns the statistic resource that contains this cache's performance statistics. Returns null
    * if the cache is closed;
    */
-  StatResource getPerfStats();
+//  StatResource getPerfStats();
 
   /**
    * Forces this instance to be closed. Does not actually close the cache.

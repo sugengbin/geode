@@ -21,12 +21,9 @@ import java.io.IOException;
 
 import org.apache.geode.DataSerializable;
 import org.apache.geode.DataSerializer;
-import org.apache.geode.internal.admin.Stat;
-import org.apache.geode.internal.statistics.StatisticDescriptorImpl;
-import org.apache.geode.statistics.StatisticDescriptor;
-import org.apache.geode.statistics.Statistics;
 
-public class RemoteStat implements Stat, DataSerializable {
+//public class RemoteStat implements Stat, DataSerializable {
+public class RemoteStat implements  DataSerializable {
   private static final long serialVersionUID = 8263951659282343027L;
 
   // instance variables

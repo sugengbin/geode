@@ -15,8 +15,6 @@
 package org.apache.geode.admin.jmx.internal;
 
 import org.apache.geode.internal.admin.GemFireVM;
-import org.apache.geode.internal.admin.StatAlert;
-import org.apache.geode.internal.admin.StatAlertDefinition;
 
 /**
  * This interface represents an Aggregator entity and resides in JMXAgent. Responsibilities are as
@@ -37,14 +35,14 @@ public interface StatAlertsAggregator {
    *
    * @param alertDefinition StatAlertDefinition to retrieve
    */
-  StatAlertDefinition getAlertDefinition(StatAlertDefinition alertDefinition);
+//  StatAlertDefinition getAlertDefinition(StatAlertDefinition alertDefinition);
 
   /**
    * This method can be used to retrieve all available stat alert definitions.
    *
    * @return An array of all available StatAlertDefinition objects
    */
-  StatAlertDefinition[] getAllStatAlertDefinitions();
+//  StatAlertDefinition[] getAllStatAlertDefinitions();
 
   /**
    * This method can be used to update alert definition for the Stat mentioned. This method should
@@ -55,7 +53,7 @@ public interface StatAlertsAggregator {
    *
    * @param alertDefinition alertDefinition to be updated
    */
-  void updateAlertDefinition(StatAlertDefinition alertDefinition);
+//  void updateAlertDefinition(StatAlertDefinition alertDefinition);
 
   /**
    * This method can be used to remove alert definition for the Stat mentioned.
@@ -73,7 +71,7 @@ public interface StatAlertsAggregator {
    * @param alert alert definition to check whether already created
    * @return true if the alert definition is already created, false otherwise
    */
-  boolean isAlertDefinitionCreated(StatAlertDefinition alert);
+//  boolean isAlertDefinitionCreated(StatAlertDefinition alert);
 
   /**
    * This method can be used to set the AlertManager for the newly joined member VM.
@@ -101,9 +99,8 @@ public interface StatAlertsAggregator {
    * of stats can occur here. The array contains alert objects with alert def. ID & value.
    * AlertHelper class can be used to retrieve the corresponding alert definition.
    *
-   * @param alerts array of Alert class(contains alert def. ID & value)
    */
-  void processNotifications(StatAlert[] alerts, GemFireVM remoteVM);
+//  void processNotifications(StatAlert[] alerts, GemFireVM remoteVM);
 
   void processSystemwideNotifications();
 }

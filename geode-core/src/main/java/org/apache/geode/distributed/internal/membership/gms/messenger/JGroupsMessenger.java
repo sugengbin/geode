@@ -73,10 +73,8 @@ import org.apache.geode.distributed.DistributedMember;
 import org.apache.geode.distributed.DistributedSystemDisconnectedException;
 import org.apache.geode.distributed.DurableClientAttributes;
 import org.apache.geode.distributed.internal.ClusterDistributionManager;
-import org.apache.geode.distributed.internal.DMStats;
 import org.apache.geode.distributed.internal.DistributionConfig;
 import org.apache.geode.distributed.internal.DistributionMessage;
-import org.apache.geode.distributed.internal.DistributionStats;
 import org.apache.geode.distributed.internal.HighPriorityDistributionMessage;
 import org.apache.geode.distributed.internal.membership.InternalDistributedMember;
 import org.apache.geode.distributed.internal.membership.MemberAttributes;
@@ -104,6 +102,7 @@ import org.apache.geode.internal.logging.log4j.AlertAppender;
 import org.apache.geode.internal.logging.log4j.LocalizedMessage;
 import org.apache.geode.internal.net.SocketCreator;
 import org.apache.geode.internal.tcp.MemberShunnedException;
+import org.apache.geode.statistics.distributed.DMStats;
 
 
 @SuppressWarnings("StatementWithEmptyBody")
@@ -1227,7 +1226,7 @@ public class JGroupsMessenger implements Messenger {
 
     @Override
     public void receive(Message jgmsg) {
-      long startTime = DistributionStats.getStatTime();
+      long startTime = System.nanoTime();
       try {
         if (services.getManager().shutdownInProgress()) {
           return;
@@ -1293,7 +1292,7 @@ public class JGroupsMessenger implements Messenger {
         }
 
       } finally {
-        long delta = DistributionStats.getStatTime() - startTime;
+        long delta = System.nanoTime() - startTime;
         JGroupsMessenger.this.services.getStatistics().incUDPDispatchRequestTime(delta);
       }
     }

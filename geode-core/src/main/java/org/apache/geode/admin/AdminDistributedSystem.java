@@ -23,6 +23,7 @@ import java.util.UUID;
 import org.apache.geode.cache.DataPolicy;
 import org.apache.geode.cache.persistence.PersistentID;
 import org.apache.geode.distributed.DistributedMember;
+import org.apache.geode.internal.admin.AlertListener;
 
 /**
  * Administrative interface for managing an entire GemFire distributed system. This interface should

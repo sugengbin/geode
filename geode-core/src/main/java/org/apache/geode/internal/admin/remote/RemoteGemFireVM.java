@@ -16,10 +16,7 @@ package org.apache.geode.internal.admin.remote;
 
 import java.io.File;
 import java.net.InetAddress;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -43,10 +40,6 @@ import org.apache.geode.internal.admin.GemFireVM;
 import org.apache.geode.internal.admin.GfManagerAgent;
 import org.apache.geode.internal.admin.HealthListener;
 import org.apache.geode.internal.admin.ListenerIdMap;
-import org.apache.geode.internal.admin.Stat;
-import org.apache.geode.internal.admin.StatAlertDefinition;
-import org.apache.geode.internal.admin.StatListener;
-import org.apache.geode.internal.admin.StatResource;
 import org.apache.geode.internal.i18n.LocalizedStrings;
 
 /**
@@ -76,7 +69,7 @@ public abstract class RemoteGemFireVM implements GemFireVM {
   /**
    * A thread that asynchronously dispatches callbacks to <code>StatListener</code>s.
    */
-  protected final StatDispatcher dispatcher;
+//  protected final StatDispatcher dispatcher;
 
   /**
    * The classpath from which to load the classes of objects inspected from this remote VM.
@@ -102,7 +95,7 @@ public abstract class RemoteGemFireVM implements GemFireVM {
    * Creates a <code>RemoteApplicationVM</code> in a given distributed system (<code>agent</code>)
    * with the given <code>id</code>.
    * <p/>
-   * You MUST invoke {@link #startStatDispatcher()} immediately after constructing an instance.
+   * You MUST invoke immediately after constructing an instance.
    *
    * @param alertLevel The level of {@link Alert}s that this administration console should receive
    *        from this member of the distributed system.
@@ -115,13 +108,13 @@ public abstract class RemoteGemFireVM implements GemFireVM {
               .toLocalizedString());
     }
     this.id = id;
-    this.dispatcher = new StatDispatcher();
+//    this.dispatcher = new StatDispatcher();
     sendAsync(AdminConsoleMessage.create(alertLevel));
   }
 
-  public void startStatDispatcher() {
-    this.dispatcher.start();
-  }
+//  public void startStatDispatcher() {
+//    this.dispatcher.start();
+//  }
 
   // Object methods
 
@@ -205,32 +198,32 @@ public abstract class RemoteGemFireVM implements GemFireVM {
     this.isDedicatedCacheServer = Boolean.valueOf(response.isDedicatedCacheServer());
   }
 
-  /**
-   * Retrieves all statistic resources from the remote vm.
-   *
-   * @return array of all statistic resources
-   *
-   * @see FetchStatsRequest
-   * @see FetchStatsResponse#getAllStats
-   */
-  public StatResource[] getAllStats() {
-    FetchStatsResponse resp = (FetchStatsResponse) sendAndWait(FetchStatsRequest.create(null));
-    return resp.getAllStats(this);
-  }
+//  /**
+//   * Retrieves all statistic resources from the remote vm.
+//   *
+//   * @return array of all statistic resources
+//   *
+//   * @see FetchStatsRequest
+//   * @see FetchStatsResponse#getAllStats
+//   */
+//  public StatResource[] getAllStats() {
+//    FetchStatsResponse resp = (FetchStatsResponse) sendAndWait(FetchStatsRequest.create(null));
+//    return resp.getAllStats(this);
+//  }
 
-  /**
-   * Retrieves all statistic resources from the remote VM except for those involving SharedClass.
-   *
-   * @return array of non-SharedClass statistic resources
-   *
-   * @see FetchStatsRequest
-   * @see FetchStatsResponse#getStats
-   */
-  public StatResource[] getStats(String statisticsTypeName) {
-    FetchStatsResponse resp =
-        (FetchStatsResponse) sendAndWait(FetchStatsRequest.create(statisticsTypeName));
-    return resp.getAllStats(this);
-  }
+//  /**
+//   * Retrieves all statistic resources from the remote VM except for those involving SharedClass.
+//   *
+//   * @return array of non-SharedClass statistic resources
+//   *
+//   * @see FetchStatsRequest
+//   * @see FetchStatsResponse#getStats
+//   */
+//  public StatResource[] getStats(String statisticsTypeName) {
+//    FetchStatsResponse resp =
+//        (FetchStatsResponse) sendAndWait(FetchStatsRequest.create(statisticsTypeName));
+//    return resp.getAllStats(this);
+//  }
 
   /**
    * Returns information about distributed locks held by the remote VM.
@@ -253,19 +246,19 @@ public abstract class RemoteGemFireVM implements GemFireVM {
    *
    * @see AddStatListenerRequest
    */
-  public void addStatListener(StatListener observer, StatResource observedResource,
-      Stat observedStat) {
-    AddStatListenerResponse resp = (AddStatListenerResponse) sendAndWait(
-        AddStatListenerRequest.create(observedResource, observedStat));
-    int listenerId = resp.getListenerId();
-    synchronized (this.statListenersLock) {
-      this.statListeners.put(listenerId, observer);
-    }
-  }
+//  public void addStatListener(StatListener observer, StatResource observedResource,
+//      Stat observedStat) {
+//    AddStatListenerResponse resp = (AddStatListenerResponse) sendAndWait(
+//        AddStatListenerRequest.create(observedResource, observedStat));
+//    int listenerId = resp.getListenerId();
+//    synchronized (this.statListenersLock) {
+//      this.statListeners.put(listenerId, observer);
+//    }
+//  }
 
   /**
    * Notes that several statistics values have been updated in the distributed system member modeled
-   * by this <code>RemoteGemFireVM</code> and invokes the {@link StatListener}s accordingly. Note
+   * by this <code>RemoteGemFireVM</code> and invokes the  accordingly. Note
    * that the listener notification happens asynchronously.
    *
    * @param timestamp The time at which the statistics were sampled
@@ -273,7 +266,7 @@ public abstract class RemoteGemFireVM implements GemFireVM {
    * @param values The new values of the statistics
    */
   public void callStatListeners(long timestamp, int[] listenerIds, double[] values) {
-    dispatcher.put(new DispatchArgs(timestamp, listenerIds, values));
+//    dispatcher.put(new DispatchArgs(timestamp, listenerIds, values));
   }
 
 
@@ -288,39 +281,39 @@ public abstract class RemoteGemFireVM implements GemFireVM {
    *
    * @see #cancelStatListener
    */
-  protected void internalCallStatListeners(long timestamp, int[] listenerIds, double[] values) {
-    ListenerIdMap.Entry[] entries = null;
-    List listenersToRemove = new ArrayList();
-    synchronized (this.statListenersLock) {
-      entries = this.statListeners.entries();
-    }
-
-    for (int j = 0; j < entries.length; j++) {
-      int listenerId = entries[j].getKey();
-      StatListener sl = (StatListener) entries[j].getValue();
-      int i;
-      for (i = 0; i < listenerIds.length; i++) {
-        if (listenerIds[i] == listenerId || listenerIds[i] == -listenerId) {
-          break;
-        }
-      }
-      if (i == listenerIds.length) {
-        sl.statValueUnchanged(timestamp);
-      } else if (listenerIds[i] < 0) { // Stat resource went away
-        listenersToRemove.add(Integer.valueOf(listenerId));
-      } else {
-        sl.statValueChanged(values[i], timestamp);
-      }
-    }
-
-    synchronized (this.statListenersLock) {
-      for (Iterator iter = listenersToRemove.iterator(); iter.hasNext();) {
-        int i = ((Integer) iter.next()).intValue();
-        statListeners.remove(i);
-        cancelStatListener(i);
-      }
-    }
-  }
+//  protected void internalCallStatListeners(long timestamp, int[] listenerIds, double[] values) {
+//    ListenerIdMap.Entry[] entries = null;
+//    List listenersToRemove = new ArrayList();
+//    synchronized (this.statListenersLock) {
+//      entries = this.statListeners.entries();
+//    }
+//
+//    for (int j = 0; j < entries.length; j++) {
+//      int listenerId = entries[j].getKey();
+//      StatListener sl = (StatListener) entries[j].getValue();
+//      int i;
+//      for (i = 0; i < listenerIds.length; i++) {
+//        if (listenerIds[i] == listenerId || listenerIds[i] == -listenerId) {
+//          break;
+//        }
+//      }
+//      if (i == listenerIds.length) {
+//        sl.statValueUnchanged(timestamp);
+//      } else if (listenerIds[i] < 0) { // Stat resource went away
+//        listenersToRemove.add(Integer.valueOf(listenerId));
+//      } else {
+//        sl.statValueChanged(values[i], timestamp);
+//      }
+//    }
+//
+//    synchronized (this.statListenersLock) {
+//      for (Iterator iter = listenersToRemove.iterator(); iter.hasNext();) {
+//        int i = ((Integer) iter.next()).intValue();
+//        statListeners.remove(i);
+//        cancelStatListener(i);
+//      }
+//    }
+//  }
 
   /**
    * Sends a message to the remote VM letting it know that the listener with the given id no longer
@@ -333,26 +326,26 @@ public abstract class RemoteGemFireVM implements GemFireVM {
   /**
    * Removes a <code>StatListener</code> that receives updates from the remote member VM.
    */
-  public void removeStatListener(StatListener observer) {
-    int listenerId = -1;
-    boolean foundIt = false;
-    synchronized (this.statListenersLock) {
-      ListenerIdMap.EntryIterator it = this.statListeners.iterator();
-      ListenerIdMap.Entry e = it.next();
-      while (e != null) {
-        if (e.getValue() == observer) {
-          foundIt = true;
-          listenerId = e.getKey();
-          this.statListeners.remove(listenerId);
-          break;
-        }
-        e = it.next();
-      }
-    }
-    if (foundIt) {
-      cancelStatListener(listenerId);
-    }
-  }
+//  public void removeStatListener(StatListener observer) {
+//    int listenerId = -1;
+//    boolean foundIt = false;
+//    synchronized (this.statListenersLock) {
+//      ListenerIdMap.EntryIterator it = this.statListeners.iterator();
+//      ListenerIdMap.Entry e = it.next();
+//      while (e != null) {
+//        if (e.getValue() == observer) {
+//          foundIt = true;
+//          listenerId = e.getKey();
+//          this.statListeners.remove(listenerId);
+//          break;
+//        }
+//        e = it.next();
+//      }
+//    }
+//    if (foundIt) {
+//      cancelStatListener(listenerId);
+//    }
+//  }
 
   /**
    * Returns the configuration of the remote VM.
@@ -752,7 +745,7 @@ public abstract class RemoteGemFireVM implements GemFireVM {
       this.statListeners = new ListenerIdMap(); // we don't provide a way to empty a ListenerIdMap
       unreachable = true;
     }
-    dispatcher.stopDispatching();
+//    dispatcher.stopDispatching();
   }
 
   /**
@@ -791,56 +784,56 @@ public abstract class RemoteGemFireVM implements GemFireVM {
   /**
    * A daemon thread that reads org.apache.geode.internal.admin.remote.RemoteGemFireVM.DispatchArgs
    * off of a queue and delivers callbacks to the appropriate
-   * {@link org.apache.geode.internal.admin.StatListener}.
+
    */
-  private class StatDispatcher extends Thread {
-    private BlockingQueue queue = new LinkedBlockingQueue();
-    private volatile boolean stopped = false;
-
-    protected StatDispatcher() {
-      super(RemoteGemFireVM.this.agent.getThreadGroup(), "StatDispatcher");
-      setDaemon(true);
-    }
-
-    protected synchronized void stopDispatching() {
-      this.stopped = true;
-      this.interrupt();
-    }
-
-    @Override // GemStoneAddition
-    public void run() {
-      while (!stopped) {
-        SystemFailure.checkFailure();
-        try {
-          DispatchArgs args = (DispatchArgs) queue.take();
-          internalCallStatListeners(args.timestamp, args.listenerIds, args.values);
-
-        } catch (InterruptedException ex) {
-          // No need to reset the interrupt bit, we'll just exit.
-          break;
-
-        } catch (Exception ignore) {
-        }
-      }
-    }
-
-    protected void put(DispatchArgs args) {
-      for (;;) {
-        RemoteGemFireVM.this.agent.getDM().getCancelCriterion().checkCancelInProgress(null);
-        boolean interrupted = Thread.interrupted();
-        try {
-          queue.put(args);
-          break;
-        } catch (InterruptedException ignore) {
-          interrupted = true;
-        } finally {
-          if (interrupted) {
-            Thread.currentThread().interrupt();
-          }
-        }
-      } // for
-    }
-  }
+//  private class StatDispatcher extends Thread {
+//    private BlockingQueue queue = new LinkedBlockingQueue();
+//    private volatile boolean stopped = false;
+//
+//    protected StatDispatcher() {
+//      super(RemoteGemFireVM.this.agent.getThreadGroup(), "StatDispatcher");
+//      setDaemon(true);
+//    }
+//
+//    protected synchronized void stopDispatching() {
+//      this.stopped = true;
+//      this.interrupt();
+//    }
+//
+//    @Override // GemStoneAddition
+//    public void run() {
+//      while (!stopped) {
+//        SystemFailure.checkFailure();
+//        try {
+//          DispatchArgs args = (DispatchArgs) queue.take();
+//          internalCallStatListeners(args.timestamp, args.listenerIds, args.values);
+//
+//        } catch (InterruptedException ex) {
+//          // No need to reset the interrupt bit, we'll just exit.
+//          break;
+//
+//        } catch (Exception ignore) {
+//        }
+//      }
+//    }
+//
+//    protected void put(DispatchArgs args) {
+//      for (;;) {
+//        RemoteGemFireVM.this.agent.getDM().getCancelCriterion().checkCancelInProgress(null);
+//        boolean interrupted = Thread.interrupted();
+//        try {
+//          queue.put(args);
+//          break;
+//        } catch (InterruptedException ignore) {
+//          interrupted = true;
+//        } finally {
+//          if (interrupted) {
+//            Thread.currentThread().interrupt();
+//          }
+//        }
+//      } // for
+//    }
+//  }
 
   /**
    * Encapsulates an update to several statistics
@@ -906,13 +899,13 @@ public abstract class RemoteGemFireVM implements GemFireVM {
    * @param refreshInterval refresh interval to be used by the Alerts Manager
    * @param setRemotely whether to be set on remote VM
    */
-  public void setAlertsManager(StatAlertDefinition[] alertDefs, long refreshInterval,
-      boolean setRemotely) {
-    if (setRemotely) {
-      // TODO: is the check for valid AdminResponse required
-      sendAsync(StatAlertsManagerAssignMessage.create(alertDefs, refreshInterval));
-    }
-  }
+//  public void setAlertsManager(StatAlertDefinition[] alertDefs, long refreshInterval,
+//      boolean setRemotely) {
+//    if (setRemotely) {
+//      // TODO: is the check for valid AdminResponse required
+//      sendAsync(StatAlertsManagerAssignMessage.create(alertDefs, refreshInterval));
+//    }
+//  }
 
   /**
    * This method would be used to set refresh interval for the GemFireVM. This method would mostly
@@ -934,9 +927,9 @@ public abstract class RemoteGemFireVM implements GemFireVM {
    *        UpdateAlertDefinitionRequestUPDATE_ALERT_DEFINITION,
    *        UpdateAlertDefinitionRequest.REMOVE_ALERT_DEFINITION
    */
-  public void updateAlertDefinitions(StatAlertDefinition[] alertDefs, int actionCode) {
-    // TODO: is the check for valid AdminResponse required
-    sendAsync(UpdateAlertDefinitionMessage.create(alertDefs, actionCode));
-  }
+//  public void updateAlertDefinitions(StatAlertDefinition[] alertDefs, int actionCode) {
+//    // TODO: is the check for valid AdminResponse required
+//    sendAsync(UpdateAlertDefinitionMessage.create(alertDefs, actionCode));
+//  }
 
 }
