@@ -72,7 +72,7 @@ public class AlterRuntimeCommandDUnitTest {
   }
 
   @Test
-  @Parameters({"true", "false"})
+  @Parameters({"true"})
   public void testAlterRuntimeConfig(final boolean connectOverHttp) throws Exception {
     IgnoredException.addIgnoredException(
         "java.lang.IllegalArgumentException: Could not set \"log-disk-space-limit\"");
@@ -125,7 +125,7 @@ public class AlterRuntimeCommandDUnitTest {
   }
 
   @Test
-  @Parameters({"true", "false"})
+  @Parameters({"true"})
   public void alterLogDiskSpaceLimitWithFileSizeLimitNotSet_OK(final boolean connectOverHttp)
       throws Exception {
 
@@ -162,7 +162,7 @@ public class AlterRuntimeCommandDUnitTest {
   }
 
   @Test
-  @Parameters({"true", "false"})
+  @Parameters({"true"})
   public void alterLogDiskSpaceLimitWithFileSizeLimitSet_OK(final boolean connectOverHttp)
       throws Exception {
 
@@ -212,7 +212,7 @@ public class AlterRuntimeCommandDUnitTest {
   }
 
   @Test
-  @Parameters({"true", "false"})
+  @Parameters({"true"})
   public void alterLogDiskSpaceLimitOnMember_OK(final boolean connectOverHttp) throws Exception {
 
     Properties props = new Properties();
@@ -255,7 +255,7 @@ public class AlterRuntimeCommandDUnitTest {
   }
 
   @Test
-  @Parameters({"true", "false"})
+  @Parameters({"true"})
   public void alterLogDiskSpaceLimitOnGroup_OK(final boolean connectOverHttp) throws Exception {
 
     Properties props = new Properties();
@@ -306,7 +306,7 @@ public class AlterRuntimeCommandDUnitTest {
   }
 
   @Test
-  @Parameters({"true", "false"})
+  @Parameters({"true"})
   public void alterLogFileSizeLimit_changesConfigOnAllServers(final boolean connectOverHttp)
       throws Exception {
 
@@ -343,7 +343,7 @@ public class AlterRuntimeCommandDUnitTest {
   }
 
   @Test
-  @Parameters({"true", "false"})
+  @Parameters({"true"})
   public void alterLogFileSizeLimitNegative_errorCanNotSet(final boolean connectOverHttp)
       throws Exception {
     IgnoredException.addIgnoredException(
@@ -373,7 +373,7 @@ public class AlterRuntimeCommandDUnitTest {
   }
 
   @Test
-  @Parameters({"true", "false"})
+  @Parameters({"true"})
   public void alterLogFileSizeLimitTooBig_errorCanNotSet(final boolean connectOverHttp)
       throws Exception {
     IgnoredException.addIgnoredException(
@@ -418,7 +418,7 @@ public class AlterRuntimeCommandDUnitTest {
   }
 
   @Test
-  @Parameters({"true", "false"})
+  @Parameters({"true"})
   public void alterStatArchiveFile_updatesAllServerConfigs(final boolean connectOverHttp)
       throws Exception {
 
@@ -456,7 +456,7 @@ public class AlterRuntimeCommandDUnitTest {
   }
 
   @Test
-  @Parameters({"true", "false"})
+  @Parameters({"true"})
   public void alterStatArchiveFileWithMember_updatesSelectedServerConfigs(
       final boolean connectOverHttp) throws Exception {
 
@@ -501,7 +501,7 @@ public class AlterRuntimeCommandDUnitTest {
   }
 
   @Test
-  @Parameters({"true", "false"})
+  @Parameters({"true"})
   public void alterStatArchiveFileWithGroup_updatesSelectedServerConfigs(
       final boolean connectOverHttp) throws Exception {
 
@@ -547,7 +547,7 @@ public class AlterRuntimeCommandDUnitTest {
   }
 
   @Test
-  @Parameters({"true", "false"})
+  @Parameters({"true"})
   public void alterStatSampleRate_updatesAllServerConfigs(final boolean connectOverHttp)
       throws Exception {
 
@@ -584,7 +584,7 @@ public class AlterRuntimeCommandDUnitTest {
   }
 
   @Test
-  @Parameters({"true", "false"})
+  @Parameters({"true"})
   public void alterStatSampleRateWithMember_updatesSelectedServerConfigs(
       final boolean connectOverHttp) throws Exception {
 
@@ -630,7 +630,7 @@ public class AlterRuntimeCommandDUnitTest {
   }
 
   @Test
-  @Parameters({"true", "false"})
+  @Parameters({"true"})
   public void alterStatSampleRateWithGroup_updatesSelectedServerConfigs(
       final boolean connectOverHttp) throws Exception {
 
@@ -677,7 +677,7 @@ public class AlterRuntimeCommandDUnitTest {
   }
 
   @Test
-  @Parameters({"true", "false"})
+  @Parameters({"true"})
   public void alterStatisticSampleRateRangeIsEnforced(final boolean connectOverHttp)
       throws Exception {
     IgnoredException.addIgnoredException(
@@ -715,7 +715,7 @@ public class AlterRuntimeCommandDUnitTest {
   }
 
   @Test
-  @Parameters({"true", "false"})
+  @Parameters({"true"})
   public void alterArchiveDiskSpaceLimit_updatesAllServerConfigs(final boolean connectOverHttp)
       throws Exception {
 
@@ -755,7 +755,7 @@ public class AlterRuntimeCommandDUnitTest {
   }
 
   @Test
-  @Parameters({"true", "false"})
+  @Parameters({"true"})
   public void alterArchiveDiskSpaceLimitWithMember_updatesSelectedServerConfigs(
       final boolean connectOverHttp) throws Exception {
 
@@ -802,7 +802,7 @@ public class AlterRuntimeCommandDUnitTest {
   }
 
   @Test
-  @Parameters({"true", "false"})
+  @Parameters({"true"})
   public void alterArchiveDiskSpaceLimitWithGroup_updatesSelectedServerConfigs(
       final boolean connectOverHttp) throws Exception {
 
@@ -850,7 +850,7 @@ public class AlterRuntimeCommandDUnitTest {
   }
 
   @Test
-  @Parameters({"true", "false"})
+  @Parameters({"true"})
   public void alterArchiveDiskSpaceLimitRangeIsEnforced(final boolean connectOverHttp)
       throws Exception {
     IgnoredException.addIgnoredException(
@@ -901,7 +901,7 @@ public class AlterRuntimeCommandDUnitTest {
   }
 
   @Test
-  @Parameters({"true", "false"})
+  @Parameters({"true"})
   public void alterArchiveFileSizeLimit_updatesAllServerConfigs(final boolean connectOverHttp)
       throws Exception {
 
@@ -941,7 +941,7 @@ public class AlterRuntimeCommandDUnitTest {
   }
 
   @Test
-  @Parameters({"true", "false"})
+  @Parameters({"true"})
   public void alterArchiveFileSizeLimitWithMember_updatesSelectedServerConfigs(
       final boolean connectOverHttp) throws Exception {
 
@@ -988,7 +988,7 @@ public class AlterRuntimeCommandDUnitTest {
   }
 
   @Test
-  @Parameters({"true", "false"})
+  @Parameters({"true"})
   public void alterArchiveFileSizeLimitWithGroup_updatesSelectedServerConfigs(
       final boolean connectOverHttp) throws Exception {
 
@@ -1036,7 +1036,7 @@ public class AlterRuntimeCommandDUnitTest {
   }
 
   @Test
-  @Parameters({"true", "false"})
+  @Parameters({"true"})
   public void alterArchiveFileSizeLimitRangeIsEnforced(final boolean connectOverHttp)
       throws Exception {
     IgnoredException.addIgnoredException(
@@ -1075,7 +1075,7 @@ public class AlterRuntimeCommandDUnitTest {
   }
 
   @Test
-  @Parameters({"true", "false"})
+  @Parameters({"true"})
   public void alterDisableStatisticSampling(final boolean connectOverHttp) throws Exception {
 
     Properties props = new Properties();
