@@ -81,7 +81,7 @@ public class AgentUtil {
       URL url = this.getClass().getClassLoader().getResource(possibleFile);
       if (url != null) {
         // found the war file
-        logger.info(warFilePrefix + " war found: {}", possibleFile);
+        logger.info(warFilePrefix + " war found: {}", url.getPath());
         return url.getPath();
       }
     }
