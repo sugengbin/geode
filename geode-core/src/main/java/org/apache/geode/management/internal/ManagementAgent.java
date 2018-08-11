@@ -239,6 +239,7 @@ public class ManagementAgent {
 
       try {
         if (agentUtil.isWebApplicationAvailable(gemfireWar, pulseWar, gemfireAPIWar)) {
+          logger.info("--->>> Starting inner block");
 
           final String bindAddress = this.config.getHttpServiceBindAddress();
           final int port = this.config.getHttpServicePort();
@@ -293,6 +294,7 @@ public class ManagementAgent {
           System.setProperty(PULSE_USESSL_MANAGER, jmxSocketCreator.useSSL() + "");
           System.setProperty(PULSE_USESSL_LOCATOR, locatorSocketCreator.useSSL() + "");
 
+          logger.info("---->>> starting jetty");
           this.httpServer = JettyHelper.startJetty(this.httpServer);
 
           // now, that Tomcat has been started, we can set the URL used by web
@@ -316,6 +318,7 @@ public class ManagementAgent {
           setHttpServiceRunning(true);
         }
       } catch (Exception e) {
+        logger.error("HTTP service failed to start: {}", e);
         stopHttpService();// Jetty needs to be stopped even if it has failed to
         // start. Some of the threads are left behind even if
         // server.start() fails due to an exception
